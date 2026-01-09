@@ -1,4 +1,4 @@
-package br.ufjf.dcc;
+package br.ufjf.dcc.Main;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
