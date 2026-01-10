@@ -1,7 +1,9 @@
 package br.ufjf.dcc.Erros;
 
-public class ErrosNumbersFormato extends NumberFormatException{
+import br.ufjf.dcc.CoresMensagens.CoresMensagens;
+
+public class ErrosNumbersFormato extends NumberFormatException implements CoresMensagens {
     public ErrosNumbersFormato(String message) {
-        super(message);
+        super(AMARELO + message + RESET);
     }
 }

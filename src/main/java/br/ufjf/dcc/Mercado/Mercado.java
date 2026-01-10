@@ -1,7 +1,7 @@
-
 package br.ufjf.dcc.Mercado;
 
 import br.ufjf.dcc.Ativos.*;
+import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.ErrosLeituraArq;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-public class Mercado {
+public class Mercado implements CoresMensagens {
     private static List<Ativos> listaAtivosAcoes = new LinkedList<Ativos>();
     private static List<Ativos> listaAtivosFiis = new LinkedList<Ativos>();
     private static List<Ativos> listaAtivosTesouros = new LinkedList<Ativos>();
@@ -300,31 +300,41 @@ public class Mercado {
     }
 
     public void listarTodosAtivos() {
-        System.out.println("===== RELATÓRIO DE TODOS OS ATIVOS =====");
-        System.out.println("----- AÇÕES -----");
+        System.out.println(ROSA + "===== RELATÓRIO DE TODOS OS ATIVOS =====" + RESET);
+
+        System.out.println(AZUL + "----- AÇÕES -----" + RESET);
         for (Ativos a : listaAtivosAcoes) {
+            System.out.print(AZUL);
             a.exibirAtivo();
-            System.out.println("--------------------");
+            System.out.println("--------------------" + RESET);
         }
-        System.out.println("----- FIIs -----");
+
+        System.out.println(VERDE_CLARO + "----- FIIs -----" + RESET);
         for (Ativos f : listaAtivosFiis) {
+            System.out.print(VERDE_CLARO);
             f.exibirAtivo();
-            System.out.println("--------------------");
+            System.out.println("--------------------" + RESET);
         }
-        System.out.println("----- TESOUROS -----");
+
+        System.out.println(VERDE + "----- TESOUROS -----" + RESET);
         for (Ativos t : listaAtivosTesouros) {
+            System.out.print(VERDE);
             t.exibirAtivo();
-            System.out.println("--------------------");
+            System.out.println("--------------------" + RESET);
         }
-        System.out.println("----- CRIPTOMOEDAS -----");
+
+        System.out.println(ROXO + "----- CRIPTOMOEDAS -----" + RESET);
         for (Ativos c : listaAtivosCriptos) {
+            System.out.print(ROXO);
             c.exibirAtivo();
-            System.out.println("--------------------");
+            System.out.println("--------------------" + RESET);
         }
-        System.out.println("----- STOCKS -----");
+
+        System.out.println(CIANO + "----- STOCKS -----" + RESET);
         for (Ativos s : listaAtivosStocks) {
+            System.out.print(CIANO);
             s.exibirAtivo();
-            System.out.println("--------------------");
+            System.out.println("--------------------" + RESET);
         }
     }
 }
