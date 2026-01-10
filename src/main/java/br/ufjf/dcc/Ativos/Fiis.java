@@ -2,7 +2,7 @@ package br.ufjf.dcc.Ativos;
 
 import br.ufjf.dcc.Tools.Tools;
 
-public class Fiis extends Ativos implements RendaVariavel, Nacional{
+public class Fiis extends Ativos implements RendaVariavel, Nacional, TaxaPorcentagem {
     private String segmento;
     private float ultimoDividendo, taxaAdmissao;
     public Fiis(String nome, String ticker, float preco, boolean qualificado, String segmento, float ultimoDividendo, float taxaAdimissao){
@@ -11,6 +11,13 @@ public class Fiis extends Ativos implements RendaVariavel, Nacional{
         this.ultimoDividendo = ultimoDividendo;
         this.taxaAdmissao = taxaAdimissao;
     }
+    public Fiis(String nome, String ticker, float preco, String segmento, float ultimoDividendo, float taxaAdimissao){
+        super(nome, ticker, preco);
+        this.segmento = segmento;
+        this.ultimoDividendo = ultimoDividendo;
+        this.taxaAdmissao = taxaAdimissao;
+    }
+
     @Override
     public void exibirAtivo(){
         super.exibirAtivo();
@@ -18,7 +25,7 @@ public class Fiis extends Ativos implements RendaVariavel, Nacional{
         System.out.println(Tools.capitalize(RENDA_VARIAVEL));
         System.out.println("Segmento: " + this.segmento);
         System.out.println("Ultimo Dividendo: " + this.ultimoDividendo);
-        System.out.println("Taxa de Admissao: " + this.taxaAdmissao);
+        exibirTaxaAdministracao();
     }
 
     @Override
@@ -29,5 +36,10 @@ public class Fiis extends Ativos implements RendaVariavel, Nacional{
     @Override
     public String getTipoRenda() {
         return RENDA_VARIAVEL;
+    }
+
+    @Override
+    public void exibirTaxaAdministracao() {
+        System.out.println("Taxa de Admissao: " + this.taxaAdmissao + "%");
     }
 }

@@ -6,7 +6,8 @@ import br.ufjf.dcc.Tools.Tools;
 public abstract class Ativos {
     protected String nome, ticker;
     protected float preco;
-    protected boolean qualificado;
+    protected boolean qualificado = false;
+
     public Ativos(String nome, String ticker, float preco, boolean qualificado){
         this.nome = nome.toLowerCase();
         this.ticker = ticker.toUpperCase();
@@ -14,7 +15,8 @@ public abstract class Ativos {
         this.qualificado = qualificado;
     }
 
-    protected Ativos() {
+    public Ativos(String nome, String ticker, float preco) {
+        this(nome, ticker, preco, false);
     }
 
     public void exibirAtivo(){

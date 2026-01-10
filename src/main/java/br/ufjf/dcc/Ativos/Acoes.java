@@ -8,6 +8,12 @@ public class Acoes extends Ativos implements RendaVariavel, Nacional{
         super(nome, ticker, preco, qualificado);
         this.tipo = definiTipo();
     }
+
+    public Acoes(String nome, String ticker, float preco){
+        this(nome, ticker, preco, false);
+        this.tipo = definiTipo();
+    }
+
     private String definiTipo(){
         if(super.ticker == null || super.ticker.isEmpty()){
             return "invalido";

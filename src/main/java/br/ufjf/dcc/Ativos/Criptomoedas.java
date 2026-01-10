@@ -5,15 +5,27 @@ import br.ufjf.dcc.Tools.Tools;
 public class Criptomoedas extends Ativos implements Internacional, RendaVariavel{
     private String consenso;
     private int qtdMax;
-    public Criptomoedas( String nome, String ticker, float preco, boolean qualificado, String consenso, int qtdMax) {
+    public Criptomoedas( String nome, String ticker, float preco, boolean qualificado) {
         super(nome, ticker, preco, qualificado);
         this.consenso = consenso;
         this.qtdMax = qtdMax;
     }
 
+    public Criptomoedas( String nome, String ticker, float preco,String consenso, int qtdMax) {
+        super(nome, ticker, preco);
+        this.consenso = consenso;
+        this.qtdMax = qtdMax;
+    }
+
+
     @Override
     public boolean getNacionalidade() {
         return EH_NACIONAL;
+    }
+
+    @Override
+    public void converterParaReal() {
+         this.preco = COTACAO_DOLAR * this.preco;
     }
 
     @Override

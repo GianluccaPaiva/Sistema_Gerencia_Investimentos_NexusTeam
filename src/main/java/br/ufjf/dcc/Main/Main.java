@@ -12,13 +12,13 @@ public class Main {
         Ativos ativo2 = new Fiis("XP Log", "XPLG11", 120.75f, true, "Logistica", 0.85f, 150.0f);
         ativo2.exibirAtivo();
         System.out.println();
-        Ativos ativo3 = new Tesouro("Tesouro Selic", "TS2025", 1000.0f, true, "selic", "01/01/2025");
+        Ativos ativo3 = new Tesouro("Tesouro Selic", "TS2025", 1000.0f, true, "selic");
         ativo3.exibirAtivo();
         System.out.println();
-        Ativos ativos4 = new Stocks( "Apple Inc.", "AAPL", 150.0f, false, "NASDAQ", "Technology");;
+        Ativos ativos4 = new Stocks( "Apple Inc.", "AAPL", 150.0f, "NASDAQ", "Tecnologia");
         ativos4.exibirAtivo();
         System.out.println();
-        Ativos ativos5 = new Criptomoedas( "Bitcoin", "BTC", 30000.0f, false, "Proof of Work", 21000000);
+        Ativos ativos5 = new Criptomoedas( "Bitcoin", "BTC", 30000.0f, "Proof of Work", 21000000);
         ativos5.exibirAtivo();
     }
 }
