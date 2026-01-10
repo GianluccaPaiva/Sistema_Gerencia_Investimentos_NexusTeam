@@ -13,6 +13,10 @@ public abstract class Ativos {
         this.preco = preco;
         this.qualificado = qualificado;
     }
+
+    protected Ativos() {
+    }
+
     public void exibirAtivo(){
         System.out.println("Nome: " + Tools.capitalize(this.nome));
         System.out.println("ticker: " + this.ticker);

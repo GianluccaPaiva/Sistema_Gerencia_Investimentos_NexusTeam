@@ -17,5 +17,8 @@ public class Main {
         System.out.println();
         Ativos ativos4 = new Stocks( "Apple Inc.", "AAPL", 150.0f, false, "NASDAQ", "Technology");;
         ativos4.exibirAtivo();
+        System.out.println();
+        Ativos ativos5 = new Criptomoedas( "Bitcoin", "BTC", 30000.0f, false, "Proof of Work", 21000000);
+        ativos5.exibirAtivo();
     }
 }
