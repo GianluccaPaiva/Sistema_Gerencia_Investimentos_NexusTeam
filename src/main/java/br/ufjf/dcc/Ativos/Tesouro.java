@@ -1,5 +1,7 @@
 package br.ufjf.dcc.Ativos;
 
+import br.ufjf.dcc.Tools.Tools;
+
 import java.util.Arrays;
 
 
@@ -35,9 +37,9 @@ public class Tesouro extends Ativos implements RendaFixa, Nacional{
     @Override
     public void exibirAtivo() {
         super.exibirAtivo();
-        System.out.println(validaNacionalidade(EH_NACIONAL));
-        System.out.println(capitalize(RENDA_FIXA));
-        System.out.println("Tipo de Rendimento: " + capitalize(this.tipoRendimento));
+        System.out.println(Tools.validaNacionalidade(EH_NACIONAL));
+        System.out.println(Tools.capitalize(RENDA_FIXA));
+        System.out.println("Tipo de Rendimento: " + Tools.capitalize(this.tipoRendimento));
         System.out.println("Data de Vencimento: " + this.dataVencimento);
     }
 }

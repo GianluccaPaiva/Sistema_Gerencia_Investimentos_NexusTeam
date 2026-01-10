@@ -1,5 +1,7 @@
 package br.ufjf.dcc.Ativos;
 
+import br.ufjf.dcc.Tools.Tools;
+
 public class Fiis extends Ativos implements RendaVariavel, Nacional{
     private String segmento;
     private float ultimoDividendo, taxaAdmissao;
@@ -12,8 +14,8 @@ public class Fiis extends Ativos implements RendaVariavel, Nacional{
     @Override
     public void exibirAtivo(){
         super.exibirAtivo();
-        System.out.println(validaNacionalidade(EH_NACIONAL));
-        System.out.println(capitalize(RENDA_VARIAVEL));
+        System.out.println(Tools.validaNacionalidade(EH_NACIONAL));
+        System.out.println(Tools.capitalize(RENDA_VARIAVEL));
         System.out.println("Segmento: " + this.segmento);
         System.out.println("Ultimo Dividendo: " + this.ultimoDividendo);
         System.out.println("Taxa de Admissao: " + this.taxaAdmissao);

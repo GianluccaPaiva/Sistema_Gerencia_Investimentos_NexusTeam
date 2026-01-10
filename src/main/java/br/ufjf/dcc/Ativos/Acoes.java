@@ -1,5 +1,7 @@
 package br.ufjf.dcc.Ativos;
 
+import br.ufjf.dcc.Tools.Tools;
+
 public class Acoes extends Ativos implements RendaVariavel, Nacional{
     private String tipo;
     public Acoes(String nome, String codigo, float preco, boolean qualificado) {
@@ -33,8 +35,8 @@ public class Acoes extends Ativos implements RendaVariavel, Nacional{
     @Override
     public void exibirAtivo(){
         super.exibirAtivo();
-        System.out.println(validaNacionalidade(EH_NACIONAL));
-        System.out.println(capitalize(RENDA_VARIAVEL));
-        System.out.println("Tipo: " + capitalize(this.tipo));
+        System.out.println(Tools.validaNacionalidade(EH_NACIONAL));
+        System.out.println(Tools.capitalize(RENDA_VARIAVEL));
+        System.out.println("Tipo: " + Tools.capitalize(this.tipo));
     }
 }
