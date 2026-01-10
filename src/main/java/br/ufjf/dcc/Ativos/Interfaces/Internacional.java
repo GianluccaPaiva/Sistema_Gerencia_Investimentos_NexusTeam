@@ -1,4 +1,4 @@
-package br.ufjf.dcc.Ativos;
+package br.ufjf.dcc.Ativos.Interfaces;
 
 public interface Internacional {
     boolean EH_NACIONAL= false;

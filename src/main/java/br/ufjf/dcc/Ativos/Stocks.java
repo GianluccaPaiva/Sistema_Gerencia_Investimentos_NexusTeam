@@ -1,8 +1,10 @@
 package br.ufjf.dcc.Ativos;
 
+import br.ufjf.dcc.Ativos.Interfaces.Internacional;
+import br.ufjf.dcc.Ativos.Interfaces.RendaVariavel;
 import br.ufjf.dcc.Tools.Tools;
 
-public class Stocks extends Ativos implements RendaVariavel, Internacional{
+public class Stocks extends Ativos implements RendaVariavel, Internacional {
     private String bolsaNegociacao, setor;
     public Stocks(String nome, String ticker, float preco, boolean qualificado, String bolsaNegociacao, String setor) {
         super(nome, ticker, preco, qualificado);

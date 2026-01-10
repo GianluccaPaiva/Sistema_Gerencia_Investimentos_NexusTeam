@@ -1,5 +1,8 @@
 package br.ufjf.dcc.Ativos;
 
+import br.ufjf.dcc.Ativos.Interfaces.Nacional;
+import br.ufjf.dcc.Ativos.Interfaces.RendaVariavel;
+import br.ufjf.dcc.Ativos.Interfaces.TaxaPorcentagem;
 import br.ufjf.dcc.Tools.Tools;
 
 public class Fiis extends Ativos implements RendaVariavel, Nacional, TaxaPorcentagem {

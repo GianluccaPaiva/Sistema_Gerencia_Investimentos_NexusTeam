@@ -1,11 +1,13 @@
 package br.ufjf.dcc.Ativos;
 
+import br.ufjf.dcc.Ativos.Interfaces.Nacional;
+import br.ufjf.dcc.Ativos.Interfaces.RendaFixa;
 import br.ufjf.dcc.Tools.Tools;
 
 import java.util.Arrays;
 
 
-public class Tesouro extends Ativos implements RendaFixa, Nacional{
+public class Tesouro extends Ativos implements RendaFixa, Nacional {
     private String tipoRendimento, dataVencimento;
     public Tesouro(String nome, String ticker, float preco, boolean qualificado, String tipoRendimento) {
         super(nome, ticker, preco, qualificado);

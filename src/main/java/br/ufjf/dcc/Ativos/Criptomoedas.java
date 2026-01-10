@@ -1,17 +1,19 @@
 package br.ufjf.dcc.Ativos;
 
+import br.ufjf.dcc.Ativos.Interfaces.Internacional;
+import br.ufjf.dcc.Ativos.Interfaces.RendaVariavel;
 import br.ufjf.dcc.Tools.Tools;
 
-public class Criptomoedas extends Ativos implements Internacional, RendaVariavel{
+public class Criptomoedas extends Ativos implements Internacional, RendaVariavel {
     private String consenso;
-    private int qtdMax;
-    public Criptomoedas( String nome, String ticker, float preco, boolean qualificado) {
+    private long qtdMax;
+    public Criptomoedas( String nome, String ticker, float preco, boolean qualificado, String consenso, long qtdMax) {
         super(nome, ticker, preco, qualificado);
         this.consenso = consenso;
         this.qtdMax = qtdMax;
     }
 
-    public Criptomoedas( String nome, String ticker, float preco,String consenso, int qtdMax) {
+    public Criptomoedas( String nome, String ticker, float preco,String consenso, long qtdMax) {
         super(nome, ticker, preco);
         this.consenso = consenso;
         this.qtdMax = qtdMax;
