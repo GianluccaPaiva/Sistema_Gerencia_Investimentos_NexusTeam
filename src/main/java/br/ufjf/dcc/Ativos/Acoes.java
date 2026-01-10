@@ -4,18 +4,18 @@ import br.ufjf.dcc.Tools.Tools;
 
 public class Acoes extends Ativos implements RendaVariavel, Nacional{
     private String tipo;
-    public Acoes(String nome, String codigo, float preco, boolean qualificado) {
-        super(nome, codigo, preco, qualificado);
+    public Acoes(String nome, String ticker, float preco, boolean qualificado) {
+        super(nome, ticker, preco, qualificado);
         this.tipo = definiTipo();
     }
     private String definiTipo(){
-        if(super.codigo == null || super.codigo.isEmpty()){
+        if(super.ticker == null || super.ticker.isEmpty()){
             return "invalido";
         }
-        if(super.codigo.endsWith("11")){
+        if(super.ticker.endsWith("11")){
             return "unit";
         }
-        int ultimo = super.codigo.charAt(super.codigo.length() - 1);
+        int ultimo = super.ticker.charAt(super.ticker.length() - 1);
         if(ultimo == '4' || ultimo == '5' || ultimo == '6'){
             return "preferencial";
         }

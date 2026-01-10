@@ -5,8 +5,8 @@ import br.ufjf.dcc.Tools.Tools;
 public class Fiis extends Ativos implements RendaVariavel, Nacional{
     private String segmento;
     private float ultimoDividendo, taxaAdmissao;
-    public Fiis(String nome, String codigo, float preco, boolean qualificado, String segmento, float ultimoDividendo, float taxaAdimissao){
-        super(nome, codigo, preco, qualificado);
+    public Fiis(String nome, String ticker, float preco, boolean qualificado, String segmento, float ultimoDividendo, float taxaAdimissao){
+        super(nome, ticker, preco, qualificado);
         this.segmento = segmento;
         this.ultimoDividendo = ultimoDividendo;
         this.taxaAdmissao = taxaAdimissao;

@@ -7,8 +7,8 @@ import java.util.Arrays;
 
 public class Tesouro extends Ativos implements RendaFixa, Nacional{
     private String tipoRendimento, dataVencimento;
-    public Tesouro(String nome, String codigo, float preco, boolean qualificado, String tipoRendimento, String dataVencimento) {
-        super(nome, codigo, preco, qualificado);
+    public Tesouro(String nome, String ticker, float preco, boolean qualificado, String tipoRendimento, String dataVencimento) {
+        super(nome, ticker, preco, qualificado);
         this.tipoRendimento = defineTipoRendimento(tipoRendimento.toLowerCase());
         this.dataVencimento = dataVencimento;
     }
