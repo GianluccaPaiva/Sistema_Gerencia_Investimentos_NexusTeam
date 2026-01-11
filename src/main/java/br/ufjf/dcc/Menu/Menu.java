@@ -4,6 +4,7 @@ import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.ErroInterrupcao;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
 import br.ufjf.dcc.Mercado.Mercado;
+import br.ufjf.dcc.Tools.Tools;
 
 import java.util.Scanner;
 
@@ -62,20 +63,18 @@ public class Menu implements CoresMensagens {
             for (int i = 0; i < titulo.length(); i++) {
                 System.out.print(titulo.charAt(i));
                 System.out.flush();
-                Thread.sleep(40);
+                Tools.espera(0.04f);
             }
             System.out.println(RESET);
 
-            // Spinner "Acessando cofre"
             String[] spinner = { "|", "/", "-", "\\" };
             for (int i = 0; i < 10; i++) {
                 System.out.print(CIANO + "Acessando cofre seguro " + spinner[i % spinner.length] + RESET + "\r");
                 System.out.flush();
-                Thread.sleep(200);
+                Tools.espera(0.2f);
             }
             System.out.println();
 
-            // Barra de progresso "Abrindo cofres / Carregando ativos"
             int total = 30;
             System.out.print(AMARELO + "Abrindo cofres: [" + RESET);
             for (int i = 0; i <= total; i++) {
@@ -89,17 +88,16 @@ public class Menu implements CoresMensagens {
                 int percent = (i * 100) / total;
                 System.out.print("\r" + AMARELO + "Abrindo cofres: [" + RESET + bar.toString() + AMARELO + "] " + percent + "% " + RESET);
                 System.out.flush();
-                Thread.sleep(60);
+                Tools.espera(0.06f);
             }
             System.out.println();
 
             // pequena pausa final
-            Thread.sleep(200);
+            Tools.espera(0.2f);
 
-        } catch (ErroInterrupcao e) {
-            Thread.currentThread().interrupt();
-        } catch (InterruptedException e) {
-            throw new ErroInterrupcao("Animação interrompida.");
+        }
+        catch (Exception e) {
+            throw new ErroInterrupcao("Animação interrompida: " + e.getMessage());
         }
     }
 
@@ -134,31 +132,31 @@ public class Menu implements CoresMensagens {
                 System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) deve ser essa ordem");
                 System.out.println("Exemplo: PETR4,Petrobras,28.50,(Não é só necessário a qualificação, mas será não de default)");
                 String dadosAcao = scanner.nextLine();
-                mercado.estruturarAtivo("acao", dadosAcao);
+                mercado.adicaoAtivo("acao", dadosAcao);
                 break;
             case 2:
                 System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não), Segmento, Ultimo Dividendo, Taxa de Admissão deve ser essa ordem");
                 System.out.println("Exemplo: XPML11,XP Malls,150.75,(Não é só necessário a qualificação, mas será não de default),Shopping,0.85,1.5");
                 String dadosFiis = scanner.nextLine();
-                mercado.estruturarAtivo("fiis", dadosFiis);
+                mercado.adicaoAtivo("fiis", dadosFiis);
                 break;
             case 3:
                 System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Bolsa de Negociação, Setor, Qualificado deve ser essa ordem");
                 System.out.println("Exemplo:  AAPL,Apple Inc,145.30,NASDAQ,Tecnologia,(Não é só necessário a qualificação, mas será não de default)");
                 String dadosStocks = scanner.nextLine();
-                mercado.estruturarAtivo("stocks", dadosStocks);
+                mercado.adicaoAtivo("stocks", dadosStocks);
                 break;
             case 4:
                 System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (USD),Algoritmo Consenso,Quantidade Máxima");
                 System.out.println("Exemplo: BTC,Bitcoin,30000.00,Proof of Work,21000000");
                 String dadosCripto = scanner.nextLine();
-                mercado.estruturarAtivo("criptomoeda", dadosCripto);
+                mercado.adicaoAtivo("criptomoeda", dadosCripto);
                 break;
             case 5:
                 System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (R$),Tipo de Rendimento,Vencimento");
                 System.out.println("Exemplo: LFT123,Tesouro Selic,1000.00,Selic,01/01/2030");
                 String dadosTesouro = scanner.nextLine();
-                mercado.estruturarAtivo("tesouro", dadosTesouro);
+                mercado.adicaoAtivo("tesouro", dadosTesouro);
                 break;
             case 0:
                 System.out.println("Voltando ao menu anterior...");
@@ -177,6 +175,13 @@ public class Menu implements CoresMensagens {
         mercado.buscaAtivo(entrada);
 
     }
+    private static void menuRemoverAtivo() {
+        System.out.println(CIANO + "Remover Ativo" + RESET);
+        System.out.println("Insira o ticker do ativo que deseja remover:");
+        String ticker = scanner.nextLine();
+        mercado.removerAtivo(ticker);
+    }
+
     private static void menuAtivos() {
         int opcao = -1;
         while (opcao != 0) {
@@ -186,7 +191,8 @@ public class Menu implements CoresMensagens {
             System.out.println("3. Cadastrar Ativos via Arquivo (A implementar)");
             System.out.println("4. Buscar Ativo por Ticker ou Nome");
             System.out.println("5. Editar Ativo (A implementar)");
-            System.out.println("6. Remover Ativo (A implementar)");
+            System.out.println("6. Remover Ativo ");
+            System.out.println("7. Remover ativos em lote (A implementar)");
             System.out.println("0. Voltar ao Menu Anterior");
             System.out.print("Escolha uma opção: ");
 
@@ -206,6 +212,9 @@ public class Menu implements CoresMensagens {
                     break;
                 case 2:
                     addAtivoIndividuo();
+                    break;
+                case 6:
+                    menuRemoverAtivo();
                     break;
 
                 case 4:

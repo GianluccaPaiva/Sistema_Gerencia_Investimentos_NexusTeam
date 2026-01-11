@@ -32,29 +32,22 @@ public class Mercado implements CoresMensagens {
     public List<Ativos> getListaCriptos() { return listaAtivosCriptos; }
     public List<Ativos> getListaStocks() { return listaAtivosStocks; }
 
-    public void buscaAtivo(String entrada){
-        System.out.println(AZUL);
-        for(int i = 1; i <=5; i++){
-            Ativos ativoEncontrado = auxBuscaAtivo(entrada, i);
-            if(ativoEncontrado != null){
-                if(i == 1) System.out.println("+".repeat(5) + " AÇÃO " + "+".repeat(5));
-                else if(i == 2) System.out.println("+".repeat(5) + " FII " + "+".repeat(5));
-                else if(i == 3) System.out.println("+".repeat(5) + " TESOURO " + "+".repeat(5));
-                else if(i == 4) System.out.println("+".repeat(5) + " CRIPTOMOEDA " + "+".repeat(5));
-                else if(i == 5) System.out.println("+".repeat(5) + " STOCK " + "+".repeat(5));
-                System.out.println("Ativo encontrado:");
-                ativoEncontrado.exibirAtivo();
-                System.out.println("Aperte qualquer tecla para voltar ao menu...");
-                Scanner scanner = new Scanner(System.in);
-                scanner.nextLine();
-                System.out.println(RESET);
-                return;
+    private List<Ativos> localizaListAtivo(Ativos ativo){
+            if (listaAtivosAcoes.contains(ativo)) {
+                return listaAtivosAcoes;
+            } else if (listaAtivosFiis.contains(ativo)) {
+                return listaAtivosFiis;
+            } else if (listaAtivosTesouros.contains(ativo)) {
+                return listaAtivosTesouros;
+            } else if (listaAtivosCriptos.contains(ativo)) {
+                return listaAtivosCriptos;
+            } else if (listaAtivosStocks.contains(ativo)) {
+                return listaAtivosStocks;
             }
-        }
-        System.out.println(RESET);
-        System.out.println(AMARELO + "Ativo não encontrado para: " + entrada + RESET);
+            return null;
     }
-    public Ativos auxBuscaAtivo(String texto, int opcao) {
+
+    private Ativos auxBuscaAtivo(String texto, int opcao) {
         if (opcao == 1) {
             for (Ativos a : listaAtivosAcoes) {
                 if (a.getTicker().equalsIgnoreCase(texto) || a.getNome().equalsIgnoreCase(texto)) {
@@ -88,180 +81,8 @@ public class Mercado implements CoresMensagens {
         }
         return null;
     }
-    public void estruturarAtivo(String tipoAtivo, String dados){
-        String[] info = dados.split(",");
-        boolean qualificado;
-        switch (tipoAtivo.toLowerCase()) {
-            case "acao":
-            case "ações":
-                if (info.length >= 3 && info.length <=4) {
-                    try {
-                        String ticker = info[0].trim().toUpperCase();
-                        String nome = Tools.capitalize(info[1].trim());
-                        float preco = Float.parseFloat(info[2].trim());
-                        if (info.length == 3) {
-                            qualificado = false;
-                        }else {
-                            qualificado = info[3].trim().equals("sim") ? true : false;
-                        }
-                        Acoes acao = new Acoes(nome, ticker, preco, qualificado);
-                        if (acao.verificarAtributosValidos()) {
-                            adicaoAtivo(acao, 1);
-                        } else {
-                            System.out.println("Atributos inválidos");
-                        }
-                    }catch (TypeNotPresentException e){
-                        throw new ErroTipoNaoPresente("Erro ao estruturar Ação deve ser ordenado igual o pedido do input: " + e.getMessage());
-                    }
-                }
-                else {
-                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Ação ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Qualificado" + RESET);
-                }
-                break;
-            // java
-            case "fii":
-            case "fiis":
-                if (info.length >= 6 && info.length <=7) {
-                    String setor;
-                    float ultimoDividendo, taxaAdm;
-                    try {
-                        String ticker = info[0].trim().toUpperCase();
-                        String nome = Tools.capitalize(info[1].trim());
 
-                        float preco;
-                        try {
-                            preco = Float.parseFloat(info[2].trim().replace(",", "."));
-                        } catch (NumberFormatException e) {
-                            System.out.println("Erro de formato numérico no campo 'Preço': " + info[2].trim());
-                            break;
-                        }
-
-                        if (info.length == 6) {
-                            qualificado = false;
-                            setor = info[3].trim();
-                            try {
-                                ultimoDividendo = Float.parseFloat(info[4].trim().replace(",", "."));
-                                taxaAdm = Float.parseFloat(info[5].trim().replace(",", "."));
-                            } catch (NumberFormatException e) {
-                                System.out.println("Erro de formato numérico em 'Ultimo Dividendo' ou 'Taxa de Admissão': " + e.getMessage());
-                                break;
-                            }
-                        } else if (info.length >= 7) {
-                            qualificado = info[3].trim().equalsIgnoreCase("sim");
-                            setor = info[4].trim();
-                            try {
-                                ultimoDividendo = Float.parseFloat(info[5].trim().replace(",", "."));
-                                taxaAdm = Float.parseFloat(info[6].trim().replace(",", "."));
-                            } catch (NumberFormatException e) {
-                                System.out.println("Erro de formato numérico em 'Ultimo Dividendo' ou 'Taxa de Admissão': " + e.getMessage());
-                                break;
-                            }
-                        } else {
-                            System.out.println("Entrada incompleta para FII. Formato esperado: Ticket, Nome, Preço, [Qualificado], Segmento, UltimoDividendo, TaxaAdm");
-                            break;
-                        }
-
-                        Fiis fii = new Fiis(nome, ticker, preco, qualificado, setor, ultimoDividendo, taxaAdm);
-                        if (fii.verificarAtributosValidos()) {
-                            adicaoAtivo(fii, 2);
-                        } else {
-                            System.out.println("Atributos inválidos");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("Erro ao estruturar FII: " + e.getMessage());
-                    }
-                } else {
-                    System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) (opcional), Segmento, Ultimo Dividendo, Taxa de Admissão");
-                }
-                break;
-
-                case "stock":
-                case "stocks":
-                if (info.length >= 5 && info.length <=6) {
-                    try {
-                        String ticker = info[0].trim().toUpperCase();
-                        String nome = Tools.capitalize(info[1].trim());
-                        float preco = Float.parseFloat(info[2].trim());
-                        String bolsaNegociacao = info[3].trim().toUpperCase();
-                        String setor = info[4].trim();
-                        if (info.length == 5) {
-                            qualificado = false;
-                        }else {
-                            qualificado = info[6].trim().equals("sim") ? true : false;
-                        }
-                        Stocks stock = new Stocks(nome, ticker, preco, qualificado,bolsaNegociacao, setor);
-                        if (stock.verificarAtributosValidos()) {
-                            adicaoAtivo(stock, 5);
-                        } else {
-                            System.out.println("Atributos inválidos");
-                        }
-                    }catch (TypeNotPresentException e){
-                        throw new ErroTipoNaoPresente("Erro ao estruturar Stock deve ser ordenado igual o pedido do input: " + e.getMessage());
-                    }
-                }
-                else {
-                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Stock ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Bolsa de Negociação, Setor, Qualificado" + RESET);
-                }
-                break;
-
-                case "cripto":
-                    case "criptomoeda":
-            case "criptomoedas":
-                if (info.length >= 4 && info.length <=5) {
-                    try {
-                        String ticker = info[0].trim().toUpperCase();
-                        String nome = Tools.capitalize(info[1].trim());
-                        float preco = Float.parseFloat(info[2].trim());
-                        String consenso = info[3].trim();
-                        long qtdMax = 0L;
-                        if (info.length >= 5) {
-                            try {
-                                qtdMax = Long.parseLong(info[4].trim());
-                            } catch (NumberFormatException e) {
-                                throw new ErrosNumbersFormato("Erro de formato numérico no campo 'Quantidade Máxima': " + info[4].trim());
-                            }
-                        }
-                        Criptomoedas cripto = new Criptomoedas(nome, ticker, preco, consenso, qtdMax);
-                        if (cripto.verificarAtributosValidos()) {
-                            adicaoAtivo(cripto, 4);
-                        } else {
-                            System.out.println("Atributos inválidos");
-                        }
-                    }catch (TypeNotPresentException e){
-                        throw new ErroTipoNaoPresente("Erro ao estruturar Criptomoeda deve ser ordenado igual o pedido do input: " + e.getMessage());
-                    }
-                }
-                else {
-                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Criptomoeda ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Algoritmo Consenso, Quantidade Máxima" + RESET);
-                }
-                break;
-            case "tesouro":
-            case "tesouros":
-                if (info.length >= 4 && info.length <=5) {
-                    try {
-                        String ticker = info[0].trim().toUpperCase();
-                        String nome = Tools.capitalize(info[1].trim());
-                        float preco = Float.parseFloat(info[2].trim());
-                        String tipoRendimento = info[3].trim();
-                        String vencimento = info[4].trim();
-                        Tesouro tesouro = new Tesouro(nome, ticker, preco, tipoRendimento, vencimento);
-                        if (tesouro.verificarAtributosValidos()) {
-                            adicaoAtivo(tesouro, 3);
-                        } else {
-                            System.out.println("Atributos inválidos");
-                        }
-                    }catch (TypeNotPresentException e){
-                        throw new ErroTipoNaoPresente("Erro ao estruturar Tesouro deve ser ordenado igual o pedido do input: " + e.getMessage());
-                    }
-                }else{
-                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Tesouro ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, TipoRendimento, Vencimento" + RESET);
-                }
-                break;
-            default:
-                System.out.println("Tipo de ativo desconhecido para estruturação: " + tipoAtivo);
-        }
-    }
-   private Ativos adicaoAtivo(Ativos ativo, int tipoAtivo) {
+    private Ativos auxAdicaoAtivo(Ativos ativo, int tipoAtivo) {
         switch (tipoAtivo) {
             case 1:
                 listaAtivosAcoes.add(ativo);
@@ -288,7 +109,8 @@ public class Mercado implements CoresMensagens {
         }
         return ativo;
     }
-    public void carregarBaseDeDados() {
+
+    private void carregarBaseDeDados() {
         try {
             carregarAcoes("src/main/dados/acao.csv");
         } catch (ErrosLeituraArq e) {
@@ -327,54 +149,6 @@ public class Mercado implements CoresMensagens {
             System.err.println("Erro ao carregar Stocks: " + e.getMessage());
         } catch (ErrosNumbersFormato e) {
             System.err.println("Erro de formato numérico ao carregar Stocks: " + e.getMessage());
-        }
-    }
-
-    public void adicionarAtivosLote(String arquivo, String tipoAtivo) {
-        switch (tipoAtivo.toLowerCase()) {
-            case "acao":
-            case "ações":
-                try {
-                    carregarAcoes(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Ações em lote: " + e.getMessage());
-                }
-                break;
-            case "fii":
-            case "fiis":
-                try {
-                    carregarFiis(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar FIIs em lote: " + e.getMessage());
-                }
-                break;
-            case "tesouro":
-            case "tesouros":
-                try {
-                    carregarTesouros(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Tesouros em lote: " + e.getMessage());
-                }
-                break;
-            case "cripto":
-            case "criptomoeda":
-            case "criptomoedas":
-                try {
-                    carregarCriptos(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Criptoativos em lote: " + e.getMessage());
-                }
-                break;
-            case "stock":
-            case "stocks":
-                try {
-                    carregarStocks(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Stocks em lote: " + e.getMessage());
-                }
-                break;
-            default:
-                System.out.println("Tipo de ativo desconhecido: " + tipoAtivo);
         }
     }
 
@@ -559,6 +333,29 @@ public class Mercado implements CoresMensagens {
         }
     }
 
+
+    public Ativos buscaAtivo(String entrada){
+        System.out.println(AZUL);
+        for(int i = 1; i <=5; i++){
+            Ativos ativoEncontrado = auxBuscaAtivo(entrada, i);
+            if(ativoEncontrado != null){
+                if(i == 1) System.out.println("+".repeat(5) + " AÇÃO " + "+".repeat(5));
+                else if(i == 2) System.out.println("+".repeat(5) + " FII " + "+".repeat(5));
+                else if(i == 3) System.out.println("+".repeat(5) + " TESOURO " + "+".repeat(5));
+                else if(i == 4) System.out.println("+".repeat(5) + " CRIPTOMOEDA " + "+".repeat(5));
+                else if(i == 5) System.out.println("+".repeat(5) + " STOCK " + "+".repeat(5));
+                System.out.println("Ativo encontrado:");
+                ativoEncontrado.exibirAtivo();
+                System.out.println(RESET);
+                Tools.espera(3);
+                return ativoEncontrado;
+            }
+        }
+        System.out.println(RESET);
+        System.out.println(AMARELO + "Ativo não encontrado para: " + entrada + RESET);
+        return null;
+    }
+
     public void listarTodosAtivos() {
         System.out.println(ROSA + "===== RELATÓRIO DE TODOS OS ATIVOS =====" + RESET);
 
@@ -595,6 +392,191 @@ public class Mercado implements CoresMensagens {
             System.out.print(CIANO);
             s.exibirAtivo();
             System.out.println("--------------------" + RESET);
+        }
+    }
+
+    public void removerAtivo(String ticket) {
+        Ativos ativo = buscaAtivo(ticket);
+        List<Ativos> lista = localizaListAtivo(ativo);
+        if (lista != null) {
+            lista.remove(ativo);
+            System.out.println(VERDE + "Ativo removido com sucesso!" + RESET);
+        } else {
+            System.out.println(VERMELHO+"Ativo não encontrado na lista." + RESET);
+        }
+    }
+
+    public void adicaoAtivo(String tipoAtivo, String dados){
+        String[] info = dados.split(",");
+        boolean qualificado;
+        switch (tipoAtivo.toLowerCase()) {
+            case "acao":
+            case "ações":
+                if (info.length >= 3 && info.length <=4) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        if (info.length == 3) {
+                            qualificado = false;
+                        }else {
+                            qualificado = info[3].trim().equals("sim") ? true : false;
+                        }
+                        Acoes acao = new Acoes(nome, ticker, preco, qualificado);
+                        if (acao.verificarAtributosValidos()) {
+                            auxAdicaoAtivo(acao, 1);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Ação deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
+                }
+                else {
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Ação ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Qualificado" + RESET);
+                }
+                break;
+            // java
+            case "fii":
+            case "fiis":
+                if (info.length >= 6 && info.length <=7) {
+                    String setor;
+                    float ultimoDividendo, taxaAdm;
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+
+                        float preco;
+                        try {
+                            preco = Float.parseFloat(info[2].trim().replace(",", "."));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Erro de formato numérico no campo 'Preço': " + info[2].trim());
+                            break;
+                        }
+
+                        if (info.length == 6) {
+                            qualificado = false;
+                            setor = info[3].trim();
+                            try {
+                                ultimoDividendo = Float.parseFloat(info[4].trim().replace(",", "."));
+                                taxaAdm = Float.parseFloat(info[5].trim().replace(",", "."));
+                            } catch (NumberFormatException e) {
+                                System.out.println("Erro de formato numérico em 'Ultimo Dividendo' ou 'Taxa de Admissão': " + e.getMessage());
+                                break;
+                            }
+                        } else if (info.length >= 7) {
+                            qualificado = info[3].trim().equalsIgnoreCase("sim");
+                            setor = info[4].trim();
+                            try {
+                                ultimoDividendo = Float.parseFloat(info[5].trim().replace(",", "."));
+                                taxaAdm = Float.parseFloat(info[6].trim().replace(",", "."));
+                            } catch (NumberFormatException e) {
+                                System.out.println("Erro de formato numérico em 'Ultimo Dividendo' ou 'Taxa de Admissão': " + e.getMessage());
+                                break;
+                            }
+                        } else {
+                            System.out.println("Entrada incompleta para FII. Formato esperado: Ticket, Nome, Preço, [Qualificado], Segmento, UltimoDividendo, TaxaAdm");
+                            break;
+                        }
+
+                        Fiis fii = new Fiis(nome, ticker, preco, qualificado, setor, ultimoDividendo, taxaAdm);
+                        if (fii.verificarAtributosValidos()) {
+                            auxAdicaoAtivo(fii, 2);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Erro ao estruturar FII: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) (opcional), Segmento, Ultimo Dividendo, Taxa de Admissão");
+                }
+                break;
+
+            case "stock":
+            case "stocks":
+                if (info.length >= 5 && info.length <=6) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        String bolsaNegociacao = info[3].trim().toUpperCase();
+                        String setor = info[4].trim();
+                        if (info.length == 5) {
+                            qualificado = false;
+                        }else {
+                            qualificado = info[6].trim().equals("sim") ? true : false;
+                        }
+                        Stocks stock = new Stocks(nome, ticker, preco, qualificado,bolsaNegociacao, setor);
+                        if (stock.verificarAtributosValidos()) {
+                            auxAdicaoAtivo(stock, 5);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Stock deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
+                }
+                else {
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Stock ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Bolsa de Negociação, Setor, Qualificado" + RESET);
+                }
+                break;
+
+            case "cripto":
+            case "criptomoeda":
+            case "criptomoedas":
+                if (info.length >= 4 && info.length <=5) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        String consenso = info[3].trim();
+                        long qtdMax = 0L;
+                        if (info.length >= 5) {
+                            try {
+                                qtdMax = Long.parseLong(info[4].trim());
+                            } catch (NumberFormatException e) {
+                                throw new ErrosNumbersFormato("Erro de formato numérico no campo 'Quantidade Máxima': " + info[4].trim());
+                            }
+                        }
+                        Criptomoedas cripto = new Criptomoedas(nome, ticker, preco, consenso, qtdMax);
+                        if (cripto.verificarAtributosValidos()) {
+                            auxAdicaoAtivo(cripto, 4);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Criptomoeda deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
+                }
+                else {
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Criptomoeda ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Algoritmo Consenso, Quantidade Máxima" + RESET);
+                }
+                break;
+            case "tesouro":
+            case "tesouros":
+                if (info.length >= 4 && info.length <=5) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        String tipoRendimento = info[3].trim();
+                        String vencimento = info[4].trim();
+                        Tesouro tesouro = new Tesouro(nome, ticker, preco, tipoRendimento, vencimento);
+                        if (tesouro.verificarAtributosValidos()) {
+                            auxAdicaoAtivo(tesouro, 3);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Tesouro deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
+                }else{
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Tesouro ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, TipoRendimento, Vencimento" + RESET);
+                }
+                break;
+            default:
+                System.out.println("Tipo de ativo desconhecido para estruturação: " + tipoAtivo);
         }
     }
 }
