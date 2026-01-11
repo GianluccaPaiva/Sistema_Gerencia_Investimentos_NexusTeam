@@ -184,16 +184,16 @@ public class Menu implements CoresMensagens {
     }
 
     private static void editarAtivo() {
-        System.out.println(ROXO + "Editar Ativo "+ RESET);
-        System.out.println("Insira o ticker do ativo que deseja editar:");
+        System.out.println(ROXO + "Editar Ativo ");
+        System.out.println("Insira o ticker do ativo que deseja editar:" + RESET);
         String ticker = scanner.nextLine();
         Ativos ativo = mercado.buscaAtivo(ticker);
         if(ativo == null){
             System.out.println(AMARELO + "Ativo não encontrado."+ RESET);
             return;
         }
-        System.out.println("O que deseja editar?(digite o nome ou nomes dos atributos = novo nome separados por vírgula esceto nacionalidade, renda e tipo de ação)");
-        System.out.println("Exemplo: nome=Novo Nome,preco=150.75");
+        System.out.println(ROXO+ "O que deseja editar?(digite o nome ou nomes dos atributos = novo nome separados por vírgula esceto nacionalidade, renda e tipo de ação)");
+        System.out.println("Exemplo: nome=Novo Nome,preco=150.75" + RESET);
         String atributos = scanner.nextLine();
         mercado.editarAtivo(ativo, atributos);
     }
