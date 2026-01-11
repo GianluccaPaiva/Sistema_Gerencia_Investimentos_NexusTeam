@@ -579,4 +579,22 @@ public class Mercado implements CoresMensagens {
                 System.out.println("Tipo de ativo desconhecido para estruturação: " + tipoAtivo);
         }
     }
+
+
+    public void editarAtivo(Ativos ativo, String atributo) {
+        String texto = "";
+        if(!atributo.isEmpty()) {
+             texto = atributo.toLowerCase();
+         }else {
+             throw new ErroTipoNaoPresente("Não há atributos para edição.");
+         }
+        if(ativo != null && !(texto.equals(""))){
+            for (String atributoEditar : texto.split(",")) {
+                ativo.editarAtributos(atributoEditar);
+            }
+        }else{
+            System.out.println(VERMELHO+"Ativo nulo ou atributo vazio para edição." + RESET);
+        }
+    }
+
 }

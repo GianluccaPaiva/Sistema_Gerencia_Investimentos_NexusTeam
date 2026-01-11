@@ -1,5 +1,6 @@
 package br.ufjf.dcc.Menu;
 
+import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.ErroInterrupcao;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
@@ -182,6 +183,20 @@ public class Menu implements CoresMensagens {
         mercado.removerAtivo(ticker);
     }
 
+    private static void editarAtivo() {
+        System.out.println(ROXO + "Editar Ativo "+ RESET);
+        System.out.println("Insira o ticker do ativo que deseja editar:");
+        String ticker = scanner.nextLine();
+        Ativos ativo = mercado.buscaAtivo(ticker);
+        if(ativo == null){
+            System.out.println(AMARELO + "Ativo não encontrado."+ RESET);
+            return;
+        }
+        System.out.println("O que deseja editar?(digite o nome ou nomes dos atributos = novo nome separados por vírgula esceto nacionalidade, renda e tipo de ação)");
+        System.out.println("Exemplo: nome=Novo Nome,preco=150.75");
+        String atributos = scanner.nextLine();
+        mercado.editarAtivo(ativo, atributos);
+    }
     private static void menuAtivos() {
         int opcao = -1;
         while (opcao != 0) {
@@ -190,7 +205,7 @@ public class Menu implements CoresMensagens {
             System.out.println("2. Cadastrar Ativo Individualmente");
             System.out.println("3. Cadastrar Ativos via Arquivo (A implementar)");
             System.out.println("4. Buscar Ativo por Ticker ou Nome");
-            System.out.println("5. Editar Ativo (A implementar)");
+            System.out.println("5. Editar Ativo");
             System.out.println("6. Remover Ativo ");
             System.out.println("7. Remover ativos em lote (A implementar)");
             System.out.println("0. Voltar ao Menu Anterior");
@@ -220,6 +235,11 @@ public class Menu implements CoresMensagens {
                 case 4:
                     sistemaBusca();
                     break;
+
+                case 5:
+                    editarAtivo();
+                    break;
+
                 default:
                     System.out.println(AMARELO + "Opção inválida!" + RESET);
             }

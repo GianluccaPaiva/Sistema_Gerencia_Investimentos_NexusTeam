@@ -16,6 +16,7 @@ public class Acoes extends Ativos implements RendaVariavel, Nacional {
         this.tipo = definiTipo();
     }
 
+
     private String definiTipo(){
         if(super.ticker == null || super.ticker.isEmpty()){
             return "invalido";
@@ -40,11 +41,15 @@ public class Acoes extends Ativos implements RendaVariavel, Nacional {
         return this.tipo;
     }
 
+    public void setTipoRenda(String tipo){
+        this.tipo = tipo;
+    }
+
     @Override
     public void exibirAtivo(){
         super.exibirAtivo();
-        System.out.println(Tools.validaNacionalidade(EH_NACIONAL));
-        System.out.println(Tools.capitalize(RENDA_VARIAVEL));
+        System.out.println("Nacionalidade" + Tools.validaNacionalidade(EH_NACIONAL));
+        System.out.println("Renda:" + Tools.capitalize(RENDA_VARIAVEL));
         System.out.println("Tipo: " + Tools.capitalize(this.tipo));
     }
 
@@ -61,4 +66,12 @@ public class Acoes extends Ativos implements RendaVariavel, Nacional {
         }
         return true;
     }
+
+    @Override
+    public void editarAtributos(String comando) {
+        super.editarAtributos(comando);
+        this.tipo = definiTipo();
+        System.out.println("Tipo atualizado");
+    }
+
 }

@@ -33,6 +33,28 @@ public abstract class Ativos {
         return this.nome;
     }
 
+    public float getPreco(){
+        return this.preco;
+    }
+
+    public boolean qualificado(){
+        return this.qualificado;
+    }
+
+    public void setNome(String nome){
+        this.nome = nome;
+    }
+    public void setTicker(String ticker){
+        this.ticker = ticker;
+    }
+    public void setPreco(Float preco){
+        this.preco = preco;
+    }
+    public void setQualificado(boolean qualificado){
+        this.qualificado = qualificado;
+    }
+
+
     protected boolean verificarAtributosValidos(){
         if(this.nome == null || this.nome.isEmpty()){
             return false;
@@ -47,5 +69,47 @@ public abstract class Ativos {
             return false;
         }
         return true;
+    }
+
+
+    public void editarAtributos(String comando) {
+        if (comando == null || comando.trim().isEmpty()) {
+            System.out.println("Comando de edição vazio para Acoes.");
+            return;
+        }
+        String[] parts = comando.split("=", 2);
+        if (parts.length < 2) {
+            System.out.println("Formato inválido. Use campo=valor");
+            return;
+        }
+        String campo = parts[0].trim().toLowerCase();
+        String valor = parts[1].trim();
+
+        try {
+            switch (campo) {
+                case "nome":
+                    setNome(valor);
+                    System.out.println("Nome atualizado.");
+                    break;
+                case "ticker":
+                    setTicker(valor);
+                    System.out.println("Ticker atualizado e tipo recalculado.");
+                    break;
+                case "preco":
+                    setPreco(Float.parseFloat(valor.replace(",", ".")));
+                    System.out.println("Preço atualizado.");
+                    break;
+                case "qualificado":
+                    setQualificado(valor.equalsIgnoreCase("sim") || valor.equalsIgnoreCase("true") || valor.equals("1"));
+                    System.out.println("Qualificado atualizado.");
+                    break;
+                default:
+                    break;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Valor numérico inválido para campo " + campo + ": " + valor);
+        } catch (Exception e) {
+            System.out.println("Erro ao editar Acoes: " + e.getMessage());
+        }
     }
 }

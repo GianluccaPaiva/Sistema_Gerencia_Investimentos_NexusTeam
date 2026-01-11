@@ -21,11 +21,31 @@ public class Fiis extends Ativos implements RendaVariavel, Nacional, TaxaPorcent
         this.taxaAdmissao = taxaAdimissao;
     }
 
+    public String getSegmento() {
+        return segmento;
+    }
+    public float getUltimoDividendo() {
+        return ultimoDividendo;
+    }
+    public float getTaxaAdmissao() {
+        return taxaAdmissao;
+    }
+
+    public void setSegmento(String segmento) {
+        this.segmento = segmento;
+    }
+    public void setUltimoDividendo(float ultimoDividendo) {
+        this.ultimoDividendo = ultimoDividendo;
+    }
+    public void setTaxaAdmissao(float taxaAdmissao) {
+        this.taxaAdmissao = taxaAdmissao;
+    }
+
     @Override
     public void exibirAtivo(){
         super.exibirAtivo();
-        System.out.println(Tools.validaNacionalidade(EH_NACIONAL));
-        System.out.println(Tools.capitalize(RENDA_VARIAVEL));
+        System.out.println("Nacionalidade: " + Tools.validaNacionalidade(EH_NACIONAL));
+        System.out.println("Renda: " + Tools.capitalize(RENDA_VARIAVEL));
         System.out.println("Segmento: " + this.segmento);
         System.out.println("Ultimo Dividendo: " + this.ultimoDividendo);
         exibirTaxaAdministracao();
@@ -61,5 +81,43 @@ public class Fiis extends Ativos implements RendaVariavel, Nacional, TaxaPorcent
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void editarAtributos(String comando){
+        comando.toLowerCase();
+        super.editarAtributos(comando);
+        String[] partes = comando.split("=", 2);
+        if(partes.length != 2){
+            return;
+        }
+        String atributo = partes[0].trim().toLowerCase();
+        String valor = partes[1].trim();
+        switch(atributo){
+            case "segmento":
+                setSegmento(valor);
+                System.out.println("Segmento atualizado");
+                break;
+            case "ultimo dividendo":
+                try{
+                    float ultimoDividendo = Float.parseFloat(valor);
+                    setUltimoDividendo(ultimoDividendo);
+                    System.out.println("Ultimo Dividendo atualizado");
+                } catch (NumberFormatException e){
+                    System.out.println("Valor invalido para ultimoDividendo: " + valor);
+                }
+                break;
+            case "taxa de admissao":
+                try{
+                    float taxaAdmissao = Float.parseFloat(valor);
+                    setTaxaAdmissao(taxaAdmissao);
+                    System.out.println("Taxa de Admissao atualizada");
+                } catch (NumberFormatException e){
+                    System.out.println("Valor invalido para taxaAdmissao: " + valor);
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

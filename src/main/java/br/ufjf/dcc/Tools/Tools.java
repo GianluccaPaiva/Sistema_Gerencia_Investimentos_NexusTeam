@@ -34,4 +34,10 @@ public class Tools {
             System.out.println("A espera foi interrompida: " + e.getMessage());
         }
     }
+    public static String classeObjeto(Object obj){
+        if(obj == null){
+            return "null";
+        }
+        return obj.getClass().getSimpleName();
+    }
 }

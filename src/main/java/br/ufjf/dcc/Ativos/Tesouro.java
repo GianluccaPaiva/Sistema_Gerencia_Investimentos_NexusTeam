@@ -21,6 +21,23 @@ public class Tesouro extends Ativos implements RendaFixa, Nacional {
         this.dataVencimento = dataVencimento;
     }
 
+    public String getTipoRendimento() {
+        return tipoRendimento;
+    }
+    public String getDataVencimento() {
+        return dataVencimento;
+    }
+    public void setTipoRendimento(String tipoRendimento) {
+        this.tipoRendimento = defineTipoRendimento(tipoRendimento.toLowerCase());
+    }
+    public void setDataVencimento(String dataVencimento) {
+        if(Tools.dataValida(dataVencimento)){
+            System.out.println("Data de vencimento inválida. Deve estar no formato DD/MM/AAAA.");
+            return;
+        }
+        this.dataVencimento = dataVencimento;
+    }
+
     private String defineTipoRendimento(String tipoRendimento){
         String [] tipos= {"selic", "prefixado", "ipca+"};
         if(tipoRendimento == null){
@@ -45,8 +62,8 @@ public class Tesouro extends Ativos implements RendaFixa, Nacional {
     @Override
     public void exibirAtivo() {
         super.exibirAtivo();
-        System.out.println(Tools.validaNacionalidade(EH_NACIONAL));
-        System.out.println(Tools.capitalize(RENDA_FIXA));
+        System.out.println("Nacionalidade" + Tools.validaNacionalidade(EH_NACIONAL));
+        System.out.println("Renda: "+Tools.capitalize(RENDA_FIXA));
         System.out.println("Tipo de Rendimento: " + Tools.capitalize(this.tipoRendimento));
         System.out.println("Data de Vencimento: " + this.dataVencimento);
     }
@@ -64,5 +81,30 @@ public class Tesouro extends Ativos implements RendaFixa, Nacional {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void editarAtributos(String comando){
+        String[] partes = comando.split("=", 2);
+        if (partes.length != 2) {
+            System.out.println("Comando inválido. Use o formato atributo=valor.");
+            return;
+        }
+        String atributo = partes[0].trim().toLowerCase();
+        String valor = partes[1].trim();
+
+        super.editarAtributos(comando);
+        switch (atributo) {
+            case "rendimento":
+                setTipoRendimento(valor);
+                System.out.println("Tipo de rendimento atualizado");
+                break;
+            case "data de vencimento":
+                setDataVencimento(valor);
+                System.out.println("Data de vencimento atualizada");
+                break;
+            default:
+                break;
+        }
     }
 }

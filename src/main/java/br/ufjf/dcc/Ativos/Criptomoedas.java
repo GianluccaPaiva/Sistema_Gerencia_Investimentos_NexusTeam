@@ -19,6 +19,21 @@ public class Criptomoedas extends Ativos implements Internacional, RendaVariavel
         this.qtdMax = qtdMax;
     }
 
+    public String getConsenso() {
+        return consenso;
+    }
+
+    public long getQtdMax() {
+        return qtdMax;
+    }
+
+    public void setConsenso( String consenso) {
+        this.consenso = consenso;
+    }
+
+    public void setQtdMax(long qtdMax) {
+        this.qtdMax = qtdMax;
+    }
 
     @Override
     public boolean getNacionalidade() {
@@ -56,5 +71,33 @@ public class Criptomoedas extends Ativos implements Internacional, RendaVariavel
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void editarAtributos(String comando){
+        super.editarAtributos(comando);
+        String[] partes = comando.split("=");
+        if(partes.length != 2){
+            return;
+        }
+        String atributo = partes[0].trim().toLowerCase();
+        String valor = partes[1].trim();
+        switch(atributo){
+            case "consenso":
+                this.setConsenso(valor);
+                System.out.println("Consenso atualizado");
+                break;
+            case "quantidade maxima":
+                try{
+                    long qtdMax = Long.parseLong(valor);
+                    this.setQtdMax(qtdMax);
+                    System.out.println("Quantidade maxima atualizada");
+                }catch(NumberFormatException e){
+                    System.out.println("Valor invalido para quantidade maxima: " + valor);
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -18,6 +18,20 @@ public class Stocks extends Ativos implements RendaVariavel, Internacional {
         this.setor = setor;
     }
 
+    public String getBolsaNegociacao() {
+        return bolsaNegociacao;
+    }
+    public String getSetor() {
+        return setor;
+    }
+
+    public void setBolsaNegociacao(String bolsaNegociacao) {
+        this.bolsaNegociacao = bolsaNegociacao.toUpperCase();
+    }
+    public void setSetor(String setor) {
+        this.setor = setor;
+    }
+
     @Override
     public boolean getNacionalidade() {
         return EH_NACIONAL;
@@ -54,5 +68,28 @@ public class Stocks extends Ativos implements RendaVariavel, Internacional {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void editarAtributos(String comando){
+        super.editarAtributos(comando);
+        String[] partes = comando.split("=", 2);
+        if(partes.length != 2){
+            return;
+        }
+        String atributo = partes[0].trim().toLowerCase();
+        String valor = partes[1].trim();
+        switch(atributo){
+            case "bolsa de negociacao":
+                setBolsaNegociacao(valor);
+                System.out.println("Bolsa de Negociacao atualizada");
+                break;
+            case "setor":
+                setSetor(valor);
+                System.out.println("Setor atualizado");
+                break;
+            default:
+                break;
+        }
     }
 }
