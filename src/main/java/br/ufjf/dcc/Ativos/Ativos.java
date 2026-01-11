@@ -26,6 +26,13 @@ public abstract class Ativos {
         System.out.println("Qualificado: " + this.qualificado);
     }
 
+    public String getTicker(){
+        return this.ticker;
+    }
+    public String getNome(){
+        return this.nome;
+    }
+
     protected boolean verificarAtributosValidos(){
         if(this.nome == null || this.nome.isEmpty()){
             return false;

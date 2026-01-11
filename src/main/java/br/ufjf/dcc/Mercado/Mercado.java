@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Mercado implements CoresMensagens {
     private List<Ativos> listaAtivosAcoes = new LinkedList<Ativos>();
@@ -31,6 +32,62 @@ public class Mercado implements CoresMensagens {
     public List<Ativos> getListaCriptos() { return listaAtivosCriptos; }
     public List<Ativos> getListaStocks() { return listaAtivosStocks; }
 
+    public void buscaAtivo(String entrada){
+        System.out.println(AZUL);
+        for(int i = 1; i <=5; i++){
+            Ativos ativoEncontrado = auxBuscaAtivo(entrada, i);
+            if(ativoEncontrado != null){
+                if(i == 1) System.out.println("+".repeat(5) + " AÇÃO " + "+".repeat(5));
+                else if(i == 2) System.out.println("+".repeat(5) + " FII " + "+".repeat(5));
+                else if(i == 3) System.out.println("+".repeat(5) + " TESOURO " + "+".repeat(5));
+                else if(i == 4) System.out.println("+".repeat(5) + " CRIPTOMOEDA " + "+".repeat(5));
+                else if(i == 5) System.out.println("+".repeat(5) + " STOCK " + "+".repeat(5));
+                System.out.println("Ativo encontrado:");
+                ativoEncontrado.exibirAtivo();
+                System.out.println("Aperte qualquer tecla para voltar ao menu...");
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+                System.out.println(RESET);
+                return;
+            }
+        }
+        System.out.println(RESET);
+        System.out.println(AMARELO + "Ativo não encontrado para: " + entrada + RESET);
+    }
+    public Ativos auxBuscaAtivo(String texto, int opcao) {
+        if (opcao == 1) {
+            for (Ativos a : listaAtivosAcoes) {
+                if (a.getTicker().equalsIgnoreCase(texto) || a.getNome().equalsIgnoreCase(texto)) {
+                    return a;
+                }
+            }
+        } else if (opcao == 2) {
+            for (Ativos f : listaAtivosFiis) {
+                if (f.getTicker().equalsIgnoreCase(texto) || f.getNome().equalsIgnoreCase(texto)) {
+                    return f;
+                }
+            }
+        } else if (opcao == 3) {
+            for (Ativos t : listaAtivosTesouros) {
+                if (t.getTicker().equalsIgnoreCase(texto) || t.getNome().equalsIgnoreCase(texto)) {
+                    return t;
+                }
+            }
+        } else if (opcao == 4) {
+            for (Ativos c : listaAtivosCriptos) {
+                if (c.getTicker().equalsIgnoreCase(texto) || c.getNome().equalsIgnoreCase(texto)) {
+                    return c;
+                }
+            }
+        } else if (opcao == 5) {
+            for (Ativos s : listaAtivosStocks) {
+                if (s.getTicker().equalsIgnoreCase(texto) || s.getNome().equalsIgnoreCase(texto)) {
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
     public void estruturarAtivo(String tipoAtivo, String dados){
         String[] info = dados.split(",");
         boolean qualificado;

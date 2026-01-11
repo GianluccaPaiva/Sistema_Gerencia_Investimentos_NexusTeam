@@ -167,6 +167,16 @@ public class Menu implements CoresMensagens {
                 System.out.println(AMARELO+"Opção inválida!"+ RESET);
         }
     }
+    private static void sistemaBusca(){
+        System.out.println(ROXO);
+        System.out.println("Sistema de busca de ativos");
+        System.out.println("Insira o ticker ou nome do ativo que deseja buscar:");
+        Scanner entradaScanner = new Scanner(System.in);
+        String entrada = entradaScanner.nextLine();
+        System.out.println(RESET);
+        mercado.buscaAtivo(entrada);
+
+    }
     private static void menuAtivos() {
         int opcao = -1;
         while (opcao != 0) {
@@ -174,7 +184,7 @@ public class Menu implements CoresMensagens {
             System.out.println("1. Exibir Relatório: Todos os Ativos");
             System.out.println("2. Cadastrar Ativo Individualmente");
             System.out.println("3. Cadastrar Ativos via Arquivo (A implementar)");
-            System.out.println("4. Buscar Ativo (A implementar)");
+            System.out.println("4. Buscar Ativo por Ticker ou Nome");
             System.out.println("5. Editar Ativo (A implementar)");
             System.out.println("6. Remover Ativo (A implementar)");
             System.out.println("0. Voltar ao Menu Anterior");
@@ -196,6 +206,10 @@ public class Menu implements CoresMensagens {
                     break;
                 case 2:
                     addAtivoIndividuo();
+                    break;
+
+                case 4:
+                    sistemaBusca();
                     break;
                 default:
                     System.out.println(AMARELO + "Opção inválida!" + RESET);
