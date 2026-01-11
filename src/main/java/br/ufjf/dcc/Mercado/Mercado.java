@@ -287,7 +287,8 @@ public class Mercado implements CoresMensagens {
                 System.out.println("Tipo de ativo desconhecido para estruturação: " + tipoAtivo);
         }
     }
-   private Ativos adicaoAtivo(Ativos ativo, int tipoAtivo) {
+
+    private Ativos adicaoAtivo(Ativos ativo, int tipoAtivo) {
         switch (tipoAtivo) {
             case 1:
                 listaAtivosAcoes.add(ativo);
@@ -314,6 +315,7 @@ public class Mercado implements CoresMensagens {
         }
         return ativo;
     }
+
     public void carregarBaseDeDados() {
         try {
             carregarAcoes("src/main/dados/acao.csv");
