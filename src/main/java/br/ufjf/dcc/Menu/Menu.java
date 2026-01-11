@@ -191,7 +191,7 @@ public class Menu implements CoresMensagens {
             System.out.println("3. Cadastrar Ativos via Arquivo (A implementar)");
             System.out.println("4. Buscar Ativo por Ticker ou Nome");
             System.out.println("5. Editar Ativo (A implementar)");
-            System.out.println("6. Remover Ativo (A implementar)");
+            System.out.println("6. Remover Ativo ");
             System.out.println("0. Voltar ao Menu Anterior");
             System.out.print("Escolha uma opção: ");
 
