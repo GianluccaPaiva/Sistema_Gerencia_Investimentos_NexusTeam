@@ -136,6 +136,18 @@ public class Menu implements CoresMensagens {
                 String dadosAcao = scanner.nextLine();
                 mercado.estruturarAtivo("acao", dadosAcao);
                 break;
+            case 2:
+                System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não), Segmento, Ultimo Dividendo, Taxa de Admissão deve ser essa ordem");
+                System.out.println("Exemplo: XPML11,XP Malls,150.75,(Não é só necessário a qualificação, mas será não de default),Shopping,0.85,1.5");
+                String dadosFiis = scanner.nextLine();
+                mercado.estruturarAtivo("fiis", dadosFiis);
+                break;
+            case 3:
+                System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Bolsa de Negociação, Setor, Qualificado deve ser essa ordem");
+                System.out.println("Exemplo:  AAPL,Apple Inc,145.30,NASDAQ,Tecnologia,(Não é só necessário a qualificação, mas será não de default)");
+                String dadosStocks = scanner.nextLine();
+                mercado.estruturarAtivo("stocks", dadosStocks);
+                break;
         }
     }
     private static void menuAtivos() {

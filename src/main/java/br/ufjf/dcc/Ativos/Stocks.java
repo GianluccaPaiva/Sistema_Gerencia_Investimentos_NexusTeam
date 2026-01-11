@@ -41,4 +41,18 @@ public class Stocks extends Ativos implements RendaVariavel, Internacional {
         System.out.println("Bolsa de Negociacao: " + this.bolsaNegociacao);
         System.out.println("Setor: " + Tools.capitalize(this.setor));
     }
+
+    @Override
+    public boolean verificarAtributosValidos(){
+        if(!super.verificarAtributosValidos()){
+            return false;
+        }
+        if(this.bolsaNegociacao == null || this.bolsaNegociacao.isEmpty()){
+            return false;
+        }
+        if(this.setor == null || this.setor.isEmpty()){
+            return false;
+        }
+        return true;
+    }
 }

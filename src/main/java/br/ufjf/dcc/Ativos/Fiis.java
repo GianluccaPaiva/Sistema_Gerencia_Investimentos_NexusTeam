@@ -45,4 +45,21 @@ public class Fiis extends Ativos implements RendaVariavel, Nacional, TaxaPorcent
     public void exibirTaxaAdministracao() {
         System.out.println("Taxa de Admissao: " + this.taxaAdmissao + "%");
     }
+
+    @Override
+    public boolean verificarAtributosValidos(){
+        if(!super.verificarAtributosValidos()){
+            return false;
+        }
+        if(this.segmento == null || this.segmento.isEmpty()){
+            return false;
+        }
+        if(this.ultimoDividendo < 0){
+            return false;
+        }
+        if(this.taxaAdmissao < 0){
+            return false;
+        }
+        return true;
+    }
 }

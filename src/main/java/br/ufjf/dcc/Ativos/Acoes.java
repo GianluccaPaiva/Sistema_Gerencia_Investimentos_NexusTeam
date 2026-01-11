@@ -49,14 +49,14 @@ public class Acoes extends Ativos implements RendaVariavel, Nacional {
     }
 
     @Override
-    public boolean verificarAtributosValidos(){
-        if(!super.verificarAtributosValidos()){
+    public boolean verificarAtributosValidos() {
+        if (!super.verificarAtributosValidos()) {
             return false;
         }
-        if(this.tipo.equals("invalido")){
+        if (this.tipo == null || this.tipo.equals("invalido")) {
             return false;
         }
-        if (!this.ticker.matches(".*\\d$")) {
+        if (!this.ticker.matches("^[A-Z]+\\d+$")) {
             return false;
         }
         return true;

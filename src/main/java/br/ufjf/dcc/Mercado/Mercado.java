@@ -57,17 +57,86 @@ public class Mercado implements CoresMensagens {
                     }
                 }
                 break;
+            // java
             case "fii":
             case "fiis":
                 if (info.length >= 6) {
-                    String ticker = info[0].trim();
-                    String nome = info[1].trim();
-                    float preco = Float.parseFloat(info[3].trim());
-                    boolean isETFs = Boolean.parseBoolean(info[2].trim());
-                    String setor = info[4].trim();
-                    float ultimoDividendo = Float.parseFloat(info[5].trim());
-                    Fiis fii = new Fiis(nome, ticker, preco, isETFs, setor, ultimoDividendo, 0f);
-                    adicaoAtivo(fii, 2);
+                    String setor;
+                    float ultimoDividendo, taxaAdm;
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+
+                        float preco;
+                        try {
+                            preco = Float.parseFloat(info[2].trim().replace(",", "."));
+                        } catch (NumberFormatException e) {
+                            System.out.println("Erro de formato numérico no campo 'Preço': " + info[2].trim());
+                            break;
+                        }
+
+                        if (info.length == 6) {
+                            qualificado = false;
+                            setor = info[3].trim();
+                            try {
+                                ultimoDividendo = Float.parseFloat(info[4].trim().replace(",", "."));
+                                taxaAdm = Float.parseFloat(info[5].trim().replace(",", "."));
+                            } catch (NumberFormatException e) {
+                                System.out.println("Erro de formato numérico em 'Ultimo Dividendo' ou 'Taxa de Admissão': " + e.getMessage());
+                                break;
+                            }
+                        } else if (info.length >= 7) {
+                            qualificado = info[3].trim().equalsIgnoreCase("sim");
+                            setor = info[4].trim();
+                            try {
+                                ultimoDividendo = Float.parseFloat(info[5].trim().replace(",", "."));
+                                taxaAdm = Float.parseFloat(info[6].trim().replace(",", "."));
+                            } catch (NumberFormatException e) {
+                                System.out.println("Erro de formato numérico em 'Ultimo Dividendo' ou 'Taxa de Admissão': " + e.getMessage());
+                                break;
+                            }
+                        } else {
+                            System.out.println("Entrada incompleta para FII. Formato esperado: Ticket, Nome, Preço, [Qualificado], Segmento, UltimoDividendo, TaxaAdm");
+                            break;
+                        }
+
+                        Fiis fii = new Fiis(nome, ticker, preco, qualificado, setor, ultimoDividendo, taxaAdm);
+                        if (fii.verificarAtributosValidos()) {
+                            adicaoAtivo(fii, 2);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Erro ao estruturar FII: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) (opcional), Segmento, Ultimo Dividendo, Taxa de Admissão");
+                }
+                break;
+
+                case "stock":
+                case "stocks":
+                if (info.length >= 5) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        String bolsaNegociacao = info[3].trim().toUpperCase();
+                        String setor = info[4].trim();
+                        if (info.length == 5) {
+                            qualificado = false;
+                        }else {
+                            qualificado = info[6].trim().equals("sim") ? true : false;
+                        }
+                        Stocks stock = new Stocks(nome, ticker, preco, qualificado,bolsaNegociacao, setor);
+                        if (stock.verificarAtributosValidos()) {
+                            adicaoAtivo(stock, 5);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Stock deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
                 }
                 break;
             default:
@@ -78,18 +147,23 @@ public class Mercado implements CoresMensagens {
         switch (tipoAtivo) {
             case 1:
                 listaAtivosAcoes.add(ativo);
+                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 2:
                 listaAtivosFiis.add(ativo);
+                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 3:
                 listaAtivosTesouros.add(ativo);
+                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 4:
                 listaAtivosCriptos.add(ativo);
+                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 5:
                 listaAtivosStocks.add(ativo);
+                System.out.println("Ativo adicionado com sucesso!");
                 break;
             default:
                 System.out.println("Tipo de ativo desconhecido: " + tipoAtivo);
