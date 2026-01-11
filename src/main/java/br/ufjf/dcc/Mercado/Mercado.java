@@ -82,7 +82,7 @@ public class Mercado implements CoresMensagens {
         return null;
     }
 
-    private Ativos adicaoAtivo(Ativos ativo, int tipoAtivo) {
+    private Ativos auxAdicaoAtivo(Ativos ativo, int tipoAtivo) {
         switch (tipoAtivo) {
             case 1:
                 listaAtivosAcoes.add(ativo);
@@ -406,55 +406,7 @@ public class Mercado implements CoresMensagens {
         }
     }
 
-    public void adicionarAtivosLote(String arquivo, String tipoAtivo) {
-        switch (tipoAtivo.toLowerCase()) {
-            case "acao":
-            case "ações":
-                try {
-                    carregarAcoes(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Ações em lote: " + e.getMessage());
-                }
-                break;
-            case "fii":
-            case "fiis":
-                try {
-                    carregarFiis(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar FIIs em lote: " + e.getMessage());
-                }
-                break;
-            case "tesouro":
-            case "tesouros":
-                try {
-                    carregarTesouros(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Tesouros em lote: " + e.getMessage());
-                }
-                break;
-            case "cripto":
-            case "criptomoeda":
-            case "criptomoedas":
-                try {
-                    carregarCriptos(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Criptoativos em lote: " + e.getMessage());
-                }
-                break;
-            case "stock":
-            case "stocks":
-                try {
-                    carregarStocks(arquivo);
-                } catch (ErrosLeituraArq | ErrosNumbersFormato e) {
-                    System.err.println("Erro ao adicionar Stocks em lote: " + e.getMessage());
-                }
-                break;
-            default:
-                System.out.println("Tipo de ativo desconhecido: " + tipoAtivo);
-        }
-    }
-
-    public void estruturarAtivo(String tipoAtivo, String dados){
+    public void adicaoAtivo(String tipoAtivo, String dados){
         String[] info = dados.split(",");
         boolean qualificado;
         switch (tipoAtivo.toLowerCase()) {
@@ -472,7 +424,7 @@ public class Mercado implements CoresMensagens {
                         }
                         Acoes acao = new Acoes(nome, ticker, preco, qualificado);
                         if (acao.verificarAtributosValidos()) {
-                            adicaoAtivo(acao, 1);
+                            auxAdicaoAtivo(acao, 1);
                         } else {
                             System.out.println("Atributos inválidos");
                         }
@@ -529,7 +481,7 @@ public class Mercado implements CoresMensagens {
 
                         Fiis fii = new Fiis(nome, ticker, preco, qualificado, setor, ultimoDividendo, taxaAdm);
                         if (fii.verificarAtributosValidos()) {
-                            adicaoAtivo(fii, 2);
+                            auxAdicaoAtivo(fii, 2);
                         } else {
                             System.out.println("Atributos inválidos");
                         }
@@ -557,7 +509,7 @@ public class Mercado implements CoresMensagens {
                         }
                         Stocks stock = new Stocks(nome, ticker, preco, qualificado,bolsaNegociacao, setor);
                         if (stock.verificarAtributosValidos()) {
-                            adicaoAtivo(stock, 5);
+                            auxAdicaoAtivo(stock, 5);
                         } else {
                             System.out.println("Atributos inválidos");
                         }
@@ -589,7 +541,7 @@ public class Mercado implements CoresMensagens {
                         }
                         Criptomoedas cripto = new Criptomoedas(nome, ticker, preco, consenso, qtdMax);
                         if (cripto.verificarAtributosValidos()) {
-                            adicaoAtivo(cripto, 4);
+                            auxAdicaoAtivo(cripto, 4);
                         } else {
                             System.out.println("Atributos inválidos");
                         }
@@ -612,7 +564,7 @@ public class Mercado implements CoresMensagens {
                         String vencimento = info[4].trim();
                         Tesouro tesouro = new Tesouro(nome, ticker, preco, tipoRendimento, vencimento);
                         if (tesouro.verificarAtributosValidos()) {
-                            adicaoAtivo(tesouro, 3);
+                            auxAdicaoAtivo(tesouro, 3);
                         } else {
                             System.out.println("Atributos inválidos");
                         }

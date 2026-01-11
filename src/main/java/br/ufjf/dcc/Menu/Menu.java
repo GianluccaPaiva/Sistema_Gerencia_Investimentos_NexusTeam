@@ -132,31 +132,31 @@ public class Menu implements CoresMensagens {
                 System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) deve ser essa ordem");
                 System.out.println("Exemplo: PETR4,Petrobras,28.50,(Não é só necessário a qualificação, mas será não de default)");
                 String dadosAcao = scanner.nextLine();
-                mercado.estruturarAtivo("acao", dadosAcao);
+                mercado.adicaoAtivo("acao", dadosAcao);
                 break;
             case 2:
                 System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não), Segmento, Ultimo Dividendo, Taxa de Admissão deve ser essa ordem");
                 System.out.println("Exemplo: XPML11,XP Malls,150.75,(Não é só necessário a qualificação, mas será não de default),Shopping,0.85,1.5");
                 String dadosFiis = scanner.nextLine();
-                mercado.estruturarAtivo("fiis", dadosFiis);
+                mercado.adicaoAtivo("fiis", dadosFiis);
                 break;
             case 3:
                 System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Bolsa de Negociação, Setor, Qualificado deve ser essa ordem");
                 System.out.println("Exemplo:  AAPL,Apple Inc,145.30,NASDAQ,Tecnologia,(Não é só necessário a qualificação, mas será não de default)");
                 String dadosStocks = scanner.nextLine();
-                mercado.estruturarAtivo("stocks", dadosStocks);
+                mercado.adicaoAtivo("stocks", dadosStocks);
                 break;
             case 4:
                 System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (USD),Algoritmo Consenso,Quantidade Máxima");
                 System.out.println("Exemplo: BTC,Bitcoin,30000.00,Proof of Work,21000000");
                 String dadosCripto = scanner.nextLine();
-                mercado.estruturarAtivo("criptomoeda", dadosCripto);
+                mercado.adicaoAtivo("criptomoeda", dadosCripto);
                 break;
             case 5:
                 System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (R$),Tipo de Rendimento,Vencimento");
                 System.out.println("Exemplo: LFT123,Tesouro Selic,1000.00,Selic,01/01/2030");
                 String dadosTesouro = scanner.nextLine();
-                mercado.estruturarAtivo("tesouro", dadosTesouro);
+                mercado.adicaoAtivo("tesouro", dadosTesouro);
                 break;
             case 0:
                 System.out.println("Voltando ao menu anterior...");
@@ -192,6 +192,7 @@ public class Menu implements CoresMensagens {
             System.out.println("4. Buscar Ativo por Ticker ou Nome");
             System.out.println("5. Editar Ativo (A implementar)");
             System.out.println("6. Remover Ativo ");
+            System.out.println("7. Remover ativos em lote (A implementar)");
             System.out.println("0. Voltar ao Menu Anterior");
             System.out.print("Escolha uma opção: ");
 
