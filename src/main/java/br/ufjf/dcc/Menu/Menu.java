@@ -13,6 +13,7 @@ public class Menu implements CoresMensagens {
     private static final Mercado mercado = new Mercado();
     private static final Scanner scanner = new Scanner(System.in);
     private static boolean ativar = true;
+
     public static void run() {
         int opcao;
         while (true) {
@@ -45,6 +46,7 @@ public class Menu implements CoresMensagens {
             }
         }
     }
+
 
     private static void inciarAnimacao(boolean ativar) {
         if (ativar) {
@@ -166,6 +168,7 @@ public class Menu implements CoresMensagens {
                 System.out.println(AMARELO+"Opção inválida!"+ RESET);
         }
     }
+
     private static void sistemaBusca(){
         System.out.println(ROXO);
         System.out.println("Sistema de busca de ativos");
@@ -176,6 +179,7 @@ public class Menu implements CoresMensagens {
         mercado.buscaAtivo(entrada);
 
     }
+
     private static void menuRemoverAtivo() {
         System.out.println(CIANO + "Remover Ativo" + RESET);
         System.out.println("Insira o ticker do ativo que deseja remover:");
@@ -197,6 +201,7 @@ public class Menu implements CoresMensagens {
         String atributos = scanner.nextLine();
         mercado.editarAtivo(ativo, atributos);
     }
+
     private static void menuAtivos() {
         int opcao = -1;
         while (opcao != 0) {

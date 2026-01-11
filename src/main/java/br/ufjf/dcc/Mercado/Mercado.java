@@ -580,7 +580,6 @@ public class Mercado implements CoresMensagens {
         }
     }
 
-
     public void editarAtivo(Ativos ativo, String atributo) {
         String texto = "";
         if(!atributo.isEmpty()) {
