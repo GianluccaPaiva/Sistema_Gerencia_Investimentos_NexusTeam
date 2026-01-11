@@ -32,7 +32,10 @@ public class ItemCarteira{
 
     public void removerVenda(float qtdVendida){
         if (qtdVendida > 0 && qtdVendida <= this.qtd) {
+            double proporcao = qtdVendida/this.qtd;
+            double valorReduzido = this.valorPagoTotal * proporcao;
             this.qtd -= qtdVendida;
+            this.valorPagoTotal -= valorReduzido;
         }
     }
 
