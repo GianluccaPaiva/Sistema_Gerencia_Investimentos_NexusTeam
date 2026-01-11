@@ -26,4 +26,12 @@ public class Tools {
         int[] diasPorMes = {31, (ano % 4 == 0 && (ano % 100 != 0 || ano % 400 == 0)) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
         return dia <= diasPorMes[mes - 1];
     }
+    public static void espera(float segundos){
+        try {
+            Thread.sleep((long) (segundos * 1000));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.out.println("A espera foi interrompida: " + e.getMessage());
+        }
+    }
 }

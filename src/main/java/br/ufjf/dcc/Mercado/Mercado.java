@@ -32,7 +32,17 @@ public class Mercado implements CoresMensagens {
     public List<Ativos> getListaCriptos() { return listaAtivosCriptos; }
     public List<Ativos> getListaStocks() { return listaAtivosStocks; }
 
-    public void buscaAtivo(String entrada){
+    public void removerAtivo(String ticket) {
+        Ativos ativo = buscaAtivo(ticket);
+        List<Ativos> lista = localizaListAtivo(ativo);
+        if (lista != null) {
+            lista.remove(ativo);
+            System.out.println(VERDE + "Ativo removido com sucesso!" + RESET);
+        } else {
+            System.out.println(VERMELHO+"Ativo não encontrado na lista." + RESET);
+        }
+    }
+    public Ativos buscaAtivo(String entrada){
         System.out.println(AZUL);
         for(int i = 1; i <=5; i++){
             Ativos ativoEncontrado = auxBuscaAtivo(entrada, i);
@@ -44,17 +54,32 @@ public class Mercado implements CoresMensagens {
                 else if(i == 5) System.out.println("+".repeat(5) + " STOCK " + "+".repeat(5));
                 System.out.println("Ativo encontrado:");
                 ativoEncontrado.exibirAtivo();
-                System.out.println("Aperte qualquer tecla para voltar ao menu...");
-                Scanner scanner = new Scanner(System.in);
-                scanner.nextLine();
                 System.out.println(RESET);
-                return;
+                Tools.espera(3);
+                return ativoEncontrado;
             }
         }
         System.out.println(RESET);
         System.out.println(AMARELO + "Ativo não encontrado para: " + entrada + RESET);
+        return null;
     }
-    public Ativos auxBuscaAtivo(String texto, int opcao) {
+
+    private List<Ativos> localizaListAtivo(Ativos ativo){
+            if (listaAtivosAcoes.contains(ativo)) {
+                return listaAtivosAcoes;
+            } else if (listaAtivosFiis.contains(ativo)) {
+                return listaAtivosFiis;
+            } else if (listaAtivosTesouros.contains(ativo)) {
+                return listaAtivosTesouros;
+            } else if (listaAtivosCriptos.contains(ativo)) {
+                return listaAtivosCriptos;
+            } else if (listaAtivosStocks.contains(ativo)) {
+                return listaAtivosStocks;
+            }
+            return null;
+    }
+
+    private Ativos auxBuscaAtivo(String texto, int opcao) {
         if (opcao == 1) {
             for (Ativos a : listaAtivosAcoes) {
                 if (a.getTicker().equalsIgnoreCase(texto) || a.getNome().equalsIgnoreCase(texto)) {
@@ -88,6 +113,7 @@ public class Mercado implements CoresMensagens {
         }
         return null;
     }
+
     public void estruturarAtivo(String tipoAtivo, String dados){
         String[] info = dados.split(",");
         boolean qualificado;

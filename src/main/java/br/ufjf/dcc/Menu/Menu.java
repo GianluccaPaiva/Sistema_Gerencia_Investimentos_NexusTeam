@@ -4,6 +4,7 @@ import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.ErroInterrupcao;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
 import br.ufjf.dcc.Mercado.Mercado;
+import br.ufjf.dcc.Tools.Tools;
 
 import java.util.Scanner;
 
@@ -62,20 +63,18 @@ public class Menu implements CoresMensagens {
             for (int i = 0; i < titulo.length(); i++) {
                 System.out.print(titulo.charAt(i));
                 System.out.flush();
-                Thread.sleep(40);
+                Tools.espera(0.04f);
             }
             System.out.println(RESET);
 
-            // Spinner "Acessando cofre"
             String[] spinner = { "|", "/", "-", "\\" };
             for (int i = 0; i < 10; i++) {
                 System.out.print(CIANO + "Acessando cofre seguro " + spinner[i % spinner.length] + RESET + "\r");
                 System.out.flush();
-                Thread.sleep(200);
+                Tools.espera(0.2f);
             }
             System.out.println();
 
-            // Barra de progresso "Abrindo cofres / Carregando ativos"
             int total = 30;
             System.out.print(AMARELO + "Abrindo cofres: [" + RESET);
             for (int i = 0; i <= total; i++) {
@@ -89,17 +88,16 @@ public class Menu implements CoresMensagens {
                 int percent = (i * 100) / total;
                 System.out.print("\r" + AMARELO + "Abrindo cofres: [" + RESET + bar.toString() + AMARELO + "] " + percent + "% " + RESET);
                 System.out.flush();
-                Thread.sleep(60);
+                Tools.espera(0.06f);
             }
             System.out.println();
 
             // pequena pausa final
-            Thread.sleep(200);
+            Tools.espera(0.2f);
 
-        } catch (ErroInterrupcao e) {
-            Thread.currentThread().interrupt();
-        } catch (InterruptedException e) {
-            throw new ErroInterrupcao("Animação interrompida.");
+        }
+        catch (Exception e) {
+            throw new ErroInterrupcao("Animação interrompida: " + e.getMessage());
         }
     }
 
@@ -177,6 +175,13 @@ public class Menu implements CoresMensagens {
         mercado.buscaAtivo(entrada);
 
     }
+    private static void menuRemoverAtivo() {
+        System.out.println(CIANO + "Remover Ativo" + RESET);
+        System.out.println("Insira o ticker do ativo que deseja remover:");
+        String ticker = scanner.nextLine();
+        mercado.removerAtivo(ticker);
+    }
+
     private static void menuAtivos() {
         int opcao = -1;
         while (opcao != 0) {
@@ -206,6 +211,9 @@ public class Menu implements CoresMensagens {
                     break;
                 case 2:
                     addAtivoIndividuo();
+                    break;
+                case 6:
+                    menuRemoverAtivo();
                     break;
 
                 case 4:
