@@ -2,7 +2,6 @@ package br.ufjf.dcc.Mercado;
 
 import br.ufjf.dcc.Ativos.*;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
-import br.ufjf.dcc.Erros.ErroInterrupcao;
 import br.ufjf.dcc.Erros.ErroTipoNaoPresente;
 import br.ufjf.dcc.Erros.ErrosLeituraArq;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
@@ -11,7 +10,6 @@ import br.ufjf.dcc.Tools.Tools;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.text.Normalizer;
 import java.util.*;
 
 public class Mercado implements CoresMensagens {
