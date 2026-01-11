@@ -47,4 +47,18 @@ public class Acoes extends Ativos implements RendaVariavel, Nacional {
         System.out.println(Tools.capitalize(RENDA_VARIAVEL));
         System.out.println("Tipo: " + Tools.capitalize(this.tipo));
     }
+
+    @Override
+    public boolean verificarAtributosValidos(){
+        if(!super.verificarAtributosValidos()){
+            return false;
+        }
+        if(this.tipo.equals("invalido")){
+            return false;
+        }
+        if (!this.ticker.matches(".*\\d$")) {
+            return false;
+        }
+        return true;
+    }
 }

@@ -111,6 +111,33 @@ public class Menu implements CoresMensagens {
         System.out.print("Escolha uma opção: ");
     }
 
+    private static void addAtivoIndividuo() {
+        System.out.println(VERDE+"Iniciando cadastro de ativo individualmente...");
+        System.out.println("Defina o tipo de ativo a ser cadastrado:");
+        System.out.println("1. Ação");
+        System.out.println("2. Fundo Imobiliário");
+        System.out.println("3. Stocks ");
+        System.out.println("4. Criptomoeda");
+        System.out.println("5. Tesouro");
+        System.out.println("0. Voltar ao Menu Anterior");
+        System.out.print("Escolha uma opção: ");
+        String entrada = scanner.nextLine();
+        int opcao;
+        try {
+            opcao = Integer.parseInt(entrada.trim());
+        } catch (ErrosNumbersFormato e) {
+            throw new ErrosNumbersFormato("Erro: insira um número.");
+        }
+        System.out.println(VERDE+"Opção selecionada: " + opcao + RESET);
+        switch (opcao){
+            case 1:
+                System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) deve ser essa ordem");
+                System.out.println("Exemplo: PETR4,Petrobras,28.50,(Não é só necessário a qualificação, mas será não de default)");
+                String dadosAcao = scanner.nextLine();
+                mercado.estruturarAtivo("acao", dadosAcao);
+                break;
+        }
+    }
     private static void menuAtivos() {
         int opcao = -1;
         while (opcao != 0) {
@@ -135,6 +162,9 @@ public class Menu implements CoresMensagens {
                     mercado.listarTodosAtivos();
                     break;
                 case 0:
+                    break;
+                case 2:
+                    addAtivoIndividuo();
                     break;
                 default:
                     System.out.println(AMARELO + "Opção inválida!" + RESET);

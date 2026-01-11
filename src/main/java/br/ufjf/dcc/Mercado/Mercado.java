@@ -2,8 +2,10 @@ package br.ufjf.dcc.Mercado;
 
 import br.ufjf.dcc.Ativos.*;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
+import br.ufjf.dcc.Erros.ErroTipoNaoPresente;
 import br.ufjf.dcc.Erros.ErrosLeituraArq;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
+import br.ufjf.dcc.Tools.Tools;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -12,11 +14,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Mercado implements CoresMensagens {
-    private static List<Ativos> listaAtivosAcoes = new LinkedList<Ativos>();
-    private static List<Ativos> listaAtivosFiis = new LinkedList<Ativos>();
-    private static List<Ativos> listaAtivosTesouros = new LinkedList<Ativos>();
-    private static List<Ativos> listaAtivosCriptos = new LinkedList<Ativos>();
-    private static List<Ativos> listaAtivosStocks = new LinkedList<Ativos>();
+    private List<Ativos> listaAtivosAcoes = new LinkedList<Ativos>();
+    private List<Ativos> listaAtivosFiis = new LinkedList<Ativos>();
+    private List<Ativos> listaAtivosTesouros = new LinkedList<Ativos>();
+    private List<Ativos> listaAtivosCriptos = new LinkedList<Ativos>();
+    private List<Ativos> listaAtivosStocks = new LinkedList<Ativos>();
 
     public Mercado() {
         carregarBaseDeDados();
@@ -28,6 +30,72 @@ public class Mercado implements CoresMensagens {
     public List<Ativos> getListaCriptos() { return listaAtivosCriptos; }
     public List<Ativos> getListaStocks() { return listaAtivosStocks; }
 
+    public void estruturarAtivo(String tipoAtivo, String dados){
+        String[] info = dados.split(",");
+        boolean qualificado;
+        switch (tipoAtivo.toLowerCase()) {
+            case "acao":
+            case "ações":
+                if (info.length >= 3) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        if (info.length == 3) {
+                            qualificado = false;
+                        }else {
+                            qualificado = info[3].trim().equals("sim") ? true : false;
+                        }
+                        Acoes acao = new Acoes(nome, ticker, preco, qualificado);
+                        if (acao.verificarAtributosValidos()) {
+                            adicaoAtivo(acao, 1);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Ação deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
+                }
+                break;
+            case "fii":
+            case "fiis":
+                if (info.length >= 6) {
+                    String ticker = info[0].trim();
+                    String nome = info[1].trim();
+                    float preco = Float.parseFloat(info[3].trim());
+                    boolean isETFs = Boolean.parseBoolean(info[2].trim());
+                    String setor = info[4].trim();
+                    float ultimoDividendo = Float.parseFloat(info[5].trim());
+                    Fiis fii = new Fiis(nome, ticker, preco, isETFs, setor, ultimoDividendo, 0f);
+                    adicaoAtivo(fii, 2);
+                }
+                break;
+            default:
+                System.out.println("Tipo de ativo desconhecido para estruturação: " + tipoAtivo);
+        }
+    }
+   private Ativos adicaoAtivo(Ativos ativo, int tipoAtivo) {
+        switch (tipoAtivo) {
+            case 1:
+                listaAtivosAcoes.add(ativo);
+                break;
+            case 2:
+                listaAtivosFiis.add(ativo);
+                break;
+            case 3:
+                listaAtivosTesouros.add(ativo);
+                break;
+            case 4:
+                listaAtivosCriptos.add(ativo);
+                break;
+            case 5:
+                listaAtivosStocks.add(ativo);
+                break;
+            default:
+                System.out.println("Tipo de ativo desconhecido: " + tipoAtivo);
+        }
+        return ativo;
+    }
     public void carregarBaseDeDados() {
         try {
             carregarAcoes("src/main/dados/acao.csv");

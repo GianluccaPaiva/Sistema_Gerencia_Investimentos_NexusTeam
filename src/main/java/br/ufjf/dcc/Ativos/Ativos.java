@@ -25,4 +25,20 @@ public abstract class Ativos {
         System.out.println("Preco: " + this.preco);
         System.out.println("Qualificado: " + this.qualificado);
     }
+
+    protected boolean verificarAtributosValidos(){
+        if(this.nome == null || this.nome.isEmpty()){
+            return false;
+        }
+        if(this.ticker == null || this.ticker.isEmpty() ){
+            return false;
+        }
+        if (!this.ticker.equals(this.ticker.toUpperCase())) {
+            return false;
+        }
+        if(this.preco < 0){
+            return false;
+        }
+        return true;
+    }
 }
