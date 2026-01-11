@@ -202,6 +202,54 @@ public class Menu implements CoresMensagens {
         mercado.editarAtivo(ativo, atributos);
     }
 
+    private static void menuCarregamentoLote(){
+        System.out.println("Carregamento de Ativos em Lote (A implementar)");
+        System.out.println("Esse pacote aceita csv deve ter a primeira linha como cabeçalho com as propriedades do ativo em questão.");
+        System.out.println("Informe o tipo de ativos a serem carregados:");
+        System.out.println("1. Ações");
+        System.out.println("2. Fundos Imobiliários");
+        System.out.println("3. Stocks");
+        System.out.println("4. Criptomoedas");
+        System.out.println("5. Tesouros");
+        System.out.print("Escolha uma opção (caso queira sair indique 0): ");
+        String entrada = scanner.nextLine();
+        int opcao;
+        try {
+            opcao = Integer.parseInt(entrada.trim());
+            if (opcao == 0) {
+                System.out.println("Voltando ao menu anterior...");
+                return;
+            }
+        } catch (ErrosNumbersFormato e) {
+            throw new ErrosNumbersFormato("Erro: insira um número.");
+        }
+        System.out.println("Escreva o caminho do arquivo de entrada:");
+        String caminhoArquivo = scanner.nextLine();
+        mercado.carregarAtivosLote(caminhoArquivo, opcao);
+    }
+
+    private static void menuTipoExibicaoAtivos(){
+        System.out.println("Defina o tipo de exibição dos ativos:");
+        System.out.println("1. Exibir todos os ativos");
+        System.out.println("2. Exibir apenas ações");
+        System.out.println("3. Exibir apenas fundos imobiliários");
+        System.out.println("4. Exibir apenas stocks");
+        System.out.println("5. Exibir apenas criptomoedas");
+        System.out.println("6. Exibir apenas tesouros");
+        System.out.println("0. Voltar ao Menu Anterior");
+        System.out.print("Escolha uma opção: ");
+        String entrada = scanner.nextLine();
+        int opcao;
+        try {
+            opcao = Integer.parseInt(entrada.trim());
+            if (opcao == 0) {
+                System.out.println("Voltando ao menu anterior...");
+            }
+        } catch (ErrosNumbersFormato e) {
+            throw new ErrosNumbersFormato("Erro: insira um número.");
+        }
+        mercado.listarAtivosPorTipo(opcao);
+    }
     private static void menuAtivos() {
         int opcao = -1;
         while (opcao != 0) {
@@ -221,18 +269,24 @@ public class Menu implements CoresMensagens {
                 opcao = Integer.parseInt(entrada.trim());
             } catch (ErrosNumbersFormato e) {
                 System.out.println(AMARELO+"Erro: insira um número."+ RESET);
-                continue;
+                menuAtivos();
             }
 
             switch (opcao) {
                 case 1:
-                    mercado.listarTodosAtivos();
+                    menuTipoExibicaoAtivos();
                     break;
                 case 0:
+                    System.out.println("Voltando ao menu principal...");
+                    System.out.println();
                     break;
                 case 2:
                     addAtivoIndividuo();
                     break;
+
+                    case 3:
+                        menuCarregamentoLote();
+                        break;
                 case 6:
                     menuRemoverAtivo();
                     break;

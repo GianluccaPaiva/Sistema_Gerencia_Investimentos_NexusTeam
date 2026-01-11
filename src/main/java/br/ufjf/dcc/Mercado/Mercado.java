@@ -11,9 +11,8 @@ import br.ufjf.dcc.Tools.Tools;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.text.Normalizer;
+import java.util.*;
 
 public class Mercado implements CoresMensagens {
     private List<Ativos> listaAtivosAcoes = new LinkedList<Ativos>();
@@ -81,8 +80,25 @@ public class Mercado implements CoresMensagens {
         }
         return null;
     }
+    private boolean existeTicker(String ticker) {
+        if (ticker == null || ticker.trim().isEmpty()) return false;
+        String t = ticker.trim().toUpperCase(Locale.ROOT);
+        for (Ativos a : listaAtivosAcoes)   if (a != null && a.getTicker() != null && t.equalsIgnoreCase(a.getTicker())) return true;
+        for (Ativos f : listaAtivosFiis)    if (f != null && f.getTicker() != null && t.equalsIgnoreCase(f.getTicker())) return true;
+        for (Ativos te : listaAtivosTesouros) if (te != null && te.getTicker() != null && t.equalsIgnoreCase(te.getTicker())) return true;
+        for (Ativos c : listaAtivosCriptos) if (c != null && c.getTicker() != null && t.equalsIgnoreCase(c.getTicker())) return true;
+        for (Ativos s : listaAtivosStocks)  if (s != null && s.getTicker() != null && t.equalsIgnoreCase(s.getTicker())) return true;
+        return false;
+    }
 
     private Ativos auxAdicaoAtivo(Ativos ativo, int tipoAtivo) {
+        if (ativo == null) return null;
+        String ticker = ativo.getTicker();
+        if (existeTicker(ticker)) {
+            System.out.println(AMARELO + "Ignorado: ativo com ticker " + ticker + " já existe." + RESET);
+            return ativo;
+        }
+
         switch (tipoAtivo) {
             case 1:
                 listaAtivosAcoes.add(ativo);
@@ -174,7 +190,7 @@ public class Mercado implements CoresMensagens {
                     boolean qualificado = "1".equals(dados[3].trim());
 
                     if (!ticker.isEmpty() && preco > 0f) {
-                        listaAtivosAcoes.add(new Acoes(nome, ticker, preco, qualificado));
+                        auxAdicaoAtivo(new Acoes(nome, ticker, preco, qualificado), 1);
                     }
                 }
             }
@@ -211,7 +227,7 @@ public class Mercado implements CoresMensagens {
                         throw new ErrosNumbersFormato("Número inválido em FIIs (linha com ticker=" + ticker + "): " + e.getMessage());
                     }
 
-                    listaAtivosFiis.add(new Fiis(nome, ticker, preco, false, setor, ultimoDividendo, taxaAdm));
+                    auxAdicaoAtivo(new Fiis(nome, ticker, preco, false, setor, ultimoDividendo, taxaAdm), 2);
                 }
             }
         } catch (IOException e) {
@@ -222,6 +238,7 @@ public class Mercado implements CoresMensagens {
             }
         }
     }
+
 
     private void carregarTesouros(String caminho) throws ErrosLeituraArq, ErrosNumbersFormato {
         BufferedReader br = null;
@@ -245,7 +262,7 @@ public class Mercado implements CoresMensagens {
                     String tipo = dados[3].trim();
                     String vencimento = dados[4].trim();
 
-                    listaAtivosTesouros.add(new Tesouro(nome, ticker, preco, tipo, vencimento));
+                    auxAdicaoAtivo(new Tesouro(nome, ticker, preco, tipo, vencimento), 3);
                 }
             }
         } catch (IOException e) {
@@ -287,7 +304,7 @@ public class Mercado implements CoresMensagens {
                         throw new ErrosNumbersFormato("Quantidade máxima inválida em Criptoativos (ticker=" + ticker + "): " + dados[4]);
                     }
 
-                    listaAtivosCriptos.add(new Criptomoedas(nome, ticker, preco, consenso, qtdMax));
+                    auxAdicaoAtivo(new Criptomoedas(nome, ticker, preco, consenso, qtdMax), 4);
                 }
             }
         } catch (IOException e) {
@@ -321,7 +338,7 @@ public class Mercado implements CoresMensagens {
                     String bolsa = dados[3].trim();
                     String setor = dados[4].trim();
 
-                    listaAtivosStocks.add(new Stocks(nome, ticker, preco, bolsa, setor));
+                    auxAdicaoAtivo(new Stocks(nome, ticker, preco, bolsa, setor), 5);
                 }
             }
         } catch (IOException e) {
@@ -333,6 +350,48 @@ public class Mercado implements CoresMensagens {
         }
     }
 
+
+    private void listarListasAtivosEspecifico(List<Ativos> ativos){
+        for (Ativos ativo : ativos) {
+            ativo.exibirAtivo();
+            System.out.println("-".repeat(20));
+        }
+    }
+
+    public void listarAtivosPorTipo(int opcao){
+        switch (opcao){
+            case 1:
+                listarTodosAtivos();
+                break;
+            case 2:
+                System.out.println(AZUL + "===== RELATÓRIO DE AÇÕES =====");
+                listarListasAtivosEspecifico(listaAtivosAcoes);
+                System.out.println(RESET);
+                break;
+            case 3:
+                System.out.println(VERDE_CLARO + "===== RELATÓRIO DE FIIs =====");
+                listarListasAtivosEspecifico(listaAtivosFiis);
+                System.out.println(RESET);
+                break;
+            case 4:
+                System.out.println(VERDE + "===== RELATÓRIO DE TESOUROS =====");
+                listarListasAtivosEspecifico(listaAtivosTesouros);
+                System.out.println(RESET);
+                break;
+            case 5:
+                System.out.println(ROXO + "===== RELATÓRIO DE CRIPTOMOEDAS =====");
+                listarListasAtivosEspecifico(listaAtivosCriptos);
+                System.out.println(RESET);
+                break;
+            case 6:
+                System.out.println(CIANO + "===== RELATÓRIO DE STOCKS =====");
+                listarListasAtivosEspecifico(listaAtivosStocks);
+                System.out.println(RESET);
+                break;
+            default:
+                System.out.println(VERMELHO+"Opção inválida para listagem de ativos por tipo." + RESET);
+        }
+    }
 
     public Ativos buscaAtivo(String entrada){
         System.out.println(AZUL);
@@ -355,7 +414,6 @@ public class Mercado implements CoresMensagens {
         System.out.println(AMARELO + "Ativo não encontrado para: " + entrada + RESET);
         return null;
     }
-
     public void listarTodosAtivos() {
         System.out.println(ROSA + "===== RELATÓRIO DE TODOS OS ATIVOS =====" + RESET);
 
@@ -596,4 +654,142 @@ public class Mercado implements CoresMensagens {
         }
     }
 
+    public void carregarAtivosLote(String caminho, int opcao) {
+        System.out.println(AMARELO + "Iniciando carregamento em lote: " + caminho + RESET);
+        try (BufferedReader br = new BufferedReader(new FileReader(caminho))) {
+            String header = br.readLine();
+            if (header == null) {
+                System.out.println(AMARELO + "Arquivo vazio: " + caminho + RESET);
+                return;
+            }
+            String delimiter = header.contains(",") ? "," : header.contains(";") ? ";" : ",";
+            Map<String, Integer> hdr = Tools.construirMapaCabecalho(header, delimiter);
+
+            String linha;
+            int linhaNum = 1;
+            while ((linha = br.readLine()) != null) {
+                linhaNum++;
+                if (linha.trim().isEmpty()) continue;
+                String[] dados = linha.split(delimiter, -1); // preservar colunas vazias
+
+                try {
+                    switch (opcao) {
+                        case 1: { // Ações
+                            String ticker = Tools.obterCampo(dados, hdr, "ticker", "codigo", "symbol");
+                            String nome = Tools.obterCampo(dados, hdr, "nome", "name", "descricao");
+                            String precoStr = Tools.obterCampo(dados, hdr, "preco", "valor", "price", "preço");
+                            String qualStr = Tools.obterCampo(dados, hdr, "qualificado", "qualif", "qtd", "is_qualified", "qual");
+
+                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty()) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Ação)." + RESET);
+                                break;
+                            }
+                            Float preco = Tools.parseFloatNullable(precoStr);
+                            if (preco == null) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido): " + precoStr + RESET);
+                                break;
+                            }
+                            boolean qualificado = "1".equals(qualStr) || qualStr.equalsIgnoreCase("sim") || qualStr.equalsIgnoreCase("true");
+                            auxAdicaoAtivo(new Acoes(nome, ticker, preco, qualificado), 1);
+                            break;
+                        }
+                        case 2: { // FIIs
+                            String ticker = Tools.obterCampo(dados, hdr, "ticker", "codigo", "symbol");
+                            String nome = Tools.obterCampo(dados, hdr, "nome", "name", "descricao");
+                            String precoStr = Tools.obterCampo(dados, hdr, "preco", "valor", "price", "preço");
+                            String qualStr = Tools.obterCampo(dados, hdr, "qualificado", "qualif", "qtd", "is_qualified", "qual");
+                            String setor = Tools.obterCampo(dados, hdr, "setor", "segmento", "sector");
+                            String ultimoDivStr = Tools.obterCampo(dados, hdr, "ultimodividendo", "ultimo_dividendo", "ultimo", "dividendo");
+                            String taxaAdmStr = Tools.obterCampo(dados, hdr, "taxaadm", "taxa_adm", "taxa", "taxa_admissao");
+
+                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || setor.isEmpty() || ultimoDivStr.isEmpty() || taxaAdmStr.isEmpty()) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para FII)." + RESET);
+                                break;
+                            }
+                            Float preco = Tools.parseFloatNullable(precoStr);
+                            Float ultimoDiv = Tools.parseFloatNullable(ultimoDivStr);
+                            Float taxaAdm = Tools.parseFloatNullable(taxaAdmStr);
+                            if (preco == null || ultimoDiv == null || taxaAdm == null) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (número inválido em FII)." + RESET);
+                                break;
+                            }
+                            boolean qualificado = "1".equals(qualStr) || qualStr.equalsIgnoreCase("sim") || qualStr.equalsIgnoreCase("true");
+                            auxAdicaoAtivo(new Fiis(nome, ticker, preco, qualificado, setor, ultimoDiv, taxaAdm), 2);
+                            break;
+                        }
+                        case 3: { // Stocks
+                            String ticker = Tools.obterCampo(dados, hdr, "ticker", "codigo", "symbol");
+                            String nome = Tools.obterCampo(dados, hdr, "nome", "name", "descricao");
+                            String precoStr = Tools.obterCampo(dados, hdr, "preco", "valor", "price", "preço");
+                            String bolsa = Tools.obterCampo(dados, hdr, "bolsa", "exchange", "bolsa_negociacao");
+                            String setor = Tools.obterCampo(dados, hdr, "setor", "segmento", "sector");
+                            String qualStr = Tools.obterCampo(dados, hdr, "qualificado", "qualif", "qtd", "is_qualified", "qual");
+
+                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || bolsa.isEmpty() || setor.isEmpty()) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Stock)." + RESET);
+                                break;
+                            }
+                            Float preco = Tools.parseFloatNullable(precoStr);
+                            if (preco == null) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido para Stock)." + RESET);
+                                break;
+                            }
+                            // usar construtor existente em carregarStocks: Stocks(nome, ticker, preco, bolsa, setor)
+                            auxAdicaoAtivo(new Stocks(nome, ticker, preco, bolsa, setor), 5);
+                            break;
+                        }
+                        case 4: { // Criptomoedas
+                            String ticker = Tools.obterCampo(dados, hdr, "ticker", "codigo", "symbol");
+                            String nome = Tools.obterCampo(dados, hdr, "nome", "name", "descricao");
+                            String precoStr = Tools.obterCampo(dados, hdr, "preco", "valor", "price", "preço");
+                            String consenso = Tools.obterCampo(dados, hdr, "consenso", "algoritmo", "consensus");
+                            String qtdMaxStr = Tools.obterCampo(dados, hdr, "qtdmax", "quantidademaxima", "max", "max_supply");
+
+                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || consenso.isEmpty()) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Cripto)." + RESET);
+                                break;
+                            }
+                            Float preco = Tools.parseFloatNullable(precoStr);
+                            if (preco == null) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido para Cripto)." + RESET);
+                                break;
+                            }
+                            Long qtdMax = Tools.parseLongNullable(qtdMaxStr);
+                            if (qtdMax == null) qtdMax = 0L;
+                            auxAdicaoAtivo(new Criptomoedas(nome, ticker, preco, consenso, qtdMax), 4);
+                            break;
+                        }
+                        case 5: { // Tesouros
+                            String ticker = Tools.obterCampo(dados, hdr, "ticker", "codigo", "symbol");
+                            String nome = Tools.obterCampo(dados, hdr, "nome", "name", "descricao");
+                            String precoStr = Tools.obterCampo(dados, hdr, "preco", "valor", "price", "preço");
+                            String tipoRend = Tools.obterCampo(dados, hdr, "tipo", "tiporendimento", "tipo_rendimento");
+                            String venc = Tools.obterCampo(dados, hdr, "vencimento", "venc", "maturity");
+
+                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || tipoRend.isEmpty() || venc.isEmpty()) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Tesouro)." + RESET);
+                                break;
+                            }
+                            Float preco = Tools.parseFloatNullable(precoStr);
+                            if (preco == null) {
+                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido para Tesouro)." + RESET);
+                                break;
+                            }
+                           auxAdicaoAtivo(new Tesouro(nome, ticker, preco, tipoRend, venc), 3);
+                            break;
+                        }
+                        default:
+                            System.out.println(VERMELHO + "Opção de tipo inválida: " + opcao + RESET);
+                            return;
+                    }
+                } catch (Exception e) {
+                    System.out.println(VERMELHO + "Erro ao processar linha " + linhaNum + ": " + e.getMessage() + RESET);
+                }
+            }
+
+            System.out.println(VERDE + "Carregamento em lote concluído." + RESET);
+        } catch (IOException e) {
+            System.out.println(VERMELHO + "Erro ao ler arquivo: " + e.getMessage() + RESET);
+        }
+    }
 }
