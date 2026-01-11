@@ -173,8 +173,10 @@ public class Menu implements CoresMensagens {
             System.out.println("\n---------- MENU DE ATIVOS ----------");
             System.out.println("1. Exibir Relatório: Todos os Ativos");
             System.out.println("2. Cadastrar Ativo Individualmente");
-            System.out.println("3. Editar Ativo (A implementar)");
-            System.out.println("4. Remover Ativo (A implementar)");
+            System.out.println("3. Cadastrar Ativos via Arquivo (A implementar)");
+            System.out.println("4. Buscar Ativo (A implementar)");
+            System.out.println("5. Editar Ativo (A implementar)");
+            System.out.println("6. Remover Ativo (A implementar)");
             System.out.println("0. Voltar ao Menu Anterior");
             System.out.print("Escolha uma opção: ");
 
