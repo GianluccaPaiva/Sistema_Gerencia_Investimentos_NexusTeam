@@ -43,4 +43,18 @@ public class Criptomoedas extends Ativos implements Internacional, RendaVariavel
         System.out.println("Consenso: " + Tools.capitalize(this.consenso));
         System.out.println("Quantidade Maxima: " + this.qtdMax);
     }
+
+    @Override
+    public boolean verificarAtributosValidos(){
+        if(!super.verificarAtributosValidos()){
+            return false;
+        }
+        if(this.consenso == null || this.consenso.isEmpty()){
+            return false;
+        }
+        if(this.qtdMax <= 0){
+            return false;
+        }
+        return true;
+    }
 }

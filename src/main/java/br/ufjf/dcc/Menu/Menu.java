@@ -148,6 +148,23 @@ public class Menu implements CoresMensagens {
                 String dadosStocks = scanner.nextLine();
                 mercado.estruturarAtivo("stocks", dadosStocks);
                 break;
+            case 4:
+                System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (USD),Algoritmo Consenso,Quantidade Máxima");
+                System.out.println("Exemplo: BTC,Bitcoin,30000.00,Proof of Work,21000000");
+                String dadosCripto = scanner.nextLine();
+                mercado.estruturarAtivo("criptomoeda", dadosCripto);
+                break;
+            case 5:
+                System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (R$),Tipo de Rendimento,Vencimento");
+                System.out.println("Exemplo: LFT123,Tesouro Selic,1000.00,Selic,01/01/2030");
+                String dadosTesouro = scanner.nextLine();
+                mercado.estruturarAtivo("tesouro", dadosTesouro);
+                break;
+            case 0:
+                System.out.println("Voltando ao menu anterior...");
+                break;
+            default:
+                System.out.println(AMARELO+"Opção inválida!"+ RESET);
         }
     }
     private static void menuAtivos() {
@@ -155,7 +172,7 @@ public class Menu implements CoresMensagens {
         while (opcao != 0) {
             System.out.println("\n---------- MENU DE ATIVOS ----------");
             System.out.println("1. Exibir Relatório: Todos os Ativos");
-            System.out.println("2. Cadastrar Ativo Individualmente (A implementar)");
+            System.out.println("2. Cadastrar Ativo Individualmente");
             System.out.println("3. Editar Ativo (A implementar)");
             System.out.println("4. Remover Ativo (A implementar)");
             System.out.println("0. Voltar ao Menu Anterior");

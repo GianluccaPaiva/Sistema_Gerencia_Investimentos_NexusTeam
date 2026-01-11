@@ -50,4 +50,19 @@ public class Tesouro extends Ativos implements RendaFixa, Nacional {
         System.out.println("Tipo de Rendimento: " + Tools.capitalize(this.tipoRendimento));
         System.out.println("Data de Vencimento: " + this.dataVencimento);
     }
+
+    @Override
+    public boolean verificarAtributosValidos() {
+        if (!super.verificarAtributosValidos()) {
+            return false;
+        }
+        String [] tipos= {"selic", "prefixado", "ipca+"};
+        if (!Arrays.asList(tipos).contains(this.tipoRendimento)) {
+            return false;
+        }
+        if (this.dataVencimento == null || this.dataVencimento.isEmpty() || !Tools.dataValida(this.dataVencimento)) {
+            return false;
+        }
+        return true;
+    }
 }

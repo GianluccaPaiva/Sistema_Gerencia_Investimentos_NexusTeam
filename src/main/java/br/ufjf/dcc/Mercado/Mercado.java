@@ -2,6 +2,7 @@ package br.ufjf.dcc.Mercado;
 
 import br.ufjf.dcc.Ativos.*;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
+import br.ufjf.dcc.Erros.ErroInterrupcao;
 import br.ufjf.dcc.Erros.ErroTipoNaoPresente;
 import br.ufjf.dcc.Erros.ErrosLeituraArq;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
@@ -36,7 +37,7 @@ public class Mercado implements CoresMensagens {
         switch (tipoAtivo.toLowerCase()) {
             case "acao":
             case "ações":
-                if (info.length >= 3) {
+                if (info.length >= 3 && info.length <=4) {
                     try {
                         String ticker = info[0].trim().toUpperCase();
                         String nome = Tools.capitalize(info[1].trim());
@@ -56,11 +57,14 @@ public class Mercado implements CoresMensagens {
                         throw new ErroTipoNaoPresente("Erro ao estruturar Ação deve ser ordenado igual o pedido do input: " + e.getMessage());
                     }
                 }
+                else {
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Ação ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Qualificado" + RESET);
+                }
                 break;
             // java
             case "fii":
             case "fiis":
-                if (info.length >= 6) {
+                if (info.length >= 6 && info.length <=7) {
                     String setor;
                     float ultimoDividendo, taxaAdm;
                     try {
@@ -116,7 +120,7 @@ public class Mercado implements CoresMensagens {
 
                 case "stock":
                 case "stocks":
-                if (info.length >= 5) {
+                if (info.length >= 5 && info.length <=6) {
                     try {
                         String ticker = info[0].trim().toUpperCase();
                         String nome = Tools.capitalize(info[1].trim());
@@ -137,6 +141,63 @@ public class Mercado implements CoresMensagens {
                     }catch (TypeNotPresentException e){
                         throw new ErroTipoNaoPresente("Erro ao estruturar Stock deve ser ordenado igual o pedido do input: " + e.getMessage());
                     }
+                }
+                else {
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Stock ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Bolsa de Negociação, Setor, Qualificado" + RESET);
+                }
+                break;
+
+                case "cripto":
+                    case "criptomoeda":
+            case "criptomoedas":
+                if (info.length >= 4 && info.length <=5) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        String consenso = info[3].trim();
+                        long qtdMax = 0L;
+                        if (info.length >= 5) {
+                            try {
+                                qtdMax = Long.parseLong(info[4].trim());
+                            } catch (NumberFormatException e) {
+                                throw new ErrosNumbersFormato("Erro de formato numérico no campo 'Quantidade Máxima': " + info[4].trim());
+                            }
+                        }
+                        Criptomoedas cripto = new Criptomoedas(nome, ticker, preco, consenso, qtdMax);
+                        if (cripto.verificarAtributosValidos()) {
+                            adicaoAtivo(cripto, 4);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Criptomoeda deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
+                }
+                else {
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Criptomoeda ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, Algoritmo Consenso, Quantidade Máxima" + RESET);
+                }
+                break;
+            case "tesouro":
+            case "tesouros":
+                if (info.length >= 4 && info.length <=5) {
+                    try {
+                        String ticker = info[0].trim().toUpperCase();
+                        String nome = Tools.capitalize(info[1].trim());
+                        float preco = Float.parseFloat(info[2].trim());
+                        String tipoRendimento = info[3].trim();
+                        String vencimento = info[4].trim();
+                        Tesouro tesouro = new Tesouro(nome, ticker, preco, tipoRendimento, vencimento);
+                        if (tesouro.verificarAtributosValidos()) {
+                            adicaoAtivo(tesouro, 3);
+                        } else {
+                            System.out.println("Atributos inválidos");
+                        }
+                    }catch (TypeNotPresentException e){
+                        throw new ErroTipoNaoPresente("Erro ao estruturar Tesouro deve ser ordenado igual o pedido do input: " + e.getMessage());
+                    }
+                }else{
+                    System.out.println(VERMELHO+"Há mais atributos do que o esperado para Tesouro ou estão faltando atributos. Formato esperado: Ticker, Nome, Preço, TipoRendimento, Vencimento" + RESET);
                 }
                 break;
             default:
