@@ -256,11 +256,10 @@ public class Menu implements CoresMensagens {
             System.out.println("\n---------- MENU DE ATIVOS ----------");
             System.out.println("1. Exibir Relatório: Todos os Ativos");
             System.out.println("2. Cadastrar Ativo Individualmente");
-            System.out.println("3. Cadastrar Ativos via Arquivo (A implementar)");
+            System.out.println("3. Cadastrar Ativos via Arquivo");
             System.out.println("4. Buscar Ativo por Ticker ou Nome");
             System.out.println("5. Editar Ativo");
             System.out.println("6. Remover Ativo ");
-            System.out.println("7. Remover ativos em lote (A implementar)");
             System.out.println("0. Voltar ao Menu Anterior");
             System.out.print("Escolha uma opção: ");
 
@@ -287,16 +286,16 @@ public class Menu implements CoresMensagens {
                     case 3:
                         menuCarregamentoLote();
                         break;
-                case 6:
-                    menuRemoverAtivo();
-                    break;
-
                 case 4:
                     sistemaBusca();
                     break;
 
                 case 5:
                     editarAtivo();
+                    break;
+
+                case 6:
+                    menuRemoverAtivo();
                     break;
 
                 default:
