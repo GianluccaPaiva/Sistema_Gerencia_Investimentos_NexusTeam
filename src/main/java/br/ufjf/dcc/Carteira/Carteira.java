@@ -4,6 +4,7 @@ import br.ufjf.dcc.Ativos.Interfaces.Internacional;
 import br.ufjf.dcc.Ativos.Interfaces.RendaVariavel;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Carteira {
@@ -40,7 +41,7 @@ public class Carteira {
         }
     }
 
-    private float valorTotalCarteira() {
+    public float valorTotalCarteira() {
         float total = 0;
         for (ItemCarteira item : ativos) {
             total += item.getValorAtualTotal();
@@ -48,9 +49,9 @@ public class Carteira {
         return total;
     }
 
-    private float[] porcentagemRendaFixaVariavel() {
-        float totalRendaFixa = 0;
-        float totalRendaVariavel = 0;
+    public double[] porcentagemRendaFixaVariavel() {
+        double totalRendaFixa = 0;
+        double totalRendaVariavel = 0;
 
         for (ItemCarteira item : ativos) {
             if (item.getAtivo() instanceof RendaVariavel) {
@@ -60,16 +61,16 @@ public class Carteira {
             }
         }
 
-        float totalGeral = totalRendaFixa + totalRendaVariavel;
-        float percRendaFixa = (totalGeral == 0) ? 0 : (totalRendaFixa / totalGeral) * 100;
-        float percRendaVariavel = (totalGeral == 0) ? 0 : (totalRendaVariavel / totalGeral) * 100;
+        double totalGeral = totalRendaFixa + totalRendaVariavel;
+        double percRendaFixa = (totalGeral == 0) ? 0 : (totalRendaFixa / totalGeral) * 100;
+        double percRendaVariavel = (totalGeral == 0) ? 0 : (totalRendaVariavel / totalGeral) * 100;
 
-        return new float[]{percRendaFixa, percRendaVariavel};
+        return new double[]{percRendaFixa, percRendaVariavel};
     }
 
-    private float[] porcentagemNacionalInternacional() {
-        float totalNacional = 0;
-        float totalInternacional = 0;
+    public double[] porcentagemNacionalInternacional() {
+        double totalNacional = 0;
+        double totalInternacional = 0;
 
         for (ItemCarteira item : ativos) {
             if (item.getAtivo() instanceof Internacional) {
@@ -79,11 +80,11 @@ public class Carteira {
             }
         }
 
-        float totalGeral = totalNacional + totalInternacional;
-        float percNacional = (totalGeral == 0) ? 0 : (totalNacional / totalGeral) * 100;
-        float percInternacional = (totalGeral == 0) ? 0 : (totalInternacional / totalGeral) * 100;
+        double totalGeral = totalNacional + totalInternacional;
+        double percNacional = (totalGeral == 0) ? 0 : (totalNacional / totalGeral) * 100;
+        double percInternacional = (totalGeral == 0) ? 0 : (totalInternacional / totalGeral) * 100;
 
-        return new float[]{percNacional, percInternacional};
+        return new double[]{percNacional, percInternacional};
     }
 
     public void exibirCarteira(){
@@ -96,13 +97,17 @@ public class Carteira {
             System.out.printf("Lucro/Prejuízo: R$ %.2f\n", item.getLucroPrejuizo());
             System.out.println("-------------------------------------");
         }
-        float[] rendaFixaVariavel = porcentagemRendaFixaVariavel();
-        float[] nacionalInternacional = porcentagemNacionalInternacional();
+        double[] rendaFixaVariavel = porcentagemRendaFixaVariavel();
+        double[] nacionalInternacional = porcentagemNacionalInternacional();
         System.out.println("Valor Total da Carteira: R$ " + valorTotalCarteira());
         System.out.printf("Porcentagem Renda Fixa: %.2f%%\n", rendaFixaVariavel[0]);
         System.out.printf("Porcentagem Renda Variável: %.2f%%\n", rendaFixaVariavel[1]);
         System.out.printf("Porcentagem Nacional: %.2f%%\n", nacionalInternacional[0]);
         System.out.printf("Porcentagem Internacional: %.2f%%\n", nacionalInternacional[1]);
+    }
+
+    public List<ItemCarteira> getAtivos(){
+        return Collections.unmodifiableList(this.ativos);
     }
 
 }
