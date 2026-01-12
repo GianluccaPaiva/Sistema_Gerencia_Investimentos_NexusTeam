@@ -90,7 +90,7 @@ public class Carteira {
     public void exibirCarteira(){
         System.out.println("----- Carteira de Investimentos -----");
         for(ItemCarteira item : this.ativos){
-            System.out.println("Ativo: " + item.getAtivo().getNome() + " | Ticker: " + item.getAtivo().getTicker());
+            System.out.println("Ativo: " + item.getAtivo().getTicker());
             System.out.println("Quantidade: " + item.getQtd());
             System.out.printf("Valor Atual Total: R$ %.2f\n", item.getValorAtualTotal());
             System.out.printf("Valor Pago Total: R$ %.2f\n", item.getValorPagoTotal());
@@ -99,11 +99,9 @@ public class Carteira {
         }
         double[] rendaFixaVariavel = porcentagemRendaFixaVariavel();
         double[] nacionalInternacional = porcentagemNacionalInternacional();
-        System.out.println("Valor Total da Carteira: R$ " + valorTotalCarteira());
-        System.out.printf("Porcentagem Renda Fixa: %.2f%%\n", rendaFixaVariavel[0]);
-        System.out.printf("Porcentagem Renda Variável: %.2f%%\n", rendaFixaVariavel[1]);
-        System.out.printf("Porcentagem Nacional: %.2f%%\n", nacionalInternacional[0]);
-        System.out.printf("Porcentagem Internacional: %.2f%%\n", nacionalInternacional[1]);
+        System.out.printf("Valor Total da Carteira: R$ %.2f\n", valorTotalCarteira());
+        System.out.printf("Renda Fixa: %.1f%% | Renda Variável: %.1f%%\n", rendaFixaVariavel[0], rendaFixaVariavel[1]);
+        System.out.printf("Nacional:   %.1f%% | Internacional:  %.1f%%\n", nacionalInternacional[0], nacionalInternacional[1]);
     }
 
     public List<ItemCarteira> getAtivos(){
