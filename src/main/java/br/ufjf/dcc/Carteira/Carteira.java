@@ -27,15 +27,20 @@ public class Carteira {
 
     public void removerAtivo(String ticker, float qtdVendida) throws DadosInvalidosException {
         ItemCarteira itemParaRemover = null;
+        boolean encontrado = false;
 
         for (ItemCarteira item : ativos) {
             if (item.getAtivo().getTicker().equals(ticker)) {
                 item.removerVenda(qtdVendida);
+                encontrado = true;
                 if (item.getQtd() == 0) {
                     itemParaRemover = item;
                 }
                 break;
             }
+        }
+        if (!encontrado) {
+            throw new DadosInvalidosException("Erro: Ativo com ticker " + ticker + " não encontrado na carteira.");
         }
         if (itemParaRemover != null) {
             ativos.remove(itemParaRemover);
