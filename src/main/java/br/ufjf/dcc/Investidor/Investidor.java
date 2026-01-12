@@ -34,7 +34,6 @@ public abstract class Investidor {
     public void comprar(Ativos ativo, float qtd, double preco) throws DadosInvalidosException {
         if(podeComprar(ativo)){
             carteira.addAtivo(ativo, qtd, preco);
-            System.out.println("Compra realizada com sucesso!");
         }
         else{
             throw new DadosInvalidosException("Erro: Tipo de ativo não permitido para este investidor.");
@@ -42,7 +41,6 @@ public abstract class Investidor {
     }
     public void vender(Ativos ativo, float qtd) throws DadosInvalidosException {
         carteira.removerAtivo(ativo.getTicker(), qtd);
-        System.out.println("Venda realizada com sucesso!");
     }
 
     public void exibirCarteira(){
