@@ -40,7 +40,7 @@ public abstract class Investidor {
             throw new DadosInvalidosException("Erro: Tipo de ativo não permitido para este investidor.");
         }
     }
-    public void vender(Ativos ativo, float qtd){
+    public void vender(Ativos ativo, float qtd) throws DadosInvalidosException {
         carteira.removerAtivo(ativo.getTicker(), qtd);
         System.out.println("Venda realizada com sucesso!");
     }

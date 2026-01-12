@@ -2,6 +2,7 @@ package br.ufjf.dcc.Carteira;
 import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.Ativos.Interfaces.Internacional;
 import br.ufjf.dcc.Ativos.Interfaces.RendaVariavel;
+import br.ufjf.dcc.Erros.DadosInvalidosException;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +15,7 @@ public class Carteira {
         this.ativos = new ArrayList<>();
     }
 
-    public void addAtivo(Ativos ativo, float qtd, double precoPagoNaCompra) {
+    public void addAtivo(Ativos ativo, float qtd, double precoPagoNaCompra) throws DadosInvalidosException {
         for (ItemCarteira item : ativos) {
             if (item.getAtivo().getTicker().equals(ativo.getTicker())) {
                 item.adicionarCompra(qtd, precoPagoNaCompra);
@@ -24,7 +25,7 @@ public class Carteira {
         this.ativos.add(new ItemCarteira(ativo, qtd, precoPagoNaCompra));
     }
 
-    public void removerAtivo(String ticker, float qtdVendida) {
+    public void removerAtivo(String ticker, float qtdVendida) throws DadosInvalidosException {
         ItemCarteira itemParaRemover = null;
 
         for (ItemCarteira item : ativos) {
@@ -41,8 +42,8 @@ public class Carteira {
         }
     }
 
-    public float valorTotalCarteira() {
-        float total = 0;
+    public double valorTotalCarteira() {
+        double total = 0;
         for (ItemCarteira item : ativos) {
             total += item.getValorAtualTotal();
         }
