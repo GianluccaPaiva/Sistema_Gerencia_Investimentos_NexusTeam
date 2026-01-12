@@ -70,9 +70,10 @@ public abstract class Investidor {
 
     public double getPatrimonio() {return patrimonio;}
     public void setPatrimonio(double patrimonio) {
-        if(patrimonio >= 0){
-            this.patrimonio = patrimonio;
+        if(patrimonio < 0){
+            throw new IllegalArgumentException("Patrimônio não pode ser negativo.");
         }
+        this.patrimonio = patrimonio;
     }
 
     public Carteira getCarteira() {return this.carteira;}
