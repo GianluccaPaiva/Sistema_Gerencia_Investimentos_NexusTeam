@@ -312,29 +312,7 @@ public class Menu implements CoresMensagens {
         }
     }
 
-    private static int lerNumeroInteiro() {
-        while (true) {
-            try {
-                String entrada = scanner.nextLine();
-                return Integer.parseInt(entrada.trim());
-            } catch (NumberFormatException e) {
-                System.out.print(AMARELO + "Entrada inválida. Digite um número inteiro: " + RESET);
-            }
-        }
-    }
-
-    private static double lerNumeroDecimal() {
-        while (true) {
-            try {
-                String entrada = scanner.nextLine();
-                return Double.parseDouble(entrada.replace(",", ".").trim());
-            } catch (NumberFormatException e) {
-                System.out.print(AMARELO + "Entrada inválida. Digite um valor numérico: " + RESET);
-            }
-        }
-    }
-
-    // Talvez colocar no tools esses dois cidadãos acima?
+    // Talvez colocar no tools esses dois cidadãos acima? Sim, usei template
 
     private static void menuInvestidores() {
         int opcao = -1;
@@ -347,8 +325,8 @@ public class Menu implements CoresMensagens {
             System.out.println("5. Selecionar Investidor por CPF ou CNPJ");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
-
-            opcao = lerNumeroInteiro();
+            String entrada = scanner.nextLine();
+            opcao = Tools.lerNumeroInteiro(entrada);
 
             switch (opcao) {
                 case 1:
@@ -390,7 +368,8 @@ public class Menu implements CoresMensagens {
             System.out.print("Rua: ");
             String rua = scanner.nextLine();
             System.out.print("Número: ");
-            int numero = lerNumeroInteiro();
+            String numeroStr = scanner.nextLine();
+            int numero = Tools.lerNumeroInteiro(numeroStr);
             System.out.print("Bairro: ");
             String bairro = scanner.nextLine();
             System.out.print("Cidade: ");
@@ -403,10 +382,12 @@ public class Menu implements CoresMensagens {
             Endereco endereco = new Endereco(rua, cidade, estado, cep, bairro, numero);
 
             System.out.print("Patrimônio Inicial: ");
-            double patrimonio = lerNumeroDecimal();
+            String patrimonioStr = scanner.nextLine();
+            double patrimonio = Tools.lerNumeroDecimal(patrimonioStr);
 
             System.out.println("Tipo: [1] Pessoa Física | [2] Pessoa Jurídica");
-            int tipo = lerNumeroInteiro();
+            String tipoStr = scanner.nextLine();
+            int tipo = Tools.lerNumeroInteiro(tipoStr);
 
             if (tipo == 1) {
                 System.out.print("CPF: ");

@@ -1,10 +1,17 @@
 package br.ufjf.dcc.Tools;
 
+import br.ufjf.dcc.CoresMensagens.CoresMensagens;
+import br.ufjf.dcc.Erros.ErrosNumbersFormato;
+
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Tools {
+public class Tools implements CoresMensagens {
     public static String capitalize(String str){
         if(str == null || str.isEmpty()){
             return str;
@@ -64,6 +71,22 @@ public class Tools {
         return t.toLowerCase();
     }
 
+    private static <T extends Number> T lerNumeroGeneric(String entrada, Function<String, T> parser, String mensagemErro) {
+        Scanner sc = new Scanner(System.in);
+        String s = entrada;
+        while (true) {
+            try {
+                return parser.apply(s.trim());
+            } catch (Exception e) {
+                System.out.print(AMARELO + mensagemErro + RESET);
+                if (sc.hasNextLine()) {
+                    s = sc.nextLine();
+                } else {
+                    throw new IllegalStateException("Nenhuma entrada disponível");
+                }
+            }
+        }
+    }
     public static Map<String, Integer> construirMapaCabecalho(String headerLine, String delimiter) {
         String[] headers = headerLine.split(delimiter);
         Map<String, Integer> map = new HashMap<>();
@@ -82,6 +105,7 @@ public class Tools {
         }
         return "";
     }
+
     public static Float parseFloatNullable(String valor) {
         if (valor == null || valor.trim().isEmpty()) return null;
         String s = valor.trim();
@@ -109,5 +133,30 @@ public class Tools {
                 return null;
             }
         }
+    }
+
+    public static int extractIndex(String nome) {
+
+        Pattern padrao= Pattern.compile("(_)(\\d+)(\\.)");
+        Matcher compativel = padrao.matcher(nome);
+        if (compativel.find()) {
+            try {
+                return Integer.parseInt(compativel.group(2));
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Erro ao converter número do índice: " + nome);
+            }
+        }
+        return 1;
+    }
+
+
+    public static int lerNumeroInteiro(String entrada) {
+        Integer val = lerNumeroGeneric(entrada, str -> Integer.parseInt(str), "Entrada inválida. Digite um número inteiro: ");
+        return val;
+    }
+
+    public static double lerNumeroDecimal(String entrada) {
+        Double val = lerNumeroGeneric(entrada, str -> Double.parseDouble(str.replace(",", ".")), "Entrada inválida. Digite um valor numérico: ");
+        return val;
     }
 }
