@@ -87,6 +87,17 @@ public class Tools implements CoresMensagens {
             }
         }
     }
+
+    private static <T extends Number> T parseNumberNullableTemplate(String valor, java.util.function.Function<String, T> parser, java.util.function.Function<String, String> normalizer) {
+        if (valor == null || valor.trim().isEmpty()) return null;
+        String s = normalizer.apply(valor.trim());
+        try {
+            return parser.apply(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
     public static Map<String, Integer> construirMapaCabecalho(String headerLine, String delimiter) {
         String[] headers = headerLine.split(delimiter);
         Map<String, Integer> map = new HashMap<>();
@@ -95,6 +106,7 @@ public class Tools implements CoresMensagens {
         }
         return map;
     }
+
     public static String obterCampo(String[] dados, Map<String, Integer> headerMap, String... aliases) {
         for (String a : aliases) {
             Integer idx = headerMap.get(normalizarChave(a));
@@ -107,32 +119,23 @@ public class Tools implements CoresMensagens {
     }
 
     public static Float parseFloatNullable(String valor) {
-        if (valor == null || valor.trim().isEmpty()) return null;
-        String s = valor.trim();
-        if (s.contains(",") && s.contains(".")) {
-            s = s.replace(".", "").replace(",", ".");
-        } else if (s.contains(",")) {
-            s = s.replace(",", ".");
-        }
-        try {
-            return Float.parseFloat(s);
-        } catch (NumberFormatException e) {
-            return null;
-        }
+        return parseNumberNullableTemplate(valor,
+                Float::parseFloat,
+                s -> {
+                    if (s.contains(",") && s.contains(".")) {
+                        return s.replace(".", "").replace(",", ".");
+                    } else if (s.contains(",")) {
+                        return s.replace(",", ".");
+                    } else {
+                        return s;
+                    }
+                });
     }
 
     public static Long parseLongNullable(String valor) {
-        if (valor == null || valor.trim().isEmpty()) return null;
-        try {
-            return Long.parseLong(valor.trim());
-        } catch (NumberFormatException e) {
-            String s = valor.trim().replace(".", "").replace(",", "");
-            try {
-                return Long.parseLong(s);
-            } catch (NumberFormatException ex) {
-                return null;
-            }
-        }
+        return parseNumberNullableTemplate(valor,
+                Long::parseLong,
+                s -> s.replace(".", "").replace(",", ""));
     }
 
     public static int extractIndex(String nome) {
