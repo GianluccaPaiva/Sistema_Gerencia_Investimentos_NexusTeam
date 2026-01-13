@@ -23,7 +23,7 @@ public abstract class Ativos {
         System.out.println("Nome: " + Tools.capitalize(this.nome));
         System.out.println("ticker: " + this.ticker);
         System.out.println("Preco: " + this.preco);
-        System.out.println("Qualificado: " + this.qualificado);
+        System.out.println("Qualificado: " + (this.qualificado? "Sim" : "Nao"));
     }
 
     public String getTicker(){
