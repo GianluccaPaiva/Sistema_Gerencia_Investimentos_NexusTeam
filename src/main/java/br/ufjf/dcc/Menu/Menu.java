@@ -312,41 +312,60 @@ public class Menu implements CoresMensagens {
         }
     }
 
+    private static int lerNumeroInteiro() {
+        while (true) {
+            try {
+                String entrada = scanner.nextLine();
+                return Integer.parseInt(entrada.trim());
+            } catch (NumberFormatException e) {
+                System.out.print(AMARELO + "Entrada inválida. Digite um número inteiro: " + RESET);
+            }
+        }
+    }
+
+    private static double lerNumeroDecimal() {
+        while (true) {
+            try {
+                String entrada = scanner.nextLine();
+                return Double.parseDouble(entrada.replace(",", ".").trim());
+            } catch (NumberFormatException e) {
+                System.out.print(AMARELO + "Entrada inválida. Digite um valor numérico: " + RESET);
+            }
+        }
+    }
+
+    // Talvez colocar no tools esses dois cidadãos acima?
+
     private static void menuInvestidores() {
         int opcao = -1;
         while (opcao != 0) {
-            System.out.println("\n---------- MENU DE INVESTIDORES ----------");
-            System.out.println("1. Cadastrar Novo Investidor");
-            System.out.println("2. Buscar Investidor (Operar/Exibir Carteira)");
-            System.out.println("3. Listar Todos os Investidores");
-            System.out.println("4. Editar Investidor");
-            System.out.println("5. Excluir Investidor");
+            System.out.println(ROXO + "\n========== MENU INVESTIDORES ==========" + RESET);
+            System.out.println("1. Cadastrar Investidor");
+            System.out.println("2. Cadastrar Investidor em Lote (Arquivo)");
+            System.out.println("3. Exibir Todos Investidores");
+            System.out.println("4. Excluir Investidores (Lista de CPFs)");
+            System.out.println("5. Selecionar Investidor por CPF ou CNPJ");
             System.out.println("0. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
 
-            String entrada = scanner.nextLine();
-            try {
-                opcao = Integer.parseInt(entrada.trim());
-            } catch (NumberFormatException e) {
-                System.out.println(AMARELO + "Erro: insira um número válido." + RESET);
-                continue;
-            }
+            opcao = lerNumeroInteiro();
 
             switch (opcao) {
                 case 1:
                     cadastrarInvestidor();
                     break;
                 case 2:
-                    System.out.println("Em breve: Operações de compra e venda.");
+                    System.out.println(AMARELO + "Funcionalidade 'Cadastrar em Lote' a ser implementada." + RESET);
                     break;
                 case 3:
                     listarInvestidores();
                     break;
                 case 4:
-                    // implementar depois
+                    System.out.println(AMARELO + "Funcionalidade 'Excluir em Lote' a ser implementada." + RESET);
                     break;
                 case 5:
-                    // implementar depois
+                    System.out.println(AMARELO + "Funcionalidade 'Selecionar Investidor' será a proxima vitima hahahahahaha." + RESET);
+                    // buscarInvestidorEOperar();
                     break;
                 case 0:
                     System.out.println("Voltando...");
@@ -359,14 +378,11 @@ public class Menu implements CoresMensagens {
 
     private static void cadastrarInvestidor() {
         System.out.println(VERDE + "\n--- Cadastro de Investidor ---" + RESET);
-
         try {
             System.out.print("Nome: ");
             String nome = scanner.nextLine();
-
             System.out.print("Telefone: ");
             String telefone = scanner.nextLine();
-
             System.out.print("Data de Nascimento: ");
             String nascimento = scanner.nextLine();
 
@@ -374,7 +390,7 @@ public class Menu implements CoresMensagens {
             System.out.print("Rua: ");
             String rua = scanner.nextLine();
             System.out.print("Número: ");
-            int numero = Integer.parseInt(scanner.nextLine());
+            int numero = lerNumeroInteiro();
             System.out.print("Bairro: ");
             String bairro = scanner.nextLine();
             System.out.print("Cidade: ");
@@ -387,20 +403,20 @@ public class Menu implements CoresMensagens {
             Endereco endereco = new Endereco(rua, cidade, estado, cep, bairro, numero);
 
             System.out.print("Patrimônio Inicial: ");
-            double patrimonio = Double.parseDouble(scanner.nextLine().replace(",", "."));
+            double patrimonio = lerNumeroDecimal();
 
-            System.out.println("Tipo de Investidor: [1] Pessoa Física  [2] Pessoa Jurídica");
-            int tipo = Integer.parseInt(scanner.nextLine());
+            System.out.println("Tipo: [1] Pessoa Física | [2] Pessoa Jurídica");
+            int tipo = lerNumeroInteiro();
 
             if (tipo == 1) {
                 System.out.print("CPF: ");
                 String cpf = scanner.nextLine();
-                System.out.print("Perfil (Conservador/Moderado/Arrojado): ");
+                System.out.print("Perfil (Conservador, Moderado, Arrojado): ");
                 String perfil = scanner.nextLine();
 
                 PessoaFisica pf = new PessoaFisica(nome, cpf, telefone, nascimento, endereco, patrimonio, perfil);
                 investidores.add(pf);
-                System.out.println(VERDE + "Investidor Pessoa Física cadastrado com sucesso!" + RESET);
+                System.out.println(VERDE + "Pessoa Física cadastrada com sucesso!" + RESET);
 
             } else if (tipo == 2) {
                 System.out.print("CNPJ: ");
@@ -411,16 +427,12 @@ public class Menu implements CoresMensagens {
                 PessoaJuridica pj = new PessoaJuridica(nome, cnpj, telefone, nascimento, endereco, patrimonio, razao);
                 investidores.add(pj);
                 System.out.println(VERDE + "Investidor Institucional cadastrado com sucesso!" + RESET);
-
             } else {
-                System.out.println(AMARELO + "Opção de tipo inválida." + RESET);
+                System.out.println(AMARELO + "Tipo inválido." + RESET);
             }
 
         } catch (DadosInvalidosException e) {
-            System.out.println(VERMELHO + "Erro ao cadastrar: " + e.getMessage() + RESET);
-
-        } catch (NumberFormatException e) {
-            System.out.println(VERMELHO + "Erro: Digite apenas números nos campos numéricos." + RESET);
+            System.out.println(VERMELHO + "Erro na validação: " + e.getMessage() + RESET);
         } catch (Exception e) {
             System.out.println(VERMELHO + "Erro inesperado: " + e.getMessage() + RESET);
         }
@@ -436,6 +448,5 @@ public class Menu implements CoresMensagens {
             }
         }
     }
-
 
 }
