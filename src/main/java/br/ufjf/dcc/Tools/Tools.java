@@ -149,7 +149,6 @@ public class Tools implements CoresMensagens {
         return 1;
     }
 
-
     public static int lerNumeroInteiro(String entrada) {
         Integer val = lerNumeroGeneric(entrada, str -> Integer.parseInt(str), "Entrada inválida. Digite um número inteiro: ");
         return val;
