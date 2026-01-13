@@ -486,16 +486,23 @@ public class Mercado implements CoresMensagens {
                             String precoStr = Tools.obterCampo(dados, hdr, "preco", "valor", "price", "preço", "Preço", "preço (r$)", "Preço (R$)");
                             String qualStr = Tools.obterCampo(dados, hdr, "qualificado", "qualif", "qtd", "is_qualified", "qual", "Qualificado", "qualificado?");
 
-                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty()) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Ação)." + RESET);
-                                break;
+                            if (ticker.isEmpty()) {
+                                ticker = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": ticker ausente, usando (Ausente)." + RESET);
                             }
+                            if (nome.isEmpty()) {
+                                nome = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": nome ausente, usando (Ausente)." + RESET);
+                            }
+
                             Float preco = Tools.parseFloatNullable(precoStr);
                             if (preco == null) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido): " + precoStr + RESET);
-                                break;
+                                preco = 0f;
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": preço ausente/ inválido, usando 0." + RESET);
                             }
+
                             boolean qualificado = "1".equals(qualStr) || qualStr.equalsIgnoreCase("sim") || qualStr.equalsIgnoreCase("true");
+
                             auxAdicaoAtivo(new Acoes(nome, ticker, preco, qualificado), 1);
                             break;
                         }
@@ -508,41 +515,73 @@ public class Mercado implements CoresMensagens {
                             String ultimoDivStr = Tools.obterCampo(dados, hdr, "ultimodividendo", "ultimo_dividendo", "ultimo", "dividendo", "UltimoDividendo", "último dividendo", "Último Dividendo");
                             String taxaAdmStr = Tools.obterCampo(dados, hdr, "taxaadm", "taxa_adm", "taxa", "taxa_admissao", "TaxaAdm", "taxa de administração", "Taxa de Administração");
 
-                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || setor.isEmpty() || ultimoDivStr.isEmpty() || taxaAdmStr.isEmpty()) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para FII)." + RESET);
-                                break;
+                            if (ticker.isEmpty()) {
+                                ticker = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": ticker ausente para FII, usando (Ausente)." + RESET);
                             }
+                            if (nome.isEmpty()) {
+                                nome = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": nome ausente para FII, usando (Ausente)." + RESET);
+                            }
+                            if (setor.isEmpty()) {
+                                setor = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": setor ausente para FII, usando (Ausente)." + RESET);
+                            }
+
                             Float preco = Tools.parseFloatNullable(precoStr);
-                            Float ultimoDiv = Tools.parseFloatNullable(ultimoDivStr);
-                            Float taxaAdm = Tools.parseFloatNullable(taxaAdmStr);
-                            if (preco == null || ultimoDiv == null || taxaAdm == null) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (número inválido em FII)." + RESET);
-                                break;
+                            if (preco == null) {
+                                preco = 0f;
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": preço ausente/ inválido para FII, usando 0." + RESET);
                             }
+
+                            Float ultimoDiv = Tools.parseFloatNullable(ultimoDivStr);
+                            if (ultimoDiv == null) {
+                                ultimoDiv = 0f;
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": ultimoDividendo ausente/ inválido, usando 0." + RESET);
+                            }
+
+                            Float taxaAdm = Tools.parseFloatNullable(taxaAdmStr);
+                            if (taxaAdm == null) {
+                                taxaAdm = 0f;
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": taxaAdm ausente/ inválida, usando 0." + RESET);
+                            }
+
                             boolean qualificado = "1".equals(qualStr) || qualStr.equalsIgnoreCase("sim") || qualStr.equalsIgnoreCase("true");
                             auxAdicaoAtivo(new Fiis(nome, ticker, preco, qualificado, setor, ultimoDiv, taxaAdm), 2);
                             break;
                         }
-                        // java
                         case 3: { // Stocks
                             String ticker = Tools.obterCampo(dados, hdr, "ticker", "codigo", "symbol");
                             String nome = Tools.obterCampo(dados, hdr, "nome", "name", "descricao");
                             String precoStr = Tools.obterCampo(dados, hdr,
                                 "preco", "valor", "price", "preço", "Preço",
                                 "preço (r$)", "Preço (R$)",
-                                "preço (usd)", "Preço (USD)"); // adicionado variantes USD
+                                "preço (usd)", "Preço (USD)");
                             String bolsa = Tools.obterCampo(dados, hdr,
-                                "bolsa", "exchange", "bolsa_negociacao", "Bolsa", "Bolsa de negociação"); // adicionado com espaços
+                                "bolsa", "exchange", "bolsa_negociacao", "Bolsa", "Bolsa de negociação");
                             String setor = Tools.obterCampo(dados, hdr, "setor", "segmento", "sector");
 
-                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || bolsa.isEmpty() || setor.isEmpty()) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Stock)." + RESET);
-                                break;
+                            if (ticker.isEmpty()) {
+                                ticker = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": ticker ausente para Stock, usando (Ausente)." + RESET);
                             }
+                            if (nome.isEmpty()) {
+                                nome = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": nome ausente para Stock, usando (Ausente)." + RESET);
+                            }
+                            if (bolsa.isEmpty()) {
+                                bolsa = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": bolsa ausente para Stock, usando (Ausente)." + RESET);
+                            }
+                            if (setor.isEmpty()) {
+                                setor = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": setor ausente para Stock, usando (Ausente)." + RESET);
+                            }
+
                             Float preco = Tools.parseFloatNullable(precoStr);
                             if (preco == null) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido para Stock)." + RESET);
-                                break;
+                                preco = 0f;
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": preço ausente/ inválido para Stock, usando 0." + RESET);
                             }
                             auxAdicaoAtivo(new Stocks(nome, ticker, preco, bolsa, setor), 3);
                             break;
@@ -554,17 +593,35 @@ public class Mercado implements CoresMensagens {
                             String consenso = Tools.obterCampo(dados, hdr, "consenso", "algoritmo", "consensus", "Algoritmo Consenso", "algoritmo consenso");
                             String qtdMaxStr = Tools.obterCampo(dados, hdr, "qtdmax", "quantidademaxima", "max", "max_supply", "quantidade máxima", "Quantidade Máxima");
 
-                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || consenso.isEmpty()) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Cripto)." + RESET);
-                                break;
+                            if (ticker.isEmpty()) {
+                                ticker = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": ticker ausente para Cripto, usando (Ausente)." + RESET);
                             }
+                            if (nome.isEmpty()) {
+                                nome = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": nome ausente para Cripto, usando (Ausente)." + RESET);
+                            }
+                            if (consenso.isEmpty()) {
+                                consenso = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": consenso ausente para Cripto, usando (Ausente)." + RESET);
+                            }
+
                             Float preco = Tools.parseFloatNullable(precoStr);
                             if (preco == null) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido para Cripto)." + RESET);
-                                break;
+                                preco = 0f;
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": preço ausente/ inválido para Cripto, usando 0." + RESET);
                             }
+
                             Long qtdMax = Tools.parseLongNullable(qtdMaxStr);
-                            if (qtdMax == null) qtdMax = 0L;
+                            if (qtdMax == null) {
+                                qtdMax = 0L;
+                                if (qtdMaxStr != null && !qtdMaxStr.trim().isEmpty()) {
+                                    System.out.println(AMARELO + "Linha " + linhaNum + ": qtdMax inválida, usando 0." + RESET);
+                                } else {
+                                    System.out.println(AMARELO + "Linha " + linhaNum + ": qtdMax ausente, usando 0." + RESET);
+                                }
+                            }
+
                             auxAdicaoAtivo(new Criptomoedas(nome, ticker, preco, consenso, qtdMax), 4);
                             break;
                         }
@@ -575,16 +632,29 @@ public class Mercado implements CoresMensagens {
                             String tipoRend = Tools.obterCampo(dados, hdr, "tipo", "tiporendimento", "tipo_rendimento", "Tipo de Rendimento", "tipo de rendimento");
                             String venc = Tools.obterCampo(dados, hdr, "vencimento", "venc", "maturity", "Vencimento");
 
-                            if (ticker.isEmpty() || nome.isEmpty() || precoStr.isEmpty() || tipoRend.isEmpty() || venc.isEmpty()) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (campos obrigatórios ausentes para Tesouro)." + RESET);
-                                break;
+                            if (ticker.isEmpty()) {
+                                ticker = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": ticker ausente para Tesouro, usando (Ausente)." + RESET);
                             }
+                            if (nome.isEmpty()) {
+                                nome = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": nome ausente para Tesouro, usando (Ausente)." + RESET);
+                            }
+                            if (tipoRend.isEmpty()) {
+                                tipoRend = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": tipo rendimento ausente para Tesouro, usando (Ausente)." + RESET);
+                            }
+                            if (venc.isEmpty()) {
+                                venc = "(Ausente)";
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": vencimento ausente para Tesouro, usando (Ausente)." + RESET);
+                            }
+
                             Float preco = Tools.parseFloatNullable(precoStr);
                             if (preco == null) {
-                                System.out.println(AMARELO + "Linha " + linhaNum + " pulada (preço inválido para Tesouro)." + RESET);
-                                break;
+                                preco = 0f;
+                                System.out.println(AMARELO + "Linha " + linhaNum + ": preço ausente/ inválido para Tesouro, usando 0." + RESET);
                             }
-                           auxAdicaoAtivo(new Tesouro(nome, ticker, preco, tipoRend, venc), 5); // corrigido: tipo 5
+                            auxAdicaoAtivo(new Tesouro(nome, ticker, preco, tipoRend, venc), 5);
                             break;
                         }
                         default:
