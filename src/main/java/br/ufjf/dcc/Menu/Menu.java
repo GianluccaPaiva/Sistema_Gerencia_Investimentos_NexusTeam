@@ -2,15 +2,23 @@ package br.ufjf.dcc.Menu;
 
 import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
+import br.ufjf.dcc.Erros.DadosInvalidosException;
 import br.ufjf.dcc.Erros.ErroInterrupcao;
 import br.ufjf.dcc.Erros.ErrosNumbersFormato;
+import br.ufjf.dcc.Investidor.Endereco;
+import br.ufjf.dcc.Investidor.Investidor;
+import br.ufjf.dcc.Investidor.PessoaFisica;
+import br.ufjf.dcc.Investidor.PessoaJuridica;
 import br.ufjf.dcc.Mercado.Mercado;
 import br.ufjf.dcc.Tools.Tools;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Menu implements CoresMensagens {
     private static final Mercado mercado = new Mercado();
+    private static final List<Investidor> investidores = new ArrayList<>();
     private static final Scanner scanner = new Scanner(System.in);
     private static boolean ativar = true;
 
@@ -39,7 +47,7 @@ public class Menu implements CoresMensagens {
                     menuAtivos();
                     break;
                 case 2:
-                    System.out.println("Menu de Investidores - (A implementar)");
+                    menuInvestidores();
                     break;
                 default:
                     System.out.println(AMARELO + "Opção inválida!"+ RESET);
@@ -303,4 +311,131 @@ public class Menu implements CoresMensagens {
             }
         }
     }
+
+    private static void menuInvestidores() {
+        int opcao = -1;
+        while (opcao != 0) {
+            System.out.println("\n---------- MENU DE INVESTIDORES ----------");
+            System.out.println("1. Cadastrar Novo Investidor");
+            System.out.println("2. Buscar Investidor (Operar/Exibir Carteira)");
+            System.out.println("3. Listar Todos os Investidores");
+            System.out.println("4. Editar Investidor");
+            System.out.println("5. Excluir Investidor");
+            System.out.println("0. Voltar ao Menu Principal");
+            System.out.print("Escolha uma opção: ");
+
+            String entrada = scanner.nextLine();
+            try {
+                opcao = Integer.parseInt(entrada.trim());
+            } catch (NumberFormatException e) {
+                System.out.println(AMARELO + "Erro: insira um número válido." + RESET);
+                continue;
+            }
+
+            switch (opcao) {
+                case 1:
+                    cadastrarInvestidor();
+                    break;
+                case 2:
+                    System.out.println("Em breve: Operações de compra e venda.");
+                    break;
+                case 3:
+                    listarInvestidores();
+                    break;
+                case 4:
+                    // implementar depois
+                    break;
+                case 5:
+                    // implementar depois
+                    break;
+                case 0:
+                    System.out.println("Voltando...");
+                    break;
+                default:
+                    System.out.println(AMARELO + "Opção inválida!" + RESET);
+            }
+        }
+    }
+
+    private static void cadastrarInvestidor() {
+        System.out.println(VERDE + "\n--- Cadastro de Investidor ---" + RESET);
+
+        try {
+            System.out.print("Nome: ");
+            String nome = scanner.nextLine();
+
+            System.out.print("Telefone: ");
+            String telefone = scanner.nextLine();
+
+            System.out.print("Data de Nascimento: ");
+            String nascimento = scanner.nextLine();
+
+            System.out.println("--- Endereço ---");
+            System.out.print("Rua: ");
+            String rua = scanner.nextLine();
+            System.out.print("Número: ");
+            int numero = Integer.parseInt(scanner.nextLine());
+            System.out.print("Bairro: ");
+            String bairro = scanner.nextLine();
+            System.out.print("Cidade: ");
+            String cidade = scanner.nextLine();
+            System.out.print("Estado: ");
+            String estado = scanner.nextLine();
+            System.out.print("CEP: ");
+            String cep = scanner.nextLine();
+
+            Endereco endereco = new Endereco(rua, cidade, estado, cep, bairro, numero);
+
+            System.out.print("Patrimônio Inicial: ");
+            double patrimonio = Double.parseDouble(scanner.nextLine().replace(",", "."));
+
+            System.out.println("Tipo de Investidor: [1] Pessoa Física  [2] Pessoa Jurídica");
+            int tipo = Integer.parseInt(scanner.nextLine());
+
+            if (tipo == 1) {
+                System.out.print("CPF: ");
+                String cpf = scanner.nextLine();
+                System.out.print("Perfil (Conservador/Moderado/Arrojado): ");
+                String perfil = scanner.nextLine();
+
+                PessoaFisica pf = new PessoaFisica(nome, cpf, telefone, nascimento, endereco, patrimonio, perfil);
+                investidores.add(pf);
+                System.out.println(VERDE + "Investidor Pessoa Física cadastrado com sucesso!" + RESET);
+
+            } else if (tipo == 2) {
+                System.out.print("CNPJ: ");
+                String cnpj = scanner.nextLine();
+                System.out.print("Razão Social: ");
+                String razao = scanner.nextLine();
+
+                PessoaJuridica pj = new PessoaJuridica(nome, cnpj, telefone, nascimento, endereco, patrimonio, razao);
+                investidores.add(pj);
+                System.out.println(VERDE + "Investidor Institucional cadastrado com sucesso!" + RESET);
+
+            } else {
+                System.out.println(AMARELO + "Opção de tipo inválida." + RESET);
+            }
+
+        } catch (DadosInvalidosException e) {
+            System.out.println(VERMELHO + "Erro ao cadastrar: " + e.getMessage() + RESET);
+
+        } catch (NumberFormatException e) {
+            System.out.println(VERMELHO + "Erro: Digite apenas números nos campos numéricos." + RESET);
+        } catch (Exception e) {
+            System.out.println(VERMELHO + "Erro inesperado: " + e.getMessage() + RESET);
+        }
+    }
+
+    private static void listarInvestidores() {
+        System.out.println(ROXO + "\n--- Lista de Investidores ---" + RESET);
+        if (investidores.isEmpty()) {
+            System.out.println(AMARELO + "Nenhum investidor cadastrado." + RESET);
+        } else {
+            for (Investidor inv : investidores) {
+                System.out.println(inv.toString());
+            }
+        }
+    }
+
+
 }

@@ -51,7 +51,7 @@ public abstract class Investidor {
 
     @Override
     public String toString() {
-        return String.format("Nome: %-20s | ID: %-14s | Patrimônio: R$ %.2f", this.nome, this.id, this.patrimonio);
+        return String.format("Nome: %-17s | ID: %-14s | Patrimônio: R$ %.2f", this.nome, this.id, this.patrimonio);
     }
 
     public String getNome() {return nome;}
