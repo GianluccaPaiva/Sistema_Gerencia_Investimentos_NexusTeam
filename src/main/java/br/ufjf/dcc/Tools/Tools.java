@@ -102,7 +102,6 @@ public class Tools {
         try {
             return Long.parseLong(valor.trim());
         } catch (NumberFormatException e) {
-            // tentar com pontos/virgulas removidos
             String s = valor.trim().replace(".", "").replace(",", "");
             try {
                 return Long.parseLong(s);
