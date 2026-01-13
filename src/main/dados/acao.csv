@@ -157,7 +157,7 @@ LWSA3;Locaweb;4,25;0
 TASA4;Taurus;5,42;0
 DASA3;Dasa;4,05;0
 IGTI11;Iguatemi;25,38;0
-IGTI11;Jereissati Participações;25,38;0
+IGTJ11;Jereissati Participações;25,38;0
 POSI3;Positivo;4,09;0
 EGIE3;Engie;30,90;0
 CSMG3;COPASA;42,70;0
@@ -273,7 +273,7 @@ JFEN3;João Fortes;1,02;0
 BPAC5;Banco BTG Pactual;10,76;0
 LAND3;Terra Santa;8,59;0
 IGTI3;Iguatemi;2,92;0
-IGTI3;Jereissati Participações;2,92;0
+IGPI3;Jereissati Participações;2,92;0
 DOTZ3;Dotz;4,35;0
 COCE5;Coelce;34,79;0
 HAGA4;Haga;1,13;0
@@ -334,7 +334,7 @@ CTKA4;Karsten;39,40;0
 PEAB4;Participações Aliança da Bahia;38,20;0
 GEPA4;Rio Paranapanema Energia;33,00;0
 IGTI4;Jereissati Participações;11,40;0
-IGTI4;Iguatemi;11,40;0
+IGBI4;Iguatemi;11,40;0
 CEDO4;Cedro Têxtil;10,03;0
 ENMT3;Energisa MT;49,21;0
 CEBR5;CEB;26,18;0
@@ -351,7 +351,7 @@ RPAD5;Alfa Holdings;6,40;0
 GSHP3;General Shopping & Outlets;4,20;0
 SNSY5;Sansuy;2,84;0
 RVEE3;REVEE S.A.;2,30;0
-RVEE3;REVEE;2,30;0
+RVEF3;REVEE;2,30;0
 CTAX3;Contax;0,94;0
 HAGA3;Haga;1,64;0
 CTSA4;Santanense;2,02;0
@@ -381,7 +381,7 @@ CRPG3;Tronox Pigmentos;17,01;0
 BRSR5;Banrisul;15,10;0
 MERC4;Mercantil do Brasil Financeira;12,50;0
 CCTY3;REDVECO PROPERTIES S.A;12,00;0
-CCTY3;RDVC CITY;12,00;0
+CCTW3;RDVC CITY;12,00;0
 BDLL3;Bardella;7,70;0
 MRSA3B;MRS Logística;39,00;0
 MWET4;Wetzel;8,63;0
