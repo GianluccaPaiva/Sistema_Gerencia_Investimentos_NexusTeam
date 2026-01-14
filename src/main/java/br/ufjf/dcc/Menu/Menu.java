@@ -11,6 +11,7 @@ import br.ufjf.dcc.Investidor.Investidor;
 import br.ufjf.dcc.Investidor.PessoaFisica;
 import br.ufjf.dcc.Investidor.PessoaJuridica;
 import br.ufjf.dcc.Mercado.Mercado;
+import br.ufjf.dcc.Movimentacao.Movimentacao;
 import br.ufjf.dcc.Tools.Tools;
 
 import java.util.ArrayList;
@@ -516,7 +517,7 @@ public class Menu implements CoresMensagens {
 
     private static void realizarCompra(Investidor inv) {
         System.out.println("\n--- Nova Compra ---");
-        System.out.print("Digite o Ticker do ativo (ex: PETR4): ");
+        System.out.print("Digite o Ticker do ativo: ");
         String ticker = scanner.nextLine();
 
         Ativos ativo = mercado.buscaAtivo(ticker);
@@ -532,7 +533,12 @@ public class Menu implements CoresMensagens {
 
         try {
             inv.comprar(ativo, qtd, ativo.getPreco());
+
+            Movimentacao mov = new Movimentacao("COMPRA", "NexusBank", ativo.getTicker(), qtd, ativo.getPreco());
+
             System.out.println(VERDE + "Compra realizada com sucesso!" + RESET);
+            System.out.println(ROXO + "Recibo da Operação:" + RESET);
+            System.out.println(mov);
 
         } catch (DadosInvalidosException e) {
             System.out.println(VERMELHO + "Falha na compra: " + e.getMessage() + RESET);
@@ -558,7 +564,12 @@ public class Menu implements CoresMensagens {
 
         try {
             inv.vender(ativo, qtd);
+
+            Movimentacao mov = new Movimentacao("VENDA", "NexusBank", ativo.getTicker(), qtd, ativo.getPreco());
+
             System.out.println(VERDE + "Venda realizada com sucesso!" + RESET);
+            System.out.println(ROXO + "Recibo da Operação:" + RESET);
+            System.out.println(mov);
 
         } catch (DadosInvalidosException e) {
             System.out.println(VERMELHO + "Erro na venda: " + e.getMessage() + RESET);
@@ -679,4 +690,5 @@ public class Menu implements CoresMensagens {
         }
         return -1;
     }
+
 }
