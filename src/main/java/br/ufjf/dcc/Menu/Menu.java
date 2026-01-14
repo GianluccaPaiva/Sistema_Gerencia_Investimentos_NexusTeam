@@ -1,6 +1,7 @@
 package br.ufjf.dcc.Menu;
 
 import br.ufjf.dcc.Ativos.Ativos;
+import br.ufjf.dcc.Carteira.ItemCarteira;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.DadosInvalidosException;
 import br.ufjf.dcc.Erros.ErroInterrupcao;
@@ -15,6 +16,9 @@ import br.ufjf.dcc.Tools.Tools;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static br.ufjf.dcc.Tools.Tools.lerNumeroDecimal;
+import static br.ufjf.dcc.Tools.Tools.lerNumeroInteiro;
 
 public class Menu implements CoresMensagens {
     private static final Mercado mercado = new Mercado();
@@ -326,7 +330,7 @@ public class Menu implements CoresMensagens {
             System.out.println("0. Voltar ao Menu Principal");
             System.out.print("Escolha uma opção: ");
             String entrada = scanner.nextLine();
-            opcao = Tools.lerNumeroInteiro(entrada);
+            opcao = lerNumeroInteiro(entrada);
 
             switch (opcao) {
                 case 1:
@@ -342,8 +346,7 @@ public class Menu implements CoresMensagens {
                     System.out.println(AMARELO + "Funcionalidade 'Excluir em Lote' a ser implementada." + RESET);
                     break;
                 case 5:
-                    System.out.println(AMARELO + "Funcionalidade 'Selecionar Investidor' será a proxima vitima hahahahahaha." + RESET);
-                    // buscarInvestidorEOperar();
+                    buscarInvestidorEOperar();
                     break;
                 case 0:
                     System.out.println("Voltando...");
@@ -369,7 +372,7 @@ public class Menu implements CoresMensagens {
             String rua = scanner.nextLine();
             System.out.print("Número: ");
             String numeroStr = scanner.nextLine();
-            int numero = Tools.lerNumeroInteiro(numeroStr);
+            int numero = lerNumeroInteiro(numeroStr);
             System.out.print("Bairro: ");
             String bairro = scanner.nextLine();
             System.out.print("Cidade: ");
@@ -383,11 +386,11 @@ public class Menu implements CoresMensagens {
 
             System.out.print("Patrimônio Inicial: ");
             String patrimonioStr = scanner.nextLine();
-            double patrimonio = Tools.lerNumeroDecimal(patrimonioStr);
+            double patrimonio = lerNumeroDecimal(patrimonioStr);
 
             System.out.println("Tipo: [1] Pessoa Física | [2] Pessoa Jurídica");
             String tipoStr = scanner.nextLine();
-            int tipo = Tools.lerNumeroInteiro(tipoStr);
+            int tipo = lerNumeroInteiro(tipoStr);
 
             if (tipo == 1) {
                 System.out.print("CPF: ");
@@ -427,6 +430,140 @@ public class Menu implements CoresMensagens {
             for (Investidor inv : investidores) {
                 System.out.println(inv.toString());
             }
+        }
+    }
+
+    private static void buscarInvestidorEOperar() {
+        System.out.print("Digite o CPF ou CNPJ do investidor: ");
+        String id = scanner.nextLine();
+
+        Investidor investidorEncontrado = null;
+
+        for (Investidor inv : investidores) {
+            if (inv.getId().equals(id)) {
+                investidorEncontrado = inv;
+                break;
+            }
+        }
+
+        if (investidorEncontrado == null) {
+            System.out.println(AMARELO + "Investidor não encontrado." + RESET);
+        } else {
+            menuOperacoesInvestidor(investidorEncontrado);
+        }
+    }
+
+    private static void menuOperacoesInvestidor(Investidor inv) {
+        int opcao = -1;
+        while (opcao != 0) {
+            System.out.println(AZUL + "\n--- Painel de " + inv.getNome() + " ---" + RESET);
+            System.out.println("1. Editar informações do investidor");
+            System.out.println("2. Excluir este investidor");
+            System.out.println("3. Exibir Carteira de Ativos do Investidor");
+            System.out.println("4. Exibir Valor Total Gasto");
+            System.out.println("5. Exibir Valor Total Atual");
+            System.out.println("6. Exibir Porcentagens (Renda Fixa/Var e Nac/Int)");
+            System.out.println("7. Salvar Relatório da Carteira em JSON");
+            System.out.println("8. Adicionar Movimentação de Compra");
+            System.out.println("9. Adicionar Movimentação de Venda");
+            System.out.println("10. Adicionar Lote de Movimentações");
+            System.out.println("0. Voltar ao menu anterior");
+            System.out.print("Escolha uma opção: ");
+
+            opcao = lerNumeroInteiro(scanner.nextLine());
+
+            switch (opcao) {
+                case 1:
+                    System.out.println(AMARELO + "Editar: A ser implementado." + RESET);
+                    break;
+                case 2:
+                    System.out.println(AMARELO + "Excluir: A ser implementado." + RESET);
+                    break;
+                case 3:
+                    inv.exibirCarteira();
+                    break;
+                case 4:
+                    System.out.printf("Valor Total Gasto: R$ %.2f\n", inv.getCarteira().valorTotalGasto());
+                    break;
+                case 5:
+                    System.out.printf("Valor Total Atual: R$ %.2f\n", inv.getCarteira().valorTotalCarteira());
+                    break;
+                case 6:
+                    double[] rfRv = inv.getCarteira().porcentagemRendaFixaVariavel();
+                    double[] nacInt = inv.getCarteira().porcentagemNacionalInternacional();
+                    System.out.printf("Renda Fixa: %.1f%% | Renda Variável: %.1f%%\n", rfRv[0], rfRv[1]);
+                    System.out.printf("Nacional:   %.1f%% | Internacional:  %.1f%%\n", nacInt[0], nacInt[1]);
+                    break;
+                case 7:
+                    System.out.println(AMARELO + "Gerar JSON: A ser implementado." + RESET);
+                    break;
+                case 8:
+                    realizarCompra(inv);
+                    break;
+                case 9:
+                    realizarVenda(inv);
+                    break;
+                case 10:
+                    System.out.println(AMARELO + "Lote de Movimentações: A ser implementado." + RESET);
+                    break;
+                case 0:
+                    break;
+                default:
+                    System.out.println(AMARELO + "Opção inválida!" + RESET);
+            }
+        }
+    }
+
+    private static void realizarCompra(Investidor inv) {
+        System.out.println("\n--- Nova Compra ---");
+        System.out.print("Digite o Ticker do ativo (ex: PETR4): ");
+        String ticker = scanner.nextLine();
+
+        Ativos ativo = mercado.buscaAtivo(ticker);
+
+        if (ativo == null) {
+            System.out.println(AMARELO + "Ativo não encontrado no mercado. Cadastre-o primeiro no Menu de Ativos." + RESET);
+            return;
+        }
+
+        System.out.println("Ativo selecionado: " + ativo.getNome() + " | Preço: R$ " + ativo.getPreco());
+        System.out.print("Quantidade a comprar: ");
+        float qtd = (float) lerNumeroDecimal(scanner.nextLine());
+
+        try {
+            inv.comprar(ativo, qtd, ativo.getPreco());
+            System.out.println(VERDE + "Compra realizada com sucesso!" + RESET);
+
+        } catch (DadosInvalidosException e) {
+            System.out.println(VERMELHO + "Falha na compra: " + e.getMessage() + RESET);
+        } catch (Exception e) {
+            System.out.println(VERMELHO + "Erro inesperado: " + e.getMessage() + RESET);
+        }
+    }
+
+    private static void realizarVenda(Investidor inv) {
+        System.out.println("\n--- Venda de Ativos ---");
+        System.out.print("Digite o Ticker do ativo para vender: ");
+        String ticker = scanner.nextLine();
+
+        Ativos ativo = mercado.buscaAtivo(ticker);
+
+        if (ativo == null) {
+            System.out.println(AMARELO + "Ativo não identificado no mercado." + RESET);
+            return;
+        }
+
+        System.out.print("Quantidade a vender: ");
+        float qtd = (float) lerNumeroDecimal(scanner.nextLine());
+
+        try {
+            inv.vender(ativo, qtd);
+            System.out.println(VERDE + "Venda realizada com sucesso!" + RESET);
+
+        } catch (DadosInvalidosException e) {
+            System.out.println(VERMELHO + "Erro na venda: " + e.getMessage() + RESET);
+        } catch (Exception e) {
+            System.out.println(VERMELHO + "Erro inesperado: " + e.getMessage() + RESET);
         }
     }
 
