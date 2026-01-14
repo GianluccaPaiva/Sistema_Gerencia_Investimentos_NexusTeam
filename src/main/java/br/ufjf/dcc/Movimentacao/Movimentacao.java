@@ -45,4 +45,16 @@ public class Movimentacao {
                 precoExecucao,
                 getDataFormatada());
     }
+
+    public String toCSV() {
+        return String.format("%s;%s;%s;%s;%.2f;%.2f;%s",
+                this.id != null ? this.id.substring(0, Math.min(this.id.length(), 8)) : "N/A",
+                this.tipoMovimentacao,
+                this.instituicao,
+                this.tickerAtivo,
+                this.quantidade,
+                this.precoExecucao,
+                this.getDataFormatada()
+        );
+    }
 }

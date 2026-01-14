@@ -1,251 +1,148 @@
-
 package br.ufjf.dcc.Registrar;
 
+import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.ErrosLeituraArq;
-import br.ufjf.dcc.Tools.Tools;
+import java.io.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+public class Registrar implements CoresMensagens {
+    private static final String MOV_DIR_PATH = "src/main/dados/movimentacoes";
 
-public class Registrar {
-    private static final String CAMINHO_PONTEIRO = "src/main/ponteiro/arqRegistro.json";
-    private static final String MOV_DIR = "movimentacoes";
-
-    private static String ponteiroArqAtual;
-    private static int index;
-
-    static {
-        ponteiroArqAtual = MOV_DIR + "/registroMovimentacao_1.txt";
-        index = 1;
-        try {
-            carregarConfig();
-        } catch (IOException e) {
-            System.out.println("❌ Erro ao carregar configuração de registro: " + e.getMessage());
-        }
+    // Método auxiliar para buscar caminho (opcional, mas mantido conforme seu código)
+    private static String buscarRegistroPorCPFOuCNPJ(String idInvestidor) {
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        String nomeArquivo = idLimpo + ".csv";
+        File arquivo = new File(MOV_DIR_PATH, nomeArquivo);
+        return arquivo.exists() ? arquivo.getPath() : null;
     }
 
-    private static String ensureMovimentacoesPath(String caminho) {
-        if (caminho == null) return MOV_DIR + "/registroMovimentacao_1.txt";
-        String caminhoSanitizado = caminho
-                .replace("\uFEFF", "")
-                .trim()
-                .replaceAll("^\"+|\"+$", "")
-                .replace("\\", "/");
+    public static void exibirRegistro(String idInvestidor) {
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
 
-        if (caminhoSanitizado.startsWith(MOV_DIR + "/")) {
-            return caminhoSanitizado;
+        if (!arquivo.exists()) {
+            System.out.println("\n" + AMARELO + "--- ⚠️ Histórico não encontrado para o investidor: " + idInvestidor + " ---" + RESET);
+            return;
         }
 
-        if (caminhoSanitizado.contains("/")) {
-            return caminhoSanitizado;
-        }
+        imprimirCabecalhoTabela("EXTRATO GERAL", idInvestidor);
 
-        return MOV_DIR + "/" + caminhoSanitizado;
-    }
-
-    private static void clearRegistroFile(String caminho) {
-        String caminhoSanitizado = ensureMovimentacoesPath(caminho);
-        File arquivo = new File(caminhoSanitizado);
-
-        try {
-            if (!arquivo.exists()) {
-                File dir = arquivo.getParentFile();
-                if (dir != null && !dir.exists()) {
-                    dir.mkdirs();
-                }
-                if (arquivo.createNewFile()) {
-                    System.out.println("✅ Arquivo " + caminhoSanitizado + " criado.");
-                }
-            }
-
-            try (FileWriter escrever = new FileWriter(arquivo, false)) {
-                escrever.write("");
-                System.out.println("✅ Conteúdo do arquivo " + caminhoSanitizado + " apagado.");
-            }
-
-        } catch (IOException e) {
-            System.out.println("❌ Erro ao tentar limpar/criar arquivo de registro: " + e.getMessage());
-        }
-    }
-
-    private static void carregarConfig() throws IOException {
-        try (BufferedReader leituraBuffer = new BufferedReader(new FileReader(CAMINHO_PONTEIRO))) {
-            StringBuilder sb = new StringBuilder();
+        try (BufferedReader leitor = new BufferedReader(new FileReader(arquivo))) {
             String linha;
-            while ((linha = leituraBuffer.readLine()) != null) {
-                sb.append(linha);
+            boolean primeiraLinha = true;
+
+            while ((linha = leitor.readLine()) != null) {
+                String[] colunas = linha.split(";");
+                if (primeiraLinha) {
+                    imprimirLinhaFormatada(colunas, ROXO);
+                    System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
+                    primeiraLinha = false;
+                } else {
+                    imprimirLinhaFormatada(colunas, BRANCO);
+                }
             }
-            String json = sb.toString().replace("\\", "/").trim();
-            if (json.isEmpty()) {
-                throw new ErrosLeituraArq("Arquivo de ponteiro vazio");
+        } catch (IOException e) {
+            System.err.println(VERMELHO + "❌ Erro ao ler o histórico: " + e.getMessage() + RESET);
+        }
+        System.out.println(CIANO + "=======================================================================================\n" + RESET);
+    }
+
+    public static void exibirRegistroPorTicker(String idInvestidor, String ticker) throws ErrosLeituraArq {
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
+
+        if (!arquivo.exists()) {
+            System.out.println("\n" + AMARELO + "--- ⚠️ Histórico não encontrado para o investidor: " + idInvestidor + " ---" + RESET);
+            return;
+        }
+
+        imprimirCabecalhoTabela("FILTRADO POR TICKER: " + ticker.toUpperCase(), idInvestidor);
+
+        try (BufferedReader leitor = new BufferedReader(new FileReader(arquivo))) {
+            String linha;
+            String headerOriginal = leitor.readLine(); // Lê o cabeçalho do CSV
+            if (headerOriginal != null) {
+                imprimirLinhaFormatada(headerOriginal.split(";"), ROXO);
+                System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
             }
 
-            Pattern p = Pattern.compile("\"ponteiroAtual\"\\s*:\\s*\"([^\"]+)\"");
-            Matcher m = p.matcher(json);
-            String arqDoJson = null;
+            while ((linha = leitor.readLine()) != null) {
+                String[] colunas = linha.split(";");
+                if (colunas[3].equalsIgnoreCase(ticker)) {
+                    imprimirLinhaFormatada(colunas,VERDE);
+                }
+            }
+        } catch (IOException e) {
+            throw new ErrosLeituraArq(VERMELHO + "❌ Erro ao ler o histórico: " + e.getMessage() + RESET);
+        }
+        System.out.println(CIANO + "=======================================================================================\n" + RESET);
+    }
 
-            if (m.find()) {
-                arqDoJson = m.group(1);
+    public static void registrar(String idInvestidor, String conteudo) throws ErrosLeituraArq {
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        File diretorio = new File(MOV_DIR_PATH);
+
+        if (!diretorio.exists()) {
+            if (diretorio.mkdirs()) {
+                System.out.println(CIANO+ "📁 Diretório 'movimentacoes' criado em: " + AMARELO + MOV_DIR_PATH + RESET);
+            }
+        }
+
+        File arquivo = new File(diretorio, idLimpo + ".csv");
+        boolean arquivoNovo = !arquivo.exists();
+
+        try (FileWriter escritor = new FileWriter(arquivo, true)) {
+            if (arquivoNovo) {
+                escritor.write("ID_MOV;TIPO;INSTITUICAO;TICKER;QUANTIDADE;PRECO_EXEC;DATA\n");
+            }
+            escritor.write(conteudo + System.lineSeparator());
+            System.out.println(VERDE + "✅ Registro salvo com sucesso em: " + AMARELO + arquivo.getName() + RESET);
+        } catch (IOException e) {
+            throw new ErrosLeituraArq("❌ Erro ao salvar registro: " + e.getMessage());
+        }
+    }
+
+    public static void deletarRegistroInvestidor(String idInvestidor) {
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
+
+        if (arquivo.exists()) {
+            if (arquivo.delete()) {
+                System.out.println(VERDE + "✅ Histórico deletado para o investidor: " + BRANCO + idInvestidor + RESET);
             } else {
-                p = Pattern.compile("\"[^\"]+\"\\s*:\\s*\"([^\"]+)\"");
-                m = p.matcher(json);
-                if (m.find()) {
-                    arqDoJson = m.group(1);
-                }
+                System.err.println(VERMELHO + "❌ Erro ao deletar o histórico de " + idInvestidor + RESET);
             }
-
-            if (arqDoJson == null) {
-                throw new ErrosLeituraArq("Formato de JSON inválido: " + json);
-            }
-
-            ponteiroArqAtual = ensureMovimentacoesPath(arqDoJson);
-            index = Tools.extractIndex(arqDoJson);
-            System.out.println("✅ Caminho base carregado: " + ponteiroArqAtual);
-        } catch (ErrosLeituraArq e) {
-            System.out.println("❌ Erro ao ler config: " + e.getMessage() + ". Usando padrão: " + ponteiroArqAtual);
-        }
-    }
-
-    private static void atualizarConfig(String novoNomeArquivo) {
-        try (FileWriter arqEscrita = new FileWriter(CAMINHO_PONTEIRO)) {
-            String json = "{\"ponteiroAtual\": \"" + novoNomeArquivo + "\"}";
-            arqEscrita.write(json);
-            arqEscrita.flush();
-            System.out.println("💾 JSON atualizado: " + CAMINHO_PONTEIRO);
-        } catch (IOException e) {
-            System.out.println("❌ Erro ao atualizar JSON: " + e.getMessage());
-        }
-    }
-
-    private static String getCurrentFilePath() {
-        return ponteiroArqAtual;
-    }
-
-    private static int getCurrentIndex() {
-        return index;
-    }
-
-    private static void nextRegistro() {
-        index++;
-        int sub = ponteiroArqAtual.lastIndexOf("_");
-        int ponto = ponteiroArqAtual.lastIndexOf(".");
-        String novoNomeArquivo;
-
-        if (sub != -1 && ponto != -1 && sub < ponto) {
-            String prefixo = ponteiroArqAtual.substring(0, sub + 1);
-            String sufixo = ponteiroArqAtual.substring(ponto);
-            novoNomeArquivo = prefixo + index + sufixo;
-        } else if (ponto != -1) {
-            novoNomeArquivo = ponteiroArqAtual.substring(0, ponto) + "_" + index + ponteiroArqAtual.substring(ponto);
         } else {
-            novoNomeArquivo = ponteiroArqAtual + "_" + index + ".txt";
+            System.out.println(AMARELO + "⚠️ Nenhum histórico encontrado para: " + idInvestidor + RESET);
         }
-
-        novoNomeArquivo = novoNomeArquivo.replaceAll("^\"+|\"+$", "");
-        ponteiroArqAtual = ensureMovimentacoesPath(novoNomeArquivo);
-
-        clearRegistroFile(ponteiroArqAtual);
-        System.out.println("🔁 Novo registro configurado: " + ponteiroArqAtual);
-        atualizarConfig(ponteiroArqAtual);
     }
 
-    private static void resetConfigToInitial() {
-        clearRegistroFile(MOV_DIR + "/registroMovimentacao_1.txt");
-        ponteiroArqAtual = MOV_DIR + "/registroMovimentacao_1.txt";
-        index = 1;
-        System.out.println("⚙️ Configuração de registro resetada para: " + ponteiroArqAtual);
-        atualizarConfig(ponteiroArqAtual);
-    }
-
-    public static void reproduzirRegistro(String caminhoregistro) {
-        mostrarRegistro(caminhoregistro);
-    }
-
-    public static void registrar(String conteudo) {
-        String caminho = getCurrentFilePath();
-
-        caminho = caminho
-                .replace("\uFEFF", "")
-                .trim()
-                .replaceAll("^\"+|\"+$", "")
-                .replace("\\", "/");
-
-        if (!caminho.startsWith(MOV_DIR + "/") && !caminho.contains("/")) {
-            caminho = MOV_DIR + "/" + caminho;
-        }
-
-        if (caminho.isBlank()) {
-            System.out.println("❌ Caminho do arquivo de registro está vazio.");
-            return;
-        }
-
-        File arquivo = new File(caminho);
-        File dir = arquivo.getParentFile();
-
-        if (dir != null && !dir.exists()) {
-            boolean ok = dir.mkdirs();
-            if (!ok) {
-                System.out.println("⚠️ Não foi possível criar diretório: " + dir.getAbsolutePath());
+    public static void deletarTodasMovimentacoes() {
+        File diretorio = new File(MOV_DIR_PATH);
+        if (diretorio.exists() && diretorio.isDirectory()) {
+            File[] arquivos = diretorio.listFiles();
+            if (arquivos != null) {
+                for (File arquivo : arquivos) {
+                    if (arquivo.delete()) {
+                        System.out.println(VERMELHO + "🗑️  Deletado: " + BRANCO + arquivo.getName() + RESET);
+                    }
+                }
+                System.out.println(VERDE + "✅ Limpeza concluída." + RESET);
             }
-        }
-
-        String nomeArquivo = arquivo.getName();
-        if (nomeArquivo.contains("\"") || nomeArquivo.contains(":\"")) {
-            System.out.println("❌ Nome do arquivo contém caracteres inválidos: " + nomeArquivo);
-            return;
-        }
-
-        try (FileWriter escreve = new FileWriter(arquivo, true)) {
-            escreve.write(conteudo + System.lineSeparator());
-        } catch (IOException e) {
-            System.out.println("❌ Erro ao registrar registro: " + e.getMessage());
+        } else {
+            System.out.println(AMARELO + "⚠️ Diretório não encontrado." + RESET);
         }
     }
 
-    public static void novoRegistro() {
-        nextRegistro();
+    private static void imprimirCabecalhoTabela(String titulo, String id) {
+        System.out.println(CIANO + "\n=======================================================================================");
+        System.out.printf("   %s | INVESTIDOR: %s %n", titulo, id);
+        System.out.println("=======================================================================================" + RESET);
     }
 
-    public static void deletarTodosRegistros() {
-        resetConfigToInitial();
-    }
-
-    public static void mostrarRegistro(String caminhoregistro) {
-        String caminho = caminhoregistro
-                .replace("\uFEFF", "")
-                .trim()
-                .replaceAll("^\"+|\"+$", "")
-                .replace("\\", "/");
-
-        if (!caminho.startsWith(MOV_DIR + "/") && !caminho.contains("/")) {
-            caminho = MOV_DIR + "/" + caminho;
-        }
-
-        System.out.println("📁 Caminho final para leitura: " + caminho);
-
-        try (BufferedReader leituraBuffer = new BufferedReader(new FileReader(caminho))) {
-            String linha;
-            int contador = 1;
-            System.out.println("----- Início do registro -----");
-
-            while ((linha = leituraBuffer.readLine()) != null) {
-                System.out.println(contador++ + "️⃣  " + linha);
-            }
-
-            System.out.println("------ 🏁 Fim do registro ------");
-            System.out.println("✅ registro lido com sucesso: " + caminho);
-        } catch (IOException e) {
-            System.out.println("❌ Erro ao ler registro: " + e.getMessage());
-            System.out.println("⚠️ Dica: verifique se o arquivo existe em relação ao diretório do projeto.");
-        }
-    }
-
-    public static int getIndice() {
-        return getCurrentIndex();
+    private static void imprimirLinhaFormatada(String[] col, String cor) {
+        System.out.print(cor);
+        System.out.printf("%-10s | %-8s | %-15s | %-8s | %-8s | %-10s | %-10s%n",
+                col[0], col[1], col[2], col[3], col[4], col[5], col[6]);
+        System.out.print(RESET);
     }
 }
