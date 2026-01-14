@@ -26,15 +26,14 @@ public class Registrar implements CoresMensagens {
                 BufferedWriter bw = new BufferedWriter(fw);
                 PrintWriter out = new PrintWriter(bw)
         ) {
-            // Se o ficheiro for novo ou estiver vazio, escreve o cabeçalho
             if (arquivo.length() == 0) {
                 out.println("ID_MOV;TIPO;INSTITUICAO;TICKER;QUANTIDADE;PRECO_EXEC;DATA");
             }
 
-            // Escreve o conteúdo e garante uma nova linha automática
+
             out.println(conteudo);
 
-            // Força a saída dos dados para o disco
+
             out.flush();
 
             System.out.println(VERDE + "✅ Movimentação anexada em: " + AMARELO + arquivo.getAbsolutePath() + RESET);
