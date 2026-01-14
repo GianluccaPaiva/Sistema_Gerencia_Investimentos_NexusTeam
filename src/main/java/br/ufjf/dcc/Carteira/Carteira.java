@@ -55,6 +55,14 @@ public class Carteira {
         return total;
     }
 
+    public double valorTotalGasto() {
+        double totalGasto = 0;
+        for (ItemCarteira item : ativos) {
+            totalGasto += item.getValorPagoTotal();
+        }
+        return totalGasto;
+    }
+
     public double[] porcentagemRendaFixaVariavel() {
         double totalRendaFixa = 0;
         double totalRendaVariavel = 0;

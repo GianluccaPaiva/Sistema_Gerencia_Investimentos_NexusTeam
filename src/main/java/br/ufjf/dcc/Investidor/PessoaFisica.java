@@ -42,4 +42,10 @@ public class PessoaFisica extends Investidor {
     }
 
     public String getPerfil() {return perfil;}
+    public void setPerfil(String perfil) throws DadosInvalidosException {
+        if(!perfil.equalsIgnoreCase("Conservador") && !perfil.equalsIgnoreCase("Moderado") && !perfil.equalsIgnoreCase("Arrojado")){
+            throw new DadosInvalidosException("Erro: Perfil inválido.");
+        }
+        this.perfil = perfil;
+    }
 }

@@ -37,9 +37,10 @@ public class Movimentacao {
 
     @Override
     public String toString() {
-        return String.format("ID: %s | %s | %s | Qtd: %.2f | Preço: R$ %.2f | %s",
+        return String.format("ID: %s | Tipo de Movimentação: %s | Instituição: %s | Ticker: %s | Qtd: %.1f | Preço: R$ %.2f | Data da Negociação: %s",
                 id.substring(0, 8),
                 tipoMovimentacao,
+                instituicao,
                 tickerAtivo,
                 quantidade,
                 precoExecucao,

@@ -67,6 +67,7 @@ public abstract class Investidor {
     public void setDataNascimento(String dataNascimento) {this.dataNascimento = dataNascimento;}
 
     public Endereco getEndereco() {return endereco;}
+    public void setEndereco(Endereco endereco) {this.endereco = endereco;}
 
     public double getPatrimonio() {return patrimonio;}
     public void setPatrimonio(double patrimonio) {
