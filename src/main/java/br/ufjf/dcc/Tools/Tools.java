@@ -158,4 +158,8 @@ public class Tools implements CoresMensagens {
         Double val = lerNumeroGeneric(entrada, str -> Double.parseDouble(str.replace(",", ".")), "Entrada inválida. Digite um valor numérico: ");
         return val;
     }
+
+    public static String idLimpo(String id){
+        return id.replaceAll("[^0-9]", "").trim();
+    }
 }

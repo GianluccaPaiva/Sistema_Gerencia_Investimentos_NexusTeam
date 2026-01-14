@@ -2,14 +2,39 @@ package br.ufjf.dcc.Registrar;
 
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.ErrosLeituraArq;
+import br.ufjf.dcc.Tools.Tools;
+
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class Registrar implements CoresMensagens {
     private static final String MOV_DIR_PATH = "movimentacoes";
+    private static String idLimpo;
+
+    private static void imprimirCabecalhoTabela(String titulo, String id) {
+        System.out.println(CIANO + "\n=======================================================================================");
+        System.out.printf("   %s | ID: %s %n", titulo, id);
+        System.out.println("=======================================================================================" + RESET);
+    }
+
+    private static void imprimirLinhaFormatada(String[] col, String cor) {
+        System.out.print(cor);
+        // Proteção contra colunas em falta
+        String c0 = col.length > 0 ? col[0] : "-";
+        String c1 = col.length > 1 ? col[1] : "-";
+        String c2 = col.length > 2 ? col[2] : "-";
+        String c3 = col.length > 3 ? col[3] : "-";
+        String c4 = col.length > 4 ? col[4] : "-";
+        String c5 = col.length > 5 ? col[5] : "-";
+        String c6 = col.length > 6 ? col[6] : "-";
+
+        System.out.printf("%-10s | %-8s | %-15s | %-8s | %-8s | %-10s | %-10s%n",
+                c0, c1, c2, c3, c4, c5, c6);
+        System.out.print(RESET);
+    }
 
     public static void registrar(String idInvestidor, String conteudo) throws ErrosLeituraArq {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
+        idLimpo = Tools.idLimpo(idInvestidor);
 
         if (idLimpo.isEmpty()) {
             throw new ErrosLeituraArq(VERMELHO + "❌ CPF/CNPJ inválido." + RESET);
@@ -44,7 +69,7 @@ public class Registrar implements CoresMensagens {
     }
 
     public static void exibirRegistro(String idInvestidor) {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
+        idLimpo = Tools.idLimpo(idInvestidor);
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
 
         if (!arquivo.exists() || arquivo.length() == 0) {
@@ -67,7 +92,7 @@ public class Registrar implements CoresMensagens {
                     System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
                     primeiraLinha = false;
                 } else {
-                    imprimirLinhaFormatada(colunas, BRANCO);
+                    imprimirLinhaFormatada(colunas, VERDE);
                 }
             }
         } catch (IOException e) {
@@ -77,7 +102,7 @@ public class Registrar implements CoresMensagens {
     }
 
     public static void exibirRegistroPorTicker(String idInvestidor, String ticker) throws ErrosLeituraArq {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
+        idLimpo = Tools.idLimpo(idInvestidor);
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
 
         if (!arquivo.exists()) {
@@ -89,8 +114,7 @@ public class Registrar implements CoresMensagens {
 
         try (BufferedReader leitor = new BufferedReader(new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
             String linha;
-            String header = leitor.readLine(); // Lê cabeçalho
-
+            String header = leitor.readLine();
             if (header != null) {
                 imprimirLinhaFormatada(header.split(";"), ROXO);
                 System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
@@ -109,7 +133,7 @@ public class Registrar implements CoresMensagens {
     }
 
     public static void deletarRegistroInvestidor(String idInvestidor) {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
+        idLimpo = Tools.idLimpo(idInvestidor);
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
         if (arquivo.exists() && arquivo.delete()) {
             System.out.println(VERDE + "✅ Ficheiro de " + idInvestidor + " removido." + RESET);
@@ -125,27 +149,5 @@ public class Registrar implements CoresMensagens {
             for (File f : arquivos) f.delete();
             System.out.println(VERDE + "✅ Todas as movimentações foram limpas." + RESET);
         }
-    }
-
-    private static void imprimirCabecalhoTabela(String titulo, String id) {
-        System.out.println(CIANO + "\n=======================================================================================");
-        System.out.printf("   %s | ID: %s %n", titulo, id);
-        System.out.println("=======================================================================================" + RESET);
-    }
-
-    private static void imprimirLinhaFormatada(String[] col, String cor) {
-        System.out.print(cor);
-        // Proteção contra colunas em falta
-        String c0 = col.length > 0 ? col[0] : "-";
-        String c1 = col.length > 1 ? col[1] : "-";
-        String c2 = col.length > 2 ? col[2] : "-";
-        String c3 = col.length > 3 ? col[3] : "-";
-        String c4 = col.length > 4 ? col[4] : "-";
-        String c5 = col.length > 5 ? col[5] : "-";
-        String c6 = col.length > 6 ? col[6] : "-";
-
-        System.out.printf("%-10s | %-8s | %-15s | %-8s | %-8s | %-10s | %-10s%n",
-                c0, c1, c2, c3, c4, c5, c6);
-        System.out.print(RESET);
     }
 }
