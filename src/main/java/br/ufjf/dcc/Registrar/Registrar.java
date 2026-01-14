@@ -3,34 +3,65 @@ package br.ufjf.dcc.Registrar;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.ErrosLeituraArq;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public class Registrar implements CoresMensagens {
-    private static final String MOV_DIR_PATH = "src/main/dados/movimentacoes";
+    private static final String MOV_DIR_PATH = "movimentacoes";
 
-    // Método auxiliar para buscar caminho (opcional, mas mantido conforme seu código)
-    private static String buscarRegistroPorCPFOuCNPJ(String idInvestidor) {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
-        String nomeArquivo = idLimpo + ".csv";
-        File arquivo = new File(MOV_DIR_PATH, nomeArquivo);
-        return arquivo.exists() ? arquivo.getPath() : null;
+    public static void registrar(String idInvestidor, String conteudo) throws ErrosLeituraArq {
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
+
+        if (idLimpo.isEmpty()) {
+            throw new ErrosLeituraArq(VERMELHO + "❌ CPF/CNPJ inválido." + RESET);
+        }
+
+        File diretorio = new File(MOV_DIR_PATH);
+        if (!diretorio.exists()) {
+            diretorio.mkdirs();
+        }
+
+        File arquivo = new File(diretorio, idLimpo + ".csv");
+        try (
+                FileWriter fw = new FileWriter(arquivo, StandardCharsets.UTF_8, true);
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)
+        ) {
+            // Se o ficheiro for novo ou estiver vazio, escreve o cabeçalho
+            if (arquivo.length() == 0) {
+                out.println("ID_MOV;TIPO;INSTITUICAO;TICKER;QUANTIDADE;PRECO_EXEC;DATA");
+            }
+
+            // Escreve o conteúdo e garante uma nova linha automática
+            out.println(conteudo);
+
+            // Força a saída dos dados para o disco
+            out.flush();
+
+            System.out.println(VERDE + "✅ Movimentação anexada em: " + AMARELO + arquivo.getAbsolutePath() + RESET);
+
+        } catch (IOException e) {
+            throw new ErrosLeituraArq(VERMELHO + "❌ Falha crítica ao gravar: " + e.getMessage() + RESET);
+        }
     }
 
     public static void exibirRegistro(String idInvestidor) {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
 
-        if (!arquivo.exists()) {
-            System.out.println("\n" + AMARELO + "--- ⚠️ Histórico não encontrado para o investidor: " + idInvestidor + " ---" + RESET);
+        if (!arquivo.exists() || arquivo.length() == 0) {
+            System.out.println("\n" + AMARELO + "--- ⚠️ Sem histórico para o investidor: " + idInvestidor + " ---" + RESET);
             return;
         }
 
         imprimirCabecalhoTabela("EXTRATO GERAL", idInvestidor);
 
-        try (BufferedReader leitor = new BufferedReader(new FileReader(arquivo))) {
+        try (BufferedReader leitor = new BufferedReader(new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
             String linha;
             boolean primeiraLinha = true;
 
             while ((linha = leitor.readLine()) != null) {
+                if (linha.isBlank()) continue;
+
                 String[] colunas = linha.split(";");
                 if (primeiraLinha) {
                     imprimirLinhaFormatada(colunas, ROXO);
@@ -41,108 +72,81 @@ public class Registrar implements CoresMensagens {
                 }
             }
         } catch (IOException e) {
-            System.err.println(VERMELHO + "❌ Erro ao ler o histórico: " + e.getMessage() + RESET);
+            System.err.println(VERMELHO + "❌ Erro na leitura: " + e.getMessage() + RESET);
         }
         System.out.println(CIANO + "=======================================================================================\n" + RESET);
     }
 
     public static void exibirRegistroPorTicker(String idInvestidor, String ticker) throws ErrosLeituraArq {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
 
         if (!arquivo.exists()) {
-            System.out.println("\n" + AMARELO + "--- ⚠️ Histórico não encontrado para o investidor: " + idInvestidor + " ---" + RESET);
+            System.out.println("\n" + AMARELO + "--- ⚠️ Ficheiro não encontrado ---" + RESET);
             return;
         }
 
-        imprimirCabecalhoTabela("FILTRADO POR TICKER: " + ticker.toUpperCase(), idInvestidor);
+        imprimirCabecalhoTabela("TICKER: " + ticker.toUpperCase(), idInvestidor);
 
-        try (BufferedReader leitor = new BufferedReader(new FileReader(arquivo))) {
+        try (BufferedReader leitor = new BufferedReader(new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
             String linha;
-            String headerOriginal = leitor.readLine(); // Lê o cabeçalho do CSV
-            if (headerOriginal != null) {
-                imprimirLinhaFormatada(headerOriginal.split(";"), ROXO);
+            String header = leitor.readLine(); // Lê cabeçalho
+
+            if (header != null) {
+                imprimirLinhaFormatada(header.split(";"), ROXO);
                 System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
             }
 
             while ((linha = leitor.readLine()) != null) {
                 String[] colunas = linha.split(";");
-                if (colunas[3].equalsIgnoreCase(ticker)) {
-                    imprimirLinhaFormatada(colunas,VERDE);
+                if (colunas.length > 3 && colunas[3].equalsIgnoreCase(ticker)) {
+                    imprimirLinhaFormatada(colunas, VERDE);
                 }
             }
         } catch (IOException e) {
-            throw new ErrosLeituraArq(VERMELHO + "❌ Erro ao ler o histórico: " + e.getMessage() + RESET);
+            throw new ErrosLeituraArq(VERMELHO + "❌ Erro ao filtrar: " + e.getMessage() + RESET);
         }
         System.out.println(CIANO + "=======================================================================================\n" + RESET);
     }
 
-    public static void registrar(String idInvestidor, String conteudo) throws ErrosLeituraArq {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
-        File diretorio = new File(MOV_DIR_PATH);
-
-        if (!diretorio.exists()) {
-            if (diretorio.mkdirs()) {
-                System.out.println(CIANO+ "📁 Diretório 'movimentacoes' criado em: " + AMARELO + MOV_DIR_PATH + RESET);
-            }
-        }
-
-        File arquivo = new File(diretorio, idLimpo + ".csv");
-        boolean arquivoNovo = !arquivo.exists();
-
-        try (FileWriter escritor = new FileWriter(arquivo, true)) {
-            if (arquivoNovo) {
-                escritor.write("ID_MOV;TIPO;INSTITUICAO;TICKER;QUANTIDADE;PRECO_EXEC;DATA\n");
-            }
-            escritor.write(conteudo + System.lineSeparator());
-            System.out.println(VERDE + "✅ Registro salvo com sucesso em: " + AMARELO + arquivo.getName() + RESET);
-        } catch (IOException e) {
-            throw new ErrosLeituraArq("❌ Erro ao salvar registro: " + e.getMessage());
-        }
-    }
-
     public static void deletarRegistroInvestidor(String idInvestidor) {
-        String idLimpo = idInvestidor.replaceAll("[^0-9]", "");
+        String idLimpo = idInvestidor.replaceAll("[^0-9]", "").trim();
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
-
-        if (arquivo.exists()) {
-            if (arquivo.delete()) {
-                System.out.println(VERDE + "✅ Histórico deletado para o investidor: " + BRANCO + idInvestidor + RESET);
-            } else {
-                System.err.println(VERMELHO + "❌ Erro ao deletar o histórico de " + idInvestidor + RESET);
-            }
+        if (arquivo.exists() && arquivo.delete()) {
+            System.out.println(VERDE + "✅ Ficheiro de " + idInvestidor + " removido." + RESET);
         } else {
-            System.out.println(AMARELO + "⚠️ Nenhum histórico encontrado para: " + idInvestidor + RESET);
+            System.out.println(AMARELO + "⚠️ Ficheiro não encontrado ou em uso." + RESET);
         }
     }
 
     public static void deletarTodasMovimentacoes() {
         File diretorio = new File(MOV_DIR_PATH);
-        if (diretorio.exists() && diretorio.isDirectory()) {
-            File[] arquivos = diretorio.listFiles();
-            if (arquivos != null) {
-                for (File arquivo : arquivos) {
-                    if (arquivo.delete()) {
-                        System.out.println(VERMELHO + "🗑️  Deletado: " + BRANCO + arquivo.getName() + RESET);
-                    }
-                }
-                System.out.println(VERDE + "✅ Limpeza concluída." + RESET);
-            }
-        } else {
-            System.out.println(AMARELO + "⚠️ Diretório não encontrado." + RESET);
+        File[] arquivos = diretorio.listFiles((dir, name) -> name.endsWith(".csv"));
+        if (arquivos != null) {
+            for (File f : arquivos) f.delete();
+            System.out.println(VERDE + "✅ Todas as movimentações foram limpas." + RESET);
         }
     }
 
     private static void imprimirCabecalhoTabela(String titulo, String id) {
         System.out.println(CIANO + "\n=======================================================================================");
-        System.out.printf("   %s | INVESTIDOR: %s %n", titulo, id);
+        System.out.printf("   %s | ID: %s %n", titulo, id);
         System.out.println("=======================================================================================" + RESET);
     }
 
     private static void imprimirLinhaFormatada(String[] col, String cor) {
         System.out.print(cor);
+        // Proteção contra colunas em falta
+        String c0 = col.length > 0 ? col[0] : "-";
+        String c1 = col.length > 1 ? col[1] : "-";
+        String c2 = col.length > 2 ? col[2] : "-";
+        String c3 = col.length > 3 ? col[3] : "-";
+        String c4 = col.length > 4 ? col[4] : "-";
+        String c5 = col.length > 5 ? col[5] : "-";
+        String c6 = col.length > 6 ? col[6] : "-";
+
         System.out.printf("%-10s | %-8s | %-15s | %-8s | %-8s | %-10s | %-10s%n",
-                col[0], col[1], col[2], col[3], col[4], col[5], col[6]);
+                c0, c1, c2, c3, c4, c5, c6);
         System.out.print(RESET);
     }
 }
