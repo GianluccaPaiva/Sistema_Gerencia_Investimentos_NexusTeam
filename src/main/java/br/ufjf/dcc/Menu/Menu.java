@@ -343,7 +343,7 @@ public class Menu implements CoresMensagens {
                     listarInvestidores();
                     break;
                 case 4:
-                    System.out.println(AMARELO + "Funcionalidade 'Excluir em Lote' a ser implementada." + RESET);
+                    excluirInvestidorEmLote();
                     break;
                 case 5:
                     buscarInvestidorEOperar();
@@ -474,10 +474,10 @@ public class Menu implements CoresMensagens {
 
             switch (opcao) {
                 case 1:
-                    System.out.println(AMARELO + "Editar: A ser implementado." + RESET);
+                    editarInvestidor(inv);
                     break;
                 case 2:
-                    System.out.println(AMARELO + "Excluir: A ser implementado." + RESET);
+                    opcao = excluirInvestidorAtual(inv);
                     break;
                 case 3:
                     inv.exibirCarteira();
@@ -567,4 +567,116 @@ public class Menu implements CoresMensagens {
         }
     }
 
+    private static void excluirInvestidorEmLote() {
+        System.out.println(ROXO + "Exclusão em Lote (Manual)" + RESET);
+        System.out.println("Digite os CPFs ou CNPJs separados por vírgula (ex: 111,222,333):");
+        String entradaLista = scanner.nextLine();
+
+        String[] idsParaRemover = entradaLista.split(",");
+        int contagemRemovidos = 0;
+
+        for (String idBruto : idsParaRemover) {
+            String idLimpo = idBruto.trim();
+
+            boolean removeu = investidores.removeIf(inv -> inv.getId().equals(idLimpo));
+
+            if (removeu) {
+                System.out.println(VERDE + "Removido: " + idLimpo + RESET);
+                contagemRemovidos++;
+            } else {
+                System.out.println(AMARELO + "Não encontrado: " + idLimpo + RESET);
+            }
+        }
+        System.out.println("Total de investidores removidos: " + contagemRemovidos);
+    }
+
+    private static void editarInvestidor(Investidor inv) {
+        int opcaoEdit = -1;
+        while (opcaoEdit != 0) {
+            System.out.println(CIANO + "\n--- Editar Dados de " + inv.getNome() + " ---" + RESET);
+            System.out.println("1. Alterar Nome");
+            System.out.println("2. Alterar Telefone");
+            System.out.println("3. Alterar Endereço Completo");
+            System.out.println("4. Alterar Patrimônio (Ajuste manual de saldo)");
+
+            if (inv instanceof PessoaFisica) {
+                System.out.println("5. Alterar Perfil (Conservador/Moderado/Arrojado)");
+            } else if (inv instanceof PessoaJuridica) {
+                System.out.println("5. Alterar Razão Social");
+            }
+
+            System.out.println("0. Voltar");
+            System.out.print("Escolha o dado para alterar: ");
+
+            opcaoEdit = lerNumeroInteiro(scanner.nextLine());
+
+            try {
+                switch (opcaoEdit) {
+                    case 1:
+                        System.out.print("Novo Nome: ");
+                        inv.setNome(scanner.nextLine());
+                        System.out.println(VERDE + "Nome atualizado!" + RESET);
+                        break;
+                    case 2:
+                        System.out.print("Novo Telefone: ");
+                        inv.setTelefone(scanner.nextLine());
+                        System.out.println(VERDE + "Telefone atualizado!" + RESET);
+                        break;
+                    case 3:
+                        System.out.println("--- Novo Endereço ---");
+                        System.out.print("Rua: "); String rua = scanner.nextLine();
+                        System.out.print("Número: "); int num = lerNumeroInteiro(scanner.nextLine());
+                        System.out.print("Bairro: "); String bairro = scanner.nextLine();
+                        System.out.print("Cidade: "); String cid = scanner.nextLine();
+                        System.out.print("Estado: "); String est = scanner.nextLine();
+                        System.out.print("CEP: "); String cep = scanner.nextLine();
+
+                        Endereco novoEnd = new Endereco(rua, cid, est, cep, bairro, num);
+                        inv.setEndereco(novoEnd);
+                        System.out.println(VERDE + "Endereço atualizado!" + RESET);
+                        break;
+                    case 4:
+                        System.out.print("Novo valor de Patrimônio: ");
+                        double novoPatrimonio = lerNumeroDecimal(scanner.nextLine());
+                        inv.setPatrimonio(novoPatrimonio);
+                        System.out.println(VERDE + "Patrimônio atualizado!" + RESET);
+                        break;
+                    case 5:
+                        if (inv instanceof PessoaFisica) {
+                            System.out.print("Novo Perfil (Conservador/Moderado/Arrojado): ");
+                            String perfil = scanner.nextLine();
+                            ((PessoaFisica) inv).setPerfil(perfil);
+                            System.out.println(VERDE + "Perfil atualizado!" + RESET);
+                        } else if (inv instanceof PessoaJuridica) {
+                            System.out.print("Nova Razão Social: ");
+                            String razao = scanner.nextLine();
+                            ((PessoaJuridica) inv).setRazaoSocial(razao);
+                            System.out.println(VERDE + "Razão Social atualizada!" + RESET);
+                        }
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        System.out.println(AMARELO + "Opção inválida." + RESET);
+                }
+            } catch (DadosInvalidosException e) {
+                System.out.println(VERMELHO + "Erro ao atualizar: " + e.getMessage() + RESET);
+            } catch (Exception e) {
+                System.out.println(VERMELHO + "Erro inesperado: " + e.getMessage() + RESET);
+            }
+        }
+    }
+
+    private static int excluirInvestidorAtual(Investidor inv){
+        System.out.print(VERMELHO + "Tem certeza que deseja excluir este investidor? (S/N): " + RESET);
+        String confirmacao = scanner.nextLine();
+        if (confirmacao.equalsIgnoreCase("S")) {
+            investidores.remove(inv);
+            System.out.println(VERDE + "Investidor removido com sucesso." + RESET);
+            return 0;
+        } else {
+            System.out.println("Operação cancelada.");
+        }
+        return -1;
+    }
 }

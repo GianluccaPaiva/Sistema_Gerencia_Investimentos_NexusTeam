@@ -24,5 +24,11 @@ public class PessoaJuridica extends Investidor{
     }
 
     public String getRazaoSocial() {return razaoSocial;}
+    public void setRazaoSocial(String razaoSocial) throws DadosInvalidosException {
+        if(razaoSocial == null || razaoSocial.trim().isEmpty()){
+            throw new DadosInvalidosException("Erro: Razão Social não pode ser vazia.");
+        }
+        this.razaoSocial = razaoSocial;
+    }
 
 }
