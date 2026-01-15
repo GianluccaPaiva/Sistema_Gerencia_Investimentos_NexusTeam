@@ -101,35 +101,59 @@ public class Registrar implements CoresMensagens {
         System.out.println(CIANO + "=======================================================================================\n" + RESET);
     }
 
-    public static void exibirRegistroPorTicker(String idInvestidor, String ticker) throws ErrosLeituraArq {
-        idLimpo = Tools.idLimpo(idInvestidor);
-        File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
+    public static void exibirRegistroPorTag(String idInvestidor, String tag, String conteudoTag) throws ErrosLeituraArq {
+        String idLimpoLocal = Tools.idLimpo(idInvestidor);
+        File arquivo = new File(MOV_DIR_PATH, idLimpoLocal + ".csv");
 
-        if (!arquivo.exists()) {
-            System.out.println("\n" + AMARELO + "--- ⚠️ Ficheiro não encontrado ---" + RESET);
+        if (!arquivo.exists() || arquivo.length() == 0) {
+            System.out.println("\n" + AMARELO + "--- ⚠️ Histórico não encontrado para o investidor: " + idInvestidor + " ---" + RESET);
             return;
         }
 
-        imprimirCabecalhoTabela("TICKER: " + ticker.toUpperCase(), idInvestidor);
+        int indiceColuna;
+        switch (tag.toUpperCase()) {
+            case "TIPO": case "TAG": indiceColuna = 1; break;
+            case "INSTITUICAO": indiceColuna = 2; break;
+            case "TICKER": indiceColuna = 3; break;
+            case "DATA": indiceColuna = 6; break;
+            default: indiceColuna = 1; break;
+        }
+
+        boolean encontrouRegistro = false;
 
         try (BufferedReader leitor = new BufferedReader(new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
             String linha;
             String header = leitor.readLine();
-            if (header != null) {
-                imprimirLinhaFormatada(header.split(";"), ROXO);
-                System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
-            }
+            StringBuilder resultados = new StringBuilder();
 
             while ((linha = leitor.readLine()) != null) {
+                if (linha.isBlank()) continue;
+
                 String[] colunas = linha.split(";");
-                if (colunas.length > 3 && colunas[3].equalsIgnoreCase(ticker)) {
+
+                if (colunas.length > indiceColuna && colunas[indiceColuna].equalsIgnoreCase(conteudoTag)) {
+                    if (!encontrouRegistro) {
+                        imprimirCabecalhoTabela("FILTRADO POR " + tag.toUpperCase() + ": " + conteudoTag.toUpperCase(), idInvestidor);
+                        if (header != null) {
+                            imprimirLinhaFormatada(header.split(";"), ROXO);
+                            System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
+                        }
+                    }
                     imprimirLinhaFormatada(colunas, VERDE);
+                    encontrouRegistro = true;
                 }
             }
+
+
+            if (!encontrouRegistro) {
+                System.out.println("\n" + AMARELO + "--- ℹ️ Não há registros com a tag [" + tag.toUpperCase() + "] contendo o valor: " + conteudoTag + " ---" + RESET);
+            } else {
+                System.out.println(CIANO + "=======================================================================================\n" + RESET);
+            }
+
         } catch (IOException e) {
-            throw new ErrosLeituraArq(VERMELHO + "❌ Erro ao filtrar: " + e.getMessage() + RESET);
+            throw new ErrosLeituraArq(VERMELHO + "❌ Erro ao filtrar por tag: " + e.getMessage() + RESET);
         }
-        System.out.println(CIANO + "=======================================================================================\n" + RESET);
     }
 
     public static void deletarRegistroInvestidor(String idInvestidor) {

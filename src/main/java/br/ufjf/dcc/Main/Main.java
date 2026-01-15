@@ -26,7 +26,7 @@ public class Main {
         System.out.println("\nLendo dados do arquivo e exibindo extrato:");
         Registrar.exibirRegistro(cpfInvestidor);
         try {
-            Registrar.exibirRegistroPorTicker("123.456.789-00", "PETR4");
+            Registrar.exibirRegistroPorTag(cpfInvestidor, "TIPO", "VENDA");
         } catch (ErrosLeituraArq e) {
             throw new RuntimeException(e);
         }
@@ -34,6 +34,6 @@ public class Main {
 
         System.out.println("Teste de investidor inexistente:");
         Registrar.exibirRegistro("000.000.000-00");
-        Registrar.deletarRegistroInvestidor(cpfInvestidor);
+
     }
 }
