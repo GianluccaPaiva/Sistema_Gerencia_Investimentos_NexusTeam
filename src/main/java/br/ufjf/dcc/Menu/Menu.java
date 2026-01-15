@@ -1,7 +1,6 @@
 package br.ufjf.dcc.Menu;
 
 import br.ufjf.dcc.Ativos.Ativos;
-import br.ufjf.dcc.Carteira.ItemCarteira;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.DadosInvalidosException;
 import br.ufjf.dcc.Erros.ErroInterrupcao;
@@ -12,6 +11,7 @@ import br.ufjf.dcc.Investidor.PessoaFisica;
 import br.ufjf.dcc.Investidor.PessoaJuridica;
 import br.ufjf.dcc.Mercado.Mercado;
 import br.ufjf.dcc.Movimentacao.Movimentacao;
+import br.ufjf.dcc.Registrar.Registrar;
 import br.ufjf.dcc.Tools.Tools;
 
 import java.util.ArrayList;
@@ -317,8 +317,6 @@ public class Menu implements CoresMensagens {
         }
     }
 
-    // Talvez colocar no tools esses dois cidadãos acima? Sim, usei template
-
     private static void menuInvestidores() {
         int opcao = -1;
         while (opcao != 0) {
@@ -496,7 +494,7 @@ public class Menu implements CoresMensagens {
                     System.out.printf("Nacional:   %.1f%% | Internacional:  %.1f%%\n", nacInt[0], nacInt[1]);
                     break;
                 case 7:
-                    System.out.println(AMARELO + "Gerar JSON: A ser implementado." + RESET);
+                    salvarRelatorioJson(inv);
                     break;
                 case 8:
                     realizarCompra(inv);
@@ -535,6 +533,7 @@ public class Menu implements CoresMensagens {
             inv.comprar(ativo, qtd, ativo.getPreco());
 
             Movimentacao mov = new Movimentacao("COMPRA", "NexusBank", ativo.getTicker(), qtd, ativo.getPreco());
+            Registrar.registrar(inv.getId(), mov.toCSV());
 
             System.out.println(VERDE + "Compra realizada com sucesso!" + RESET);
             System.out.println(ROXO + "Recibo da Operação:" + RESET);
@@ -566,6 +565,7 @@ public class Menu implements CoresMensagens {
             inv.vender(ativo, qtd);
 
             Movimentacao mov = new Movimentacao("VENDA", "NexusBank", ativo.getTicker(), qtd, ativo.getPreco());
+            Registrar.registrar(inv.getId(), mov.toCSV());
 
             System.out.println(VERDE + "Venda realizada com sucesso!" + RESET);
             System.out.println(ROXO + "Recibo da Operação:" + RESET);
@@ -689,6 +689,70 @@ public class Menu implements CoresMensagens {
             System.out.println("Operação cancelada.");
         }
         return -1;
+    }
+
+    private static void salvarRelatorioJson(Investidor inv) {
+        String nomePasta = "relatorios";
+        String nomeArquivo = "Relatorio_" + inv.getNome().replace(" ", "_") + "_" + inv.getId() + ".json";
+
+
+        java.io.File diretorio = new java.io.File(nomePasta);
+        if (!diretorio.exists()) {
+            diretorio.mkdirs();
+        }
+
+        java.io.File arquivoDestino = new java.io.File(diretorio, nomeArquivo);
+
+        try (java.io.FileWriter writer = new java.io.FileWriter(arquivoDestino)) {
+            StringBuilder json = new StringBuilder();
+            json.append("{\n");
+
+            json.append("  \"investidor\": \"").append(inv.getNome()).append("\",\n");
+            json.append("  \"id\": \"").append(inv.getId()).append("\",\n");
+
+            double totalGasto = 0;
+            double totalAtual = inv.getCarteira().valorTotalCarteira();
+            for(var item : inv.getCarteira().getAtivos()){
+                totalGasto += item.getValorPagoTotal();
+            }
+
+            json.append("  \"patrimonio_total_gasto\": ").append(String.format(java.util.Locale.US, "%.2f", totalGasto)).append(",\n");
+            json.append("  \"patrimonio_total_atual\": ").append(String.format(java.util.Locale.US, "%.2f", totalAtual)).append(",\n");
+
+            double[] rfRv = inv.getCarteira().porcentagemRendaFixaVariavel();
+            double[] nacInt = inv.getCarteira().porcentagemNacionalInternacional();
+
+            json.append("  \"renda_fixa_percent\": ").append(String.format(java.util.Locale.US, "%.1f", rfRv[0])).append(",\n");
+            json.append("  \"renda_variavel_percent\": ").append(String.format(java.util.Locale.US, "%.1f", rfRv[1])).append(",\n");
+            json.append("  \"nacional_percent\": ").append(String.format(java.util.Locale.US, "%.1f", nacInt[0])).append(",\n");
+            json.append("  \"internacional_percent\": ").append(String.format(java.util.Locale.US, "%.1f", nacInt[1])).append(",\n");
+
+            json.append("  \"ativos_carteira\": [\n");
+
+            var listaAtivos = inv.getCarteira().getAtivos();
+            for (int i = 0; i < listaAtivos.size(); i++) {
+                var item = listaAtivos.get(i);
+                json.append("    {\n");
+                json.append("      \"ticker\": \"").append(item.getAtivo().getTicker()).append("\",\n");
+                json.append("      \"quantidade\": ").append(item.getQtd()).append(",\n");
+                json.append("      \"valor_medio_compra\": ").append(String.format(java.util.Locale.US, "%.2f", item.getValorPagoTotal() / item.getQtd())).append(",\n");
+                json.append("      \"valor_total_atual\": ").append(String.format(java.util.Locale.US, "%.2f", item.getValorAtualTotal())).append("\n");
+
+                json.append("    }");
+                if (i < listaAtivos.size() - 1) json.append(",");
+                json.append("\n");
+            }
+
+            json.append("  ]\n");
+            json.append("}");
+
+            writer.write(json.toString());
+
+            System.out.println(VERDE + "✅ Relatório salvo em: " + arquivoDestino.getAbsolutePath() + RESET);
+
+        } catch (java.io.IOException e) {
+            System.out.println(VERMELHO + "❌ Erro ao salvar relatório: " + e.getMessage() + RESET);
+        }
     }
 
 }

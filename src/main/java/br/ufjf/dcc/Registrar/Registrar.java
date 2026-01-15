@@ -19,7 +19,6 @@ public class Registrar implements CoresMensagens {
 
     private static void imprimirLinhaFormatada(String[] col, String cor) {
         System.out.print(cor);
-        // Proteção contra colunas em falta
         String c0 = col.length > 0 ? col[0] : "-";
         String c1 = col.length > 1 ? col[1] : "-";
         String c2 = col.length > 2 ? col[2] : "-";
@@ -174,5 +173,7 @@ public class Registrar implements CoresMensagens {
             System.out.println(VERDE + "✅ Todas as movimentações foram limpas." + RESET);
         }
     }
+
+
 
 }

@@ -2,6 +2,7 @@ package br.ufjf.dcc.Movimentacao;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.UUID;
 
 public class Movimentacao {
@@ -48,8 +49,8 @@ public class Movimentacao {
     }
 
     public String toCSV() {
-        return String.format("%s;%s;%s;%s;%.2f;%.2f;%s",
-                this.id != null ? this.id.substring(0, Math.min(this.id.length(), 8)) : "N/A",
+        return String.format(Locale.US, "%s;%s;%s;%s;%.2f;%.2f;%s",
+                this.id,
                 this.tipoMovimentacao,
                 this.instituicao,
                 this.tickerAtivo,
