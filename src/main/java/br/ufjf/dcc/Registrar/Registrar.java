@@ -6,10 +6,14 @@ import br.ufjf.dcc.Tools.Tools;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class Registrar implements CoresMensagens {
     private static final String MOV_DIR_PATH = "movimentacoes";
     private static String idLimpo;
+    private static final String MOV_DIR_INVESTIGACAO_PATH = "serInvestigado";
 
     private static void imprimirCabecalhoTabela(String titulo, String id) {
         System.out.println(CIANO + "\n=======================================================================================");
@@ -30,6 +34,41 @@ public class Registrar implements CoresMensagens {
         System.out.printf("%-10s | %-8s | %-15s | %-8s | %-8s | %-10s | %-10s%n",
                 c0, c1, c2, c3, c4, c5, c6);
         System.out.print(RESET);
+    }
+
+    private static String verificaGravidade(String id){
+        float precoTotal = 0.0f;
+        String status;
+        String idLimpoLocal = Tools.idLimpo(id);
+        File arquivo = new File(MOV_DIR_PATH, idLimpoLocal + ".csv");
+        try (BufferedReader leitor = new BufferedReader(new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
+            String linha;
+            leitor.readLine();
+
+            while ((linha = leitor.readLine()) != null) {
+                if (linha.isBlank()) continue;
+
+                String[] colunas = linha.split(";");
+                if (colunas.length > 5) {
+                    float precoExec = Float.parseFloat(colunas[5]);
+                    int quantidade = Integer.parseInt(colunas[4]);
+                    precoTotal += precoExec * quantidade;
+                }
+            }
+        } catch (IOException e) {
+            status  = "CasoDesconhecido";
+        }
+        if (precoTotal >= 1000000.0f) {
+            status ="CasoVermelho";
+        } else if (precoTotal >= 200000.0f) {
+            status = "CasoLaranja";
+        } else if (precoTotal >= 50000.0f) {
+            status = "CasoVerde";
+        }
+        else {
+            status = "CasoDesconhecido";
+        }
+        return status;
     }
 
     public static void registrar(String idInvestidor, String conteudo) throws ErrosLeituraArq {
@@ -98,6 +137,42 @@ public class Registrar implements CoresMensagens {
             System.err.println(VERMELHO + "❌ Erro na leitura: " + e.getMessage() + RESET);
         }
         System.out.println(CIANO + "=======================================================================================\n" + RESET);
+    }
+
+    public static void exibirRegistroInvestigado( String idInvestidor) {
+        String idLimpoLocal = Tools.idLimpo(idInvestidor);
+        File diretorio = new File(MOV_DIR_INVESTIGACAO_PATH);
+        File[] arquivos = diretorio.listFiles((dir, name) -> name.startsWith("INVEST_" + idLimpoLocal) && name.endsWith(".csv"));
+
+        if (arquivos == null || arquivos.length == 0) {
+            System.out.println("\n" + AMARELO + "--- ⚠️ Histórico investigado não encontrado para o investidor: " + idInvestidor + " ---" + RESET);
+            return;
+        }
+
+        for (File arquivo : arquivos) {
+            imprimirCabecalhoTabela("EXTRATO INVESTIGADO", idInvestidor);
+
+            try (BufferedReader leitor = new BufferedReader(new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
+                String linha;
+                boolean primeiraLinha = true;
+
+                while ((linha = leitor.readLine()) != null) {
+                    if (linha.isBlank()) continue;
+
+                    String[] colunas = linha.split(";");
+                    if (primeiraLinha) {
+                        imprimirLinhaFormatada(colunas, ROXO);
+                        System.out.println(BRANCO + "---------------------------------------------------------------------------------------" + RESET);
+                        primeiraLinha = false;
+                    } else {
+                        imprimirLinhaFormatada(colunas, VERDE);
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println(VERMELHO + "❌ Erro na leitura: " + e.getMessage() + RESET);
+            }
+            System.out.println(CIANO + "=======================================================================================\n" + RESET);
+        }
     }
 
     public static void exibirRegistroPorTag(String idInvestidor, String tag, String conteudoTag) throws ErrosLeituraArq {
@@ -174,6 +249,39 @@ public class Registrar implements CoresMensagens {
         }
     }
 
+    public static void deslocarMovimentoParaSerInvestigado(String idInvestidor) throws ErrosLeituraArq {
 
+        String idLimpoLocal = Tools.idLimpo(idInvestidor);
+        File arquivoOrigem = new File(MOV_DIR_PATH, idLimpoLocal + ".csv");
+
+        if (!arquivoOrigem.exists()) {
+            throw new ErrosLeituraArq(VERMELHO + "❌ Erro: O arquivo de movimentação não existe para o ID: " + idInvestidor + RESET);
+        }
+
+        File diretorioDestino = new File(MOV_DIR_INVESTIGACAO_PATH);
+        if (!diretorioDestino.exists()) {
+            diretorioDestino.mkdirs();
+        }
+
+
+        String verificado = verificaGravidade(idInvestidor);
+        String novoNome = "INVEST_" + idLimpoLocal + "_" + verificado + ".csv";
+        File arquivoDestino = new File(diretorioDestino, novoNome);
+
+        try {
+            Path origem = arquivoOrigem.toPath();
+            Path destino = arquivoDestino.toPath();
+
+            Files.move(origem, destino, StandardCopyOption.REPLACE_EXISTING);
+
+            System.out.println(VERDE + "✅ Movimentação deslocada com sucesso!" + RESET);
+            System.out.println(CIANO + "📂 De: " + AMARELO + arquivoOrigem.getName() + RESET);
+            System.out.println(CIANO + "📂 Para: " + AMARELO + arquivoDestino.getName() + RESET);
+            System.out.println(CIANO + "📍 Local: " + AMARELO + arquivoDestino.getAbsolutePath() + RESET);
+
+        } catch (IOException e) {
+            throw new ErrosLeituraArq(VERMELHO + "❌ Falha ao mover arquivo para investigação: " + e.getMessage() + RESET);
+        }
+    }
 
 }
