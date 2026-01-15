@@ -2,13 +2,12 @@ package br.ufjf.dcc.Menu;
 
 import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
-import br.ufjf.dcc.Erros.DadosInvalidosException;
-import br.ufjf.dcc.Erros.ErroInterrupcao;
-import br.ufjf.dcc.Erros.ErrosNumbersFormato;
+import br.ufjf.dcc.Erros.*;
 import br.ufjf.dcc.Investidor.Endereco;
 import br.ufjf.dcc.Investidor.Investidor;
 import br.ufjf.dcc.Investidor.PessoaFisica;
 import br.ufjf.dcc.Investidor.PessoaJuridica;
+import br.ufjf.dcc.LeitorLotes.LeitorLotes;
 import br.ufjf.dcc.Mercado.Mercado;
 import br.ufjf.dcc.Movimentacao.Movimentacao;
 import br.ufjf.dcc.Registrar.Registrar;
@@ -73,7 +72,6 @@ public class Menu implements CoresMensagens {
 
     private static void animacaoEntrada() throws ErroInterrupcao {
         try {
-            // Título animado
             String titulo = "NEXUSBANK - SISTEMA DE GESTÃO";
             System.out.print(AZUL);
             for (int i = 0; i < titulo.length(); i++) {
@@ -108,7 +106,6 @@ public class Menu implements CoresMensagens {
             }
             System.out.println();
 
-            // pequena pausa final
             Tools.espera(0.2f);
 
         }
@@ -336,7 +333,7 @@ public class Menu implements CoresMensagens {
                     cadastrarInvestidor();
                     break;
                 case 2:
-                    System.out.println(AMARELO + "Funcionalidade 'Cadastrar em Lote' a ser implementada." + RESET);
+                    cadastrarInvestidorLote();
                     break;
                 case 3:
                     listarInvestidores();
@@ -503,7 +500,7 @@ public class Menu implements CoresMensagens {
                     realizarVenda(inv);
                     break;
                 case 10:
-                    System.out.println(AMARELO + "Lote de Movimentações: A ser implementado." + RESET);
+                    addMovimentacaoLote(inv);
                     break;
                 case 0:
                     break;
@@ -752,6 +749,39 @@ public class Menu implements CoresMensagens {
 
         } catch (java.io.IOException e) {
             System.out.println(VERMELHO + "❌ Erro ao salvar relatório: " + e.getMessage() + RESET);
+        }
+    }
+
+    private static void cadastrarInvestidorLote() {
+        System.out.println(CIANO + "\n--- Cadastro de Investidores em Lote ---" + RESET);
+        System.out.println("Diretório de leitura: lotes/investidoresLotes/");
+        System.out.println("Formato CSV: TIPO;NOME;ID;TEL;NASC;RUA;NUM;BAIRRO;CIDADE;EST;CEP;PATRIMONIO;EXTRA");
+        System.out.print("Digite o NOME do arquivo (ex: novos.csv): ");
+        String nomeArquivoInv = scanner.nextLine();
+
+        try {
+            List<Investidor> novos = LeitorLotes.carregarInvestidores(nomeArquivoInv);
+
+            if (!novos.isEmpty()) {
+                investidores.addAll(novos);
+                System.out.println(VERDE + "✅ Lote finalizado! Total de investidores no sistema: " + investidores.size() + RESET);
+            }
+        } catch (ErrosLeituraArq e) {
+            System.out.println(VERMELHO + e.getMessage() + RESET);
+        }
+    }
+
+    private static void addMovimentacaoLote(Investidor inv){
+        System.out.println(CIANO + "--- Movimentações em Lote ---" + RESET);
+        System.out.println("Diretório de leitura: lotes/movimentacoesLotes/");
+        System.out.println("Formato CSV: TIPO;TICKER;QUANTIDADE");
+        System.out.print("Digite o NOME do arquivo (ex: compras_janeiro.csv): ");
+        String nomeArquivoMov = scanner.nextLine();
+
+        try {
+            LeitorLotes.processarLoteMovimentacoes(nomeArquivoMov, inv, mercado);
+        } catch (ErrosLeituraArq e) {
+            System.out.println(VERMELHO + e.getMessage() + RESET);
         }
     }
 
