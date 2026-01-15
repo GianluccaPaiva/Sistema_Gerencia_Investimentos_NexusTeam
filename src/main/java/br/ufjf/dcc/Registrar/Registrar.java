@@ -174,4 +174,5 @@ public class Registrar implements CoresMensagens {
             System.out.println(VERDE + "✅ Todas as movimentações foram limpas." + RESET);
         }
     }
+
 }
