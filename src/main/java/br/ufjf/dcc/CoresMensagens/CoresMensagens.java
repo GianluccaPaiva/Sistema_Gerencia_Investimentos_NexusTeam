@@ -10,6 +10,5 @@ public interface CoresMensagens{
         String ROSA = "\u001B[95m";
         String ROXO = "\u001B[35m";
         String VERDE_CLARO = "\u001B[92m";
-        String VERMERLHO_CLARO = "\u001B[91m";
         String BRANCO = "\u001B[37m";
 }

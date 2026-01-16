@@ -1,15 +1,11 @@
 package br.ufjf.dcc.Tools;
 
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
-import br.ufjf.dcc.Erros.ErrosNumbersFormato;
-
 import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class Tools implements CoresMensagens {
     private static String normalizarChave(String s) {
@@ -133,20 +129,6 @@ public class Tools implements CoresMensagens {
         return parseNumberNullableTemplate(valor,
                 Long::parseLong,
                 s -> s.replace(".", "").replace(",", ""));
-    }
-
-    public static int extractIndex(String nome) {
-
-        Pattern padrao= Pattern.compile("(_)(\\d+)(\\.)");
-        Matcher compativel = padrao.matcher(nome);
-        if (compativel.find()) {
-            try {
-                return Integer.parseInt(compativel.group(2));
-            } catch (NumberFormatException e) {
-                System.out.println("❌ Erro ao converter número do índice: " + nome);
-            }
-        }
-        return 1;
     }
 
     public static int lerNumeroInteiro(String entrada) {

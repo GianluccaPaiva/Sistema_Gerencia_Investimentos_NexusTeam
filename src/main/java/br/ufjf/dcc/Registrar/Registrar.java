@@ -112,7 +112,7 @@ public class Registrar implements CoresMensagens {
         }
     }
 
-    public static void exibirRegistro(String idInvestidor) {
+    private static void exibirRegistro(String idInvestidor) {
         idLimpo = Tools.idLimpo(idInvestidor);
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
 
@@ -145,7 +145,7 @@ public class Registrar implements CoresMensagens {
         System.out.println(CIANO + "=======================================================================================\n" + RESET);
     }
 
-    public static void exibirRegistroInvestigado( String idInvestidor) {
+    private static void exibirRegistroInvestigado( String idInvestidor) {
         String idLimpoLocal = Tools.idLimpo(idInvestidor);
         File diretorio = new File(MOV_DIR_INVESTIGACAO_PATH);
         File[] arquivos = diretorio.listFiles((dir, name) -> name.startsWith("INVEST_" + idLimpoLocal) && name.endsWith(".csv"));
@@ -181,7 +181,7 @@ public class Registrar implements CoresMensagens {
         }
     }
 
-    public static void exibirRegistroPorTag(String idInvestidor, String tag, String conteudoTag) throws ErrosLeituraArq {
+    private static void exibirRegistroPorTag(String idInvestidor, String tag, String conteudoTag) throws ErrosLeituraArq {
         String idLimpoLocal = Tools.idLimpo(idInvestidor);
         File arquivo = new File(MOV_DIR_PATH, idLimpoLocal + ".csv");
 
@@ -236,7 +236,7 @@ public class Registrar implements CoresMensagens {
         }
     }
 
-    public static void deletarRegistroInvestidor(String idInvestidor) {
+    private static void deletarRegistroInvestidor(String idInvestidor) {
         idLimpo = Tools.idLimpo(idInvestidor);
         File arquivo = new File(MOV_DIR_PATH, idLimpo + ".csv");
         if (arquivo.exists() && arquivo.delete()) {
@@ -246,7 +246,7 @@ public class Registrar implements CoresMensagens {
         }
     }
 
-    public static void deletarTodasMovimentacoes() {
+    private static void deletarTodasMovimentacoes() {
         File diretorio = new File(MOV_DIR_PATH);
         File[] arquivos = diretorio.listFiles((dir, name) -> name.endsWith(".csv"));
         if (arquivos != null) {
