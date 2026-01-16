@@ -1,0 +1,4 @@
+TIPO;NOME;ID;TEL;NASC;RUA;NUM;BAIRRO;CIDADE;EST;CEP;PATRIMONIO;EXTRA
+PF;Ana Silva Teste;111.222.333-44;9999-8888;01/01/1990;Rua das Flores;10;Centro;Juiz de Fora;MG;36000-000;50000,00;Moderado
+PJ;Tech Solutions Ltda;12.345.678/0001-90;3333-2222;15/05/2010;Av. Rio Branco;500;Distrito Industrial;Sao Paulo;SP;01000-000;1000000,50;Solucoes em TI
+PF;Carlos Arrojado;999.888.777-66;9888-7777;20/02/1985;Rua da Bolsa;1000;Wall Street;Rio de Janeiro;RJ;22000-000;150000;Arrojado

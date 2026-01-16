@@ -36,11 +36,12 @@ public class Registrar implements CoresMensagens {
         System.out.print(RESET);
     }
 
-    private static String verificaGravidade(String id){
+    private static String verificaGravidade(String id) {
         float precoTotal = 0.0f;
         String status;
         String idLimpoLocal = Tools.idLimpo(id);
         File arquivo = new File(MOV_DIR_PATH, idLimpoLocal + ".csv");
+
         try (BufferedReader leitor = new BufferedReader(new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
             String linha;
             leitor.readLine();
@@ -50,22 +51,27 @@ public class Registrar implements CoresMensagens {
 
                 String[] colunas = linha.split(";");
                 if (colunas.length > 5) {
-                    float precoExec = Float.parseFloat(colunas[5]);
-                    int quantidade = Integer.parseInt(colunas[4]);
-                    precoTotal += precoExec * quantidade;
+                    try {
+                        float precoExec = Float.parseFloat(colunas[5].replace(",", ".").trim());
+                        float quantidade = Float.parseFloat(colunas[4].replace(",", ".").trim());
+                        precoTotal += precoExec * quantidade;
+
+                    } catch (NumberFormatException e) {
+                        continue;
+                    }
                 }
             }
         } catch (IOException e) {
-            status  = "CasoDesconhecido";
+            return "CasoDesconhecido";
         }
+
         if (precoTotal >= 1000000.0f) {
-            status ="CasoVermelho";
+            status = "CasoVermelho";
         } else if (precoTotal >= 200000.0f) {
             status = "CasoLaranja";
         } else if (precoTotal >= 50000.0f) {
             status = "CasoVerde";
-        }
-        else {
+        } else {
             status = "CasoDesconhecido";
         }
         return status;

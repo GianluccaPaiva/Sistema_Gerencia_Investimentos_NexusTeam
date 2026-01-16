@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static br.ufjf.dcc.Registrar.Registrar.deslocarMovimentoParaSerInvestigado;
 import static br.ufjf.dcc.Tools.Tools.lerNumeroDecimal;
 import static br.ufjf.dcc.Tools.Tools.lerNumeroInteiro;
 
@@ -590,6 +591,11 @@ public class Menu implements CoresMensagens {
 
             if (removeu) {
                 System.out.println(VERDE + "Removido: " + idLimpo + RESET);
+                try {
+                    deslocarMovimentoParaSerInvestigado(idLimpo);
+                } catch (ErrosLeituraArq e) {
+                    System.out.println(VERMELHO + "Erro ao deslocar movimentações para investigação: " + e.getMessage() + RESET);
+                }
                 contagemRemovidos++;
             } else {
                 System.out.println(AMARELO + "Não encontrado: " + idLimpo + RESET);
@@ -680,6 +686,11 @@ public class Menu implements CoresMensagens {
         String confirmacao = scanner.nextLine();
         if (confirmacao.equalsIgnoreCase("S")) {
             investidores.remove(inv);
+            try{
+                deslocarMovimentoParaSerInvestigado(inv.getId());
+            } catch (ErrosLeituraArq e) {
+                System.out.println(VERMELHO + "Erro ao deslocar movimentações para investigação: " + e.getMessage() + RESET);
+            }
             System.out.println(VERDE + "Investidor removido com sucesso." + RESET);
             return 0;
         } else {
