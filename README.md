@@ -77,4 +77,4 @@ A interação ocorre via console através da classe Menu, que oferece navegaçã
 A implementação cumpre integralmente os requisitos propostos, apresentando um código limpo, modular e de fácil manutenção. O uso rigoroso de encapsulamento e a separação de responsabilidades garantem que novas regras de mercado possam ser adicionadas ao sistema com impacto mínimo na estrutura existente.
 
 # Diagrama de Classes
-![Diagrama de Classes NexusTeam](Investor%20Portfolio%20Flow-2026-01-17-011907.svg)
+![Investor Portfolio Flow-2026-01-17-011907.svg](Investor%20Portfolio%20Flow-2026-01-17-011907.svg)
