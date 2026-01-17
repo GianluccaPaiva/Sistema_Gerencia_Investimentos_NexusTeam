@@ -78,3 +78,7 @@ A implementação cumpre integralmente os requisitos propostos, apresentando um 
 
 # Diagrama de Classes
 ![Imagem do Diagrama de Classes](mermaid-diagram-2026-01-16-212200.png)
+<details>
+  <summary>🔍 Clique aqui para expandir o Diagrama de Classes</summary>
+  <img src="mermaid-diagram-2026-01-16-212200.png" alt="UML Diagram">
+</details>
