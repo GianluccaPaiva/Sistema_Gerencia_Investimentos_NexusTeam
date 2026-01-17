@@ -78,3 +78,6 @@ A implementação cumpre integralmente os requisitos propostos, apresentando um 
 
 # Diagrama de Classes
 ![Investor Portfolio Flow-2026-01-17-011907.svg](Investor%20Portfolio%20Flow-2026-01-17-011907.svg)
+
+<!-- HTML -->
+<a href="https://mermaid.ai/app/projects/1dc65ede-fb4f-4ce1-8bfe-4f3d375d5d74/diagrams/bd1c1400-069d-4b56-85bc-443160b3e24b/share/invite/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkb2N1bWVudElEIjoiYmQxYzE0MDAtMDY5ZC00YjU2LTg1YmMtNDQzMTYwYjNlMjRiIiwiYWNjZXNzIjoiVmlldyIsImlhdCI6MTc2ODYxMzgxNH0.PNTVV6FxMxjCwd1niBHeJ2IjUcpQX6E4KuUOdxRI9F8" target="_blank" rel="noopener noreferrer">Diagrama Mermaid</a>
