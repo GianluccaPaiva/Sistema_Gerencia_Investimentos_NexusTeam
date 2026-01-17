@@ -1,153 +1,77 @@
-# Plano Incial
-Sistema possui Ativos e Investidores com cada um com seu subMenu.
-Ativos:  
-- Cadastrar Ativos em lote(arq a parte) ou individualmente.
-- Editar Ativos.
-- Remover Ativos.
-- Exibir relatório de Ativos:
-- - Todos os Ativos.
--  - Apenas cada um.
-- Voltar pro menu.
+# Relatório de Implementação: Sistema de Gestão de Investimentos NexusTeam
 
-Investidores:
-- Cadastrar Investidores em lote(arq a parte) ou individualmente.
-- -Exibir lista de Investidores.
-- Excluir Investidores em memória separado por vírgula dada lista de cpf/cnpj.
-- Selecionar Investidor por cpf/cnpj.
+## 1. Introdução
 
-Menu do investidor selecionado:
-- Editar informações do investidor.
-- Excluir investidor.
-- Exibir valor total gasto (em Real).
-- Exibir valor total atual (em Real).
-- Exibir as porcentagens de produtos de renda fixa e de renda
-  variável.
--  Salvar relatório. Essa opção deve gerar um relatório que
-  exiba todas as informações de exibições listadas acima.
-  Formatos recomendados JSON ou YAML. Vocês podem definir a
-  estrutura desses arquivos, desde que seja coerente.
-- Adicionar uma movimentação de compra
-- Adicionar uma movimentação de venda
-- Adicionar lote de movimentações. O usuário deverá informar
-   caminho do arquivo.
-- Voltar para o menu anterior
+O presente relatório detalha a implementação do sistema NexusBank, uma plataforma de gestão de ativos e carteiras de investimentos desenvolvida em Java. O objetivo principal do sistema é permitir o controle de diferentes tipos de ativos financeiros e a gestão de perfis de investidores, garantindo a conformidade com regras de mercado e perfis de risco.
 
-Objeto Ativo:
-- Nome
-- Código de negociação (ticker)
-- Preço atual
-- Qualificado (indica se apenas investidores qualificados
-podem adquirir aquele ativo)
-- Nacionais/Internacionais
+## 2. Arquitetura e Modelagem de Dados
 
-Objetos advindos do Ativo:
-![img.png](img.png)
+O sistema foi construído utilizando os pilares da Orientação a Objetos (OO): Herança, Abstração, Encapsulamento e Polimorfismo. A organização do código foi dividida em pacotes semânticos como Ativos, Investidor, Carteira, Mercado e Erros.
 
-Regras:
-- Todo FII deve obrigatoriamente ter um método para exibir a
-taxa de administração concatenada com o sinal de “%”.
-- Se não houver indicação de que o ativo é restrito a
-investidores qualificados, deve-se considerar que ele pode
-ser negociado livremente por qualquer investidor.
-- Ativos internacionais devem obrigatoriamente ter um método
-para converter a moeda do ativo em reais. Portanto,
-precisam ter um atributo que representa o fator de
-conversão. Por exemplo, para um ativo em Dólar a o fator de
-conversão atualmente (07/01/2025) é 5.39, pois, para
-transformar US$1,00 em Real, é preciso multiplicar esse
-valor por 5.39 na cotação atual.
+### 2.1. Hierarquia de Ativos
 
-Objeto Investidor:
-- Nome
-- Identificador (CPF ou CNPJ)
-- Telefone
-- Data de nascimento
-- Endereço completo (rua, número, bairro, CEP, cidade,
-estado)
-- Patrimônio total (em Real).
-- Uma carteira de investimentos que:
-- - Armazene os ativos que ele possui;
-- -  Registre a quantidade de cada ativo (a quantidade pode
-ser um número real (p.ex., 5.2);
-- - Seja atualizada conforme registro de movimentações de
-compra e venda;
-- - Permita verificar o valor total da carteira (em Real);
-- - Permita verificar a percentagem de produtos de renda
-fixa e renda variável;
-- - Permita verificar a percentagem de produtos nacionais
-e internacionais.
+A classe abstrata Ativos serve como base para todos os produtos financeiros. A implementação utiliza interfaces para definir comportamentos específicos:
 
-Regras:
-- Investidores institucionais podem movimentar qualquer ativo
-- Sobre os investidores Pessoa Física:
-- - Apenas aqueles com perfil Arrojado, podem movimentar
-criptoativos.
-- - Apenas aqueles com perfil Moderado ou Arrojado, podem
-movimentar stocks
-○ Ativos qualificados só podem ser movimentados por
-investidores qualificados ou por investidores
-institucionais. Os investidores qualificados são
-aqueles que têm pelo menos R$1.000.000,00 de
-patrimônio total.
+Interfaces de Renda: RendaFixa e RendaVariavel.
 
-- - Todo investidor obrigatoriamente deve possuir a capacidade
-de cadastrar investimento. Essa funcionalidade é
-responsável por registrar as movimentações causando
-alterações na carteira de investimento.
-- - Vendas não podem exceder a quantidade disponível. Por
-exemplo, se a carteira tem apenas 3.0 ações do Itaú
-(ITUB3), a movimentação de venda de 5.0 ações do Itaú
-não deve ser executada, mantendo a carteira do
-investidor com 3.0 ações do Itaú.
+Interfaces de Origem: Nacional e Internacional (esta última incluindo suporte para conversão de moeda baseada na cotação do dólar).
 
-- Ao executar o método de investir o sistema deverá informar
-se a movimentação foi bem sucedida ou não.
+Tipos Implementados:
 
-Movimentação:
-- Um identificador único da movimentação
-- Um indicador do tipo de negociação, sendo esse de compra ou
-de venda. Uma compra indica que ativos serão adicionados à
-carteira e uma venda indica que ativos serão removidos da
-carteira.
-- Em que instituição foi executada a movimentação. Por
-exemplo, NuInvest, Clear Corretora, Corretora Rico, etc.
-- O ativo negociado (p.ex., Ação da Cemig - CMIG4). O código
-do ativo deve ser utilizado para buscar o ativo. Se o ativo
-não existir na base de dados a movimentação não pode ser
-realizada.
-- A quantidade de ativos negociados (p.ex. 5.3)
-- Data de negociação
-- Preço de execução
+- Ações: Possuem lógica interna para definir o tipo (Ordinária, Preferencial ou Unit) com base no final do ticker.
 
-Regras Gerais:
-- Distribua o código em pacotes que unifiquem classes que
-tenham uma relação semântica forte.
-- Aplique o encapsulamento de forma correta. Ou seja, não
-permita que outras classes acessem os atributos diretamente
-e permita que toda comunicação vinda de outras classes seja
-a partir de métodos seguros.
-- A implementação deve utilizar herança, abstração e
-interfaces.
-- O código deve ter tratamento completo de exceções. Inclua
-ao menos uma exceção personalizada. Ou seja, crie e utilize
-ao menos uma classe própria para tratamento de exceções. De
-forma geral, sempre que possível, utilize classes de
-exceção nativas do Java. Obs.: Evite utilizar classes
-genéricas como Exception e RuntimeException.
-- Evite a todo custo duplicação de código (Herança e
-Interface podem auxiliar nisso). Mas, além de aplicar os
-conceitos de OO de forma coerente, crie funções para para
-encapsular trechos de código que são utilizados em
-múltiplas partes do código.
-- Inclua atributos, métodos e tratamentos de exceção que
-auxiliem no desenvolvimento da solução mesmo que eles não
-tenham sido diretamente mencionados nos requisitos do
-trabalho. Por exemplo, mesmo que no texto acima não tenha
-sido mencionado, será que faz sentido ter um investidor sem
-nome ou sem CPF (ou CNPJ)? A resposta é não, então faça os
-tratamentos necessários.
-- Crie os arquivos necessários para testar as funcionalidades
-de inserção em lote. Por exemplo, crie um arquivo CSV com
-informações de vários investidores e teste a opção de
-carregar investidores em lote. Faça o mesmo com relação aos
-ativos e movimentações.
+- FIIs: Implementam a interface TaxaPorcentagem para exibição obrigatória de taxas de administração.
+
+- Tesouro: Focado em renda fixa com datas de vencimento.
+
+- Criptomoedas e Stocks: Representam ativos internacionais com campos específicos como algoritmo de consenso e bolsa de negociação.
+
+### 2.2. Gestão de Investidores
+
+A estrutura de investidores diferencia Pessoa Física (PF) de Pessoa Jurídica (PJ):
+
+- Pessoa Física: Segmentada por perfis de risco (Conservador, Moderado, Arrojado). O sistema bloqueia automaticamente a compra de ativos de alto risco (como Criptomoedas) para perfis incompatíveis.
+
+- Pessoa Jurídica: Possui liberdade total de movimentação, independentemente do tipo de ativo.
+
+- Regra de Qualificação: Investidores com patrimônio inferior a R$ 1.000.000,00 são impedidos de adquirir ativos marcados como "exclusivos para investidores qualificados".
+
+## 3. Funcionalidades Principais
+
+### 3.1. Gestão de Carteira e Movimentações
+
+Cada investidor possui uma Carteira que armazena ItemCarteira. O sistema gerencia:
+
+- Compras e Vendas: Atualiza quantidades e preços médios.
+
+- Validação de Saldo: Impede a venda de ativos que o investidor não possui em quantidade suficiente.
+
+- Cálculos de Exposição: Gera percentuais em tempo real de Renda Fixa vs. Variável e ativos Nacionais vs. Internacionais.
+
+### 3.2. Processamento em Lote
+
+O sistema utiliza a classe LeitorLotes para processar arquivos CSV. Isso permite a importação massiva de investidores, ativos e movimentações históricas, facilitando a carga inicial de dados.
+
+### 3.3. Persistência e Relatórios
+
+Logs de Transações: Todas as movimentações são registradas em arquivos CSV individuais por investidor na pasta movimentacoes.
+
+Relatórios JSON: O sistema exporta o estado atual da carteira de um investidor para o formato JSON, permitindo a interoperabilidade com outros sistemas ou auditoria manual.
+
+## 4. Robustez e Tratamento de Erros
+
+Foi implementada uma hierarquia de exceções personalizadas para garantir a estabilidade:
+
+- DadosInvalidosException: Captura erros de entrada e violações de regras de negócio.
+
+- ErrosLeituraArq: Gerencia falhas no acesso a sistemas de arquivos ou inconsistências nos CSVs.
+
+- ErrosNumbersFormato: Especialização para tratar erros de parsing numérico de forma amigável ao usuário.
+
+## 5. Interface do Usuário
+
+A interação ocorre via console através da classe Menu, que oferece navegação intuitiva dividida em submenus de ativos e investidores. Inclui recursos visuais simples (cores via ANSI) e animações de carregamento para melhorar a experiência do usuário.
+
+## 6. Conclusão
+
+A implementação cumpre integralmente os requisitos propostos, apresentando um código limpo, modular e de fácil manutenção. O uso rigoroso de encapsulamento e a separação de responsabilidades garantem que novas regras de mercado possam ser adicionadas ao sistema com impacto mínimo na estrutura existente.
