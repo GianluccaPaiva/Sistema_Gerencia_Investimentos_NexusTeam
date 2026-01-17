@@ -77,8 +77,4 @@ A interação ocorre via console através da classe Menu, que oferece navegaçã
 A implementação cumpre integralmente os requisitos propostos, apresentando um código limpo, modular e de fácil manutenção. O uso rigoroso de encapsulamento e a separação de responsabilidades garantem que novas regras de mercado possam ser adicionadas ao sistema com impacto mínimo na estrutura existente.
 
 # Diagrama de Classes
-![Imagem do Diagrama de Classes](mermaid-diagram-2026-01-16-212200.png)
-<details>
-  <summary>🔍 Clique aqui para expandir o Diagrama de Classes</summary>
-  <img src="mermaid-diagram-2026-01-16-212200.png" alt="UML Diagram">
-</details>
+![Diagrama de Classes NexusTeam](Investor%20Portfolio%20Flow-2026-01-17-011907.svg)https://user-images.githubusercontent.com/105529056/234807797-1f3f4f3e-5e2e-4f3b-8f7c-5f3e2e4b6c3d.png)
