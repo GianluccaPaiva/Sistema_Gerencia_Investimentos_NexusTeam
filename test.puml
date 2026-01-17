@@ -1,0 +1,397 @@
+@startuml
+class br.ufjf.dcc.Menu.Menu {
+- {static} Mercado mercado
+- {static} List<Investidor> investidores
+- {static} Scanner scanner
+- {static} boolean ativar
++ {static} void run()
+- {static} void inciarAnimacao(boolean)
+- {static} void animacaoEntrada()
+- {static} void exibirMenuPrincipal()
+- {static} void addAtivoIndividuo()
+- {static} void sistemaBusca()
+- {static} void menuRemoverAtivo()
+- {static} void editarAtivo()
+- {static} void menuCarregamentoLote()
+- {static} void menuTipoExibicaoAtivos()
+- {static} void menuAtivos()
+- {static} void menuInvestidores()
+- {static} void cadastrarInvestidor()
+- {static} void listarInvestidores()
+- {static} void buscarInvestidorEOperar()
+- {static} void menuOperacoesInvestidor(Investidor)
+- {static} void realizarCompra(Investidor)
+- {static} void realizarVenda(Investidor)
+- {static} void excluirInvestidorEmLote()
+- {static} void editarInvestidor(Investidor)
+- {static} int excluirInvestidorAtual(Investidor)
+- {static} void salvarRelatorioJson(Investidor)
+- {static} void cadastrarInvestidorLote()
+- {static} void addMovimentacaoLote(Investidor)
+}
+
+
+class br.ufjf.dcc.Investidor.Endereco {
+- String rua
+- int numero
++ String getRua()
++ String getCidade()
++ String getEstado()
++ String getCep()
++ String getBairro()
++ int getNumero()
++ void setRua(String)
++ void setCidade(String)
++ void setEstado(String)
++ void setCep(String)
++ void setBairro(String)
++ void setNumero(int)
+}
+
+
+class br.ufjf.dcc.Registrar.Registrar {
+- {static} String MOV_DIR_PATH
+- {static} String idLimpo
+- {static} String MOV_DIR_INVESTIGACAO_PATH
+- {static} void imprimirCabecalhoTabela(String,String)
+- {static} void imprimirLinhaFormatada(String[],String)
+- {static} String verificaGravidade(String)
++ {static} void registrar(String,String)
+- {static} void exibirRegistro(String)
+- {static} void exibirRegistroInvestigado(String)
+- {static} void exibirRegistroPorTag(String,String,String)
+- {static} void deletarRegistroInvestidor(String)
+- {static} void deletarTodasMovimentacoes()
++ {static} void deslocarMovimentoParaSerInvestigado(String)
+}
+
+
+interface br.ufjf.dcc.CoresMensagens.CoresMensagens {
+~ {static} String RESET
+~ {static} String VERMELHO
+~ {static} String VERDE
+~ {static} String AMARELO
+~ {static} String AZUL
+~ {static} String CIANO
+~ {static} String ROSA
+~ {static} String ROXO
+~ {static} String VERDE_CLARO
+~ {static} String BRANCO
+}
+
+class br.ufjf.dcc.Investidor.PessoaJuridica {
+- String razaoSocial
++ boolean podeComprar(br.ufjf.dcc.Ativos.Ativos)
++ String toString()
++ String getRazaoSocial()
++ void setRazaoSocial(String)
+}
+
+
+class br.ufjf.dcc.Main.Main {
++ {static} void main(String[])
+}
+
+interface br.ufjf.dcc.Ativos.Interfaces.Internacional {
+~ {static} boolean EH_NACIONAL
+~ {static} float COTACAO_DOLAR
++ boolean getNacionalidade()
++ void converterParaReal()
+}
+
+
+class br.ufjf.dcc.Erros.ErrosLeituraArq {
+}
+class br.ufjf.dcc.Ativos.Tesouro {
+- String tipoRendimento
++ String getTipoRendimento()
++ String getDataVencimento()
++ void setTipoRendimento(String)
++ void setDataVencimento(String)
+- String defineTipoRendimento(String)
++ boolean getNacionalidade()
++ String getTipoRenda()
++ void exibirAtivo()
++ boolean verificarAtributosValidos()
++ void editarAtributos(String)
+}
+
+
+class br.ufjf.dcc.Investidor.PessoaFisica {
+- String perfil
++ boolean podeComprar(Ativos)
++ String toString()
++ String getPerfil()
++ void setPerfil(String)
+}
+
+
+class br.ufjf.dcc.Ativos.Stocks {
+- String bolsaNegociacao
++ String getBolsaNegociacao()
++ String getSetor()
++ void setBolsaNegociacao(String)
++ void setSetor(String)
++ boolean getNacionalidade()
++ void converterParaReal()
++ String getTipoRenda()
++ void exibirAtivo()
++ boolean verificarAtributosValidos()
++ void editarAtributos(String)
+}
+
+
+class br.ufjf.dcc.Movimentacao.Movimentacao {
+- String id
+- String tipoMovimentacao
+- String instituicao
+- String tickerAtivo
+- float quantidade
+- double precoExecucao
+- LocalDateTime dataNegociacao
++ String getId()
++ String getTipoMovimentacao()
++ String getInstituicao()
++ String getTickerAtivo()
++ float getQuantidade()
++ double getPrecoExecucao()
++ String getDataFormatada()
++ String toString()
++ String toCSV()
+}
+
+
+class br.ufjf.dcc.Erros.ErroTipoNaoPresente {
+}
+class br.ufjf.dcc.Carteira.ItemCarteira {
+- Ativos ativo
+- float qtd
+- double valorPagoTotal
++ double getValorAtualTotal()
++ void adicionarCompra(float,double)
++ void removerVenda(float)
++ Ativos getAtivo()
++ float getQtd()
++ double getValorPagoTotal()
++ double getLucroPrejuizo()
+}
+
+
+class br.ufjf.dcc.Carteira.Carteira {
+- List<ItemCarteira> ativos
++ void addAtivo(Ativos,float,double)
++ void removerAtivo(String,float)
++ double valorTotalCarteira()
++ double valorTotalGasto()
++ double[] porcentagemRendaFixaVariavel()
++ double[] porcentagemNacionalInternacional()
++ void exibirCarteira()
++ List<ItemCarteira> getAtivos()
+}
+
+
+class br.ufjf.dcc.Ativos.Acoes {
+- String tipo
+- String definiTipo()
++ boolean getNacionalidade()
++ String getTipoRenda()
++ void setTipoRenda(String)
++ void exibirAtivo()
++ boolean verificarAtributosValidos()
++ void editarAtributos(String)
+}
+
+
+class br.ufjf.dcc.Ativos.Criptomoedas {
+- String consenso
+- long qtdMax
++ String getConsenso()
++ long getQtdMax()
++ void setConsenso(String)
++ void setQtdMax(long)
++ boolean getNacionalidade()
++ void converterParaReal()
++ String getTipoRenda()
++ void exibirAtivo()
++ boolean verificarAtributosValidos()
++ void editarAtributos(String)
+}
+
+
+class br.ufjf.dcc.Ativos.Fiis {
+- String segmento
+- float ultimoDividendo
++ String getSegmento()
++ float getUltimoDividendo()
++ float getTaxaAdmissao()
++ void setSegmento(String)
++ void setUltimoDividendo(float)
++ void setTaxaAdmissao(float)
++ void exibirAtivo()
++ boolean getNacionalidade()
++ String getTipoRenda()
++ void exibirTaxaAdministracao()
++ boolean verificarAtributosValidos()
++ void editarAtributos(String)
+}
+
+
+interface br.ufjf.dcc.Ativos.Interfaces.Nacional {
+~ {static} boolean EH_NACIONAL
++ boolean getNacionalidade()
+}
+
+
+abstract class br.ufjf.dcc.Ativos.Ativos {
+# String nome
+# float preco
+# boolean qualificado
++ void exibirAtivo()
++ String getTicker()
++ String getNome()
++ float getPreco()
++ boolean qualificado()
++ void setNome(String)
++ void setTicker(String)
++ void setPreco(Float)
++ void setQualificado(boolean)
+# boolean verificarAtributosValidos()
++ void editarAtributos(String)
+}
+
+
+class br.ufjf.dcc.Mercado.Mercado {
+- List<Ativos> listaAtivosAcoes
+- List<Ativos> listaAtivosFiis
+- List<Ativos> listaAtivosTesouros
+- List<Ativos> listaAtivosCriptos
+- List<Ativos> listaAtivosStocks
++ List<Ativos> getListaAcoes()
++ List<Ativos> getListaFiis()
++ List<Ativos> getListaTesouros()
++ List<Ativos> getListaCriptos()
++ List<Ativos> getListaStocks()
+- List<Ativos> localizaListAtivo(Ativos)
+- Ativos auxBuscaAtivo(String,int)
+- boolean existeTicker(String)
+- Ativos auxAdicaoAtivo(Ativos,int)
+- void carregarBaseDeDados()
+- void listarListasAtivosEspecifico(List<Ativos>)
++ void listarAtivosPorTipo(int)
++ Ativos buscaAtivo(String)
++ void listarTodosAtivos()
++ void removerAtivo(String)
++ void adicaoAtivo(String,String)
++ void editarAtivo(Ativos,String)
++ void carregarAtivosLote(String,int)
+}
+
+
+class br.ufjf.dcc.Erros.ErrosNumbersFormato {
+}
+class br.ufjf.dcc.Erros.ErroInterrupcao {
+}
+class br.ufjf.dcc.Tools.Tools {
+- {static} String normalizarChave(String)
+- {static} String normalizarValor(String)
+- {static} T lerNumeroGeneric(String,Function<String,T>,String)
+- {static} T parseNumberNullableTemplate(String,java.util.function.Function<String,T>,java.util.function.Function<String,String>)
++ {static} String capitalize(String)
++ {static} String validaNacionalidade(boolean)
++ {static} boolean dataValida(String)
++ {static} void espera(float)
++ {static} Map<String,Integer> construirMapaCabecalho(String,String)
++ {static} String obterCampo(String[],Map<String,Integer>,String)
++ {static} Float parseFloatNullable(String)
++ {static} Long parseLongNullable(String)
++ {static} int lerNumeroInteiro(String)
++ {static} double lerNumeroDecimal(String)
++ {static} String idLimpo(String)
+}
+
+class br.ufjf.dcc.Erros.DadosInvalidosException {
+}
+interface br.ufjf.dcc.Ativos.Interfaces.RendaFixa {
+~ {static} String RENDA_FIXA
++ String getTipoRenda()
+}
+
+
+interface br.ufjf.dcc.Ativos.Interfaces.RendaVariavel {
+~ {static} String RENDA_VARIAVEL
++ String getTipoRenda()
+}
+
+
+interface br.ufjf.dcc.Ativos.Interfaces.TaxaPorcentagem {
++ void exibirTaxaAdministracao()
+}
+
+abstract class br.ufjf.dcc.Investidor.Investidor {
+- String nome
+- Endereco endereco
+- double patrimonio
+- Carteira carteira
++ void comprar(Ativos,float,double)
++ void vender(Ativos,float)
++ void exibirCarteira()
++ {abstract}boolean podeComprar(Ativos)
++ String toString()
++ String getNome()
++ void setNome(String)
++ String getId()
++ void setId(String)
++ String getTelefone()
++ void setTelefone(String)
++ String getDataNascimento()
++ void setDataNascimento(String)
++ Endereco getEndereco()
++ void setEndereco(Endereco)
++ double getPatrimonio()
++ void setPatrimonio(double)
++ Carteira getCarteira()
+}
+
+
+class br.ufjf.dcc.LeitorLotes.LeitorLotes {
+- {static} String INVESTIDORES_DIR_PATH
+- {static} String MOVIMENTACOES_DIR_PATH
++ {static} List<Investidor> carregarInvestidores(String)
++ {static} void processarLoteMovimentacoes(String,Investidor,Mercado)
+}
+
+
+
+
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Menu.Menu
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Registrar.Registrar
+br.ufjf.dcc.Investidor.Investidor <|-- br.ufjf.dcc.Investidor.PessoaJuridica
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Erros.ErrosLeituraArq
+java.io.IOException <|-- br.ufjf.dcc.Erros.ErrosLeituraArq
+br.ufjf.dcc.Ativos.Interfaces.RendaFixa <|.. br.ufjf.dcc.Ativos.Tesouro
+br.ufjf.dcc.Ativos.Interfaces.Nacional <|.. br.ufjf.dcc.Ativos.Tesouro
+br.ufjf.dcc.Ativos.Ativos <|-- br.ufjf.dcc.Ativos.Tesouro
+br.ufjf.dcc.Investidor.Investidor <|-- br.ufjf.dcc.Investidor.PessoaFisica
+br.ufjf.dcc.Ativos.Interfaces.RendaVariavel <|.. br.ufjf.dcc.Ativos.Stocks
+br.ufjf.dcc.Ativos.Interfaces.Internacional <|.. br.ufjf.dcc.Ativos.Stocks
+br.ufjf.dcc.Ativos.Ativos <|-- br.ufjf.dcc.Ativos.Stocks
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Erros.ErroTipoNaoPresente
+br.ufjf.dcc.Erros.TypeNotPresentException <|-- br.ufjf.dcc.Erros.ErroTipoNaoPresente
+br.ufjf.dcc.Ativos.Interfaces.RendaVariavel <|.. br.ufjf.dcc.Ativos.Acoes
+br.ufjf.dcc.Ativos.Interfaces.Nacional <|.. br.ufjf.dcc.Ativos.Acoes
+br.ufjf.dcc.Ativos.Ativos <|-- br.ufjf.dcc.Ativos.Acoes
+br.ufjf.dcc.Ativos.Interfaces.Internacional <|.. br.ufjf.dcc.Ativos.Criptomoedas
+br.ufjf.dcc.Ativos.Interfaces.RendaVariavel <|.. br.ufjf.dcc.Ativos.Criptomoedas
+br.ufjf.dcc.Ativos.Ativos <|-- br.ufjf.dcc.Ativos.Criptomoedas
+br.ufjf.dcc.Ativos.Interfaces.RendaVariavel <|.. br.ufjf.dcc.Ativos.Fiis
+br.ufjf.dcc.Ativos.Interfaces.Nacional <|.. br.ufjf.dcc.Ativos.Fiis
+br.ufjf.dcc.Ativos.Interfaces.TaxaPorcentagem <|.. br.ufjf.dcc.Ativos.Fiis
+br.ufjf.dcc.Ativos.Ativos <|-- br.ufjf.dcc.Ativos.Fiis
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Mercado.Mercado
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Erros.ErrosNumbersFormato
+br.ufjf.dcc.Erros.NumberFormatException <|-- br.ufjf.dcc.Erros.ErrosNumbersFormato
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Erros.ErroInterrupcao
+br.ufjf.dcc.Erros.InterruptedException <|-- br.ufjf.dcc.Erros.ErroInterrupcao
+br.ufjf.dcc.CoresMensagens.CoresMensagens <|.. br.ufjf.dcc.Tools.Tools
+br.ufjf.dcc.Erros.Exception <|-- br.ufjf.dcc.Erros.DadosInvalidosException
+@enduml

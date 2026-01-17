@@ -17,13 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\movimentacoes\123.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value=";" />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\movimentacoes\12345678000190.csv">
           <value>
             <Attribute>
