@@ -100,23 +100,18 @@ public class Mercado implements CoresMensagens {
         switch (tipoAtivo) {
             case 1:
                 listaAtivosAcoes.add(ativo);
-                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 2:
                 listaAtivosFiis.add(ativo);
-                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 3:
                 listaAtivosTesouros.add(ativo);
-                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 4:
                 listaAtivosCriptos.add(ativo);
-                System.out.println("Ativo adicionado com sucesso!");
                 break;
             case 5:
                 listaAtivosStocks.add(ativo);
-                System.out.println("Ativo adicionado com sucesso!");
                 break;
             default:
                 System.out.println("Tipo de ativo desconhecido: " + tipoAtivo);
