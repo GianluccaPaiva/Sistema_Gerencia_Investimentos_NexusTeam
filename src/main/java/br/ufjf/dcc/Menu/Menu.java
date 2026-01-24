@@ -137,47 +137,49 @@ public class Menu implements CoresMensagens {
         int opcao;
         try {
             opcao = Integer.parseInt(entrada.trim());
-        } catch (ErrosNumbersFormato e) {
-            throw new ErrosNumbersFormato("Erro: insira um número.");
-        }
-        System.out.println(VERDE+"Opção selecionada: " + opcao + RESET);
-        switch (opcao){
-            case 1:
-                System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) deve ser essa ordem");
-                System.out.println("Exemplo: PETR4,Petrobras,28.50,(Não é só necessário a qualificação, mas será não de default)");
-                String dadosAcao = scanner.nextLine();
-                mercado.adicaoAtivo("acao", dadosAcao);
-                break;
-            case 2:
-                System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não), Segmento, Ultimo Dividendo, Taxa de Admissão deve ser essa ordem");
-                System.out.println("Exemplo: XPML11,XP Malls,150.75,(Não é só necessário a qualificação, mas será não de default),Shopping,0.85,1.5");
-                String dadosFiis = scanner.nextLine();
-                mercado.adicaoAtivo("fiis", dadosFiis);
-                break;
-            case 3:
-                System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Bolsa de Negociação, Setor, Qualificado deve ser essa ordem");
-                System.out.println("Exemplo:  AAPL,Apple Inc,145.30,NASDAQ,Tecnologia,(Não é só necessário a qualificação, mas será não de default)");
-                String dadosStocks = scanner.nextLine();
-                mercado.adicaoAtivo("stocks", dadosStocks);
-                break;
-            case 4:
-                System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (USD),Algoritmo Consenso,Quantidade Máxima");
-                System.out.println("Exemplo: BTC,Bitcoin,30000.00,Proof of Work,21000000");
-                String dadosCripto = scanner.nextLine();
-                mercado.adicaoAtivo("criptomoeda", dadosCripto);
-                break;
-            case 5:
-                System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (R$),Tipo de Rendimento,Vencimento");
-                System.out.println("Exemplo: LFT123,Tesouro Selic,1000.00,Selic,01/01/2030");
-                String dadosTesouro = scanner.nextLine();
-                mercado.adicaoAtivo("tesouro", dadosTesouro);
-                break;
-            case 0:
-                System.out.println("Voltando ao menu anterior...");
-                break;
-            default:
-                System.out.println(AMARELO+"Opção inválida!"+ RESET);
-        }
+            System.out.println(VERDE+"Opção selecionada: " + opcao + RESET);
+            switch (opcao){
+                case 1:
+                    System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não) deve ser essa ordem");
+                    System.out.println("Exemplo: PETR4,Petrobras,28.50,(Não é só necessário a qualificação, mas será não de default)");
+                    String dadosAcao = scanner.nextLine();
+                    mercado.adicaoAtivo("acao", dadosAcao);
+                    break;
+                case 2:
+                    System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Qualificado (sim/não), Segmento, Ultimo Dividendo, Taxa de Admissão deve ser essa ordem");
+                    System.out.println("Exemplo: XPML11,XP Malls,150.75,(Não é só necessário a qualificação, mas será não de default),Shopping,0.85,1.5");
+                    String dadosFiis = scanner.nextLine();
+                    mercado.adicaoAtivo("fiis", dadosFiis);
+                    break;
+                case 3:
+                    System.out.println("Insira separando por vírgula: Ticket, Nome, Preço, Bolsa de Negociação, Setor, Qualificado deve ser essa ordem");
+                    System.out.println("Exemplo:  AAPL,Apple Inc,145.30,NASDAQ,Tecnologia,(Não é só necessário a qualificação, mas será não de default)");
+                    String dadosStocks = scanner.nextLine();
+                    mercado.adicaoAtivo("stocks", dadosStocks);
+                    break;
+                case 4:
+                    System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (USD),Algoritmo Consenso,Quantidade Máxima");
+                    System.out.println("Exemplo: BTC,Bitcoin,30000.00,Proof of Work,21000000");
+                    String dadosCripto = scanner.nextLine();
+                    mercado.adicaoAtivo("criptomoeda", dadosCripto);
+                    break;
+                case 5:
+                    System.out.println("Insira separando por vírgula:Ticker,Nome,Preço (R$),Tipo de Rendimento,Vencimento");
+                    System.out.println("Exemplo: LFT123,Tesouro Selic,1000.00,Selic,01/01/2030");
+                    String dadosTesouro = scanner.nextLine();
+                    mercado.adicaoAtivo("tesouro", dadosTesouro);
+                    break;
+                case 0:
+                    System.out.println("Voltando ao menu anterior...");
+                    break;
+                default:
+                    System.out.println(AMARELO+"Opção inválida!"+ RESET);
+            }
+        }catch (NumberFormatException e){
+                System.out.println(AMARELO + "Erro: insira um número." + RESET);
+                addAtivoIndividuo();
+
+            }
     }
 
     private static void sistemaBusca(){
@@ -231,12 +233,12 @@ public class Menu implements CoresMensagens {
                 System.out.println("Voltando ao menu anterior...");
                 return;
             }
-        } catch (ErrosNumbersFormato e) {
-            throw new ErrosNumbersFormato("Erro: insira um número.");
+            System.out.println("Escreva o caminho do arquivo de entrada:");
+            String caminhoArquivo = scanner.nextLine();
+            mercado.carregarAtivosLote(caminhoArquivo, opcao);
+        } catch (NumberFormatException e) {
+            System.out.println(AMARELO+"Erro: insira um número."+RESET);
         }
-        System.out.println("Escreva o caminho do arquivo de entrada:");
-        String caminhoArquivo = scanner.nextLine();
-        mercado.carregarAtivosLote(caminhoArquivo, opcao);
     }
 
     private static void menuTipoExibicaoAtivos(){
@@ -256,10 +258,11 @@ public class Menu implements CoresMensagens {
             if (opcao == 0) {
                 System.out.println("Voltando ao menu anterior...");
             }
-        } catch (ErrosNumbersFormato e) {
-            throw new ErrosNumbersFormato("Erro: insira um número.");
+            mercado.listarAtivosPorTipo(opcao);
+        } catch (NumberFormatException e) {
+            System.out.println(AMARELO+"Erro: insira um número." + RESET);
+            menuTipoExibicaoAtivos();
         }
-        mercado.listarAtivosPorTipo(opcao);
     }
     private static void menuAtivos() {
         int opcao = -1;
@@ -277,7 +280,7 @@ public class Menu implements CoresMensagens {
             String entrada = scanner.nextLine();
             try {
                 opcao = Integer.parseInt(entrada.trim());
-            } catch (ErrosNumbersFormato e) {
+            } catch (NumberFormatException e) {
                 System.out.println(AMARELO+"Erro: insira um número."+ RESET);
                 menuAtivos();
             }
