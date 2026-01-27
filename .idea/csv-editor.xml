@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\ativosLote\AcoesExemplo.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value=";" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\lotes\investidoresLotes\investidores_teste.csv">
           <value>
             <Attribute>
@@ -18,27 +25,6 @@
           </value>
         </entry>
         <entry key="\movimentacoes\11122233344.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value=";" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\movimentacoes\12345678000190.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value=";" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\movimentacoes\12345678900.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value=";" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\movimentacoes\6666666666666666.csv">
           <value>
             <Attribute>
               <option name="separator" value=";" />

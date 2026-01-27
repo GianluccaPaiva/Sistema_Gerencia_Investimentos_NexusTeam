@@ -1,11 +1,12 @@
 package br.ufjf.dcc.Investidor;
 
+import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.Erros.DadosInvalidosException;
 
 public class PessoaJuridica extends Investidor{
     private String razaoSocial;
 
-    public PessoaJuridica(String nome, String cnpj, String telefone, String dataNascimento, Endereco endereco, double patrimonio, String razaoSocial) throws br.ufjf.dcc.Erros.DadosInvalidosException {
+    public PessoaJuridica(String nome, String cnpj, String telefone, String dataNascimento, Endereco endereco, double patrimonio, String razaoSocial) throws DadosInvalidosException {
         super(nome, cnpj, telefone, dataNascimento, endereco, patrimonio);
         if(razaoSocial == null || razaoSocial.trim().isEmpty()){
             throw new DadosInvalidosException("Erro: Razão Social é obrigatória para Pessoa Jurídica.");
@@ -14,7 +15,7 @@ public class PessoaJuridica extends Investidor{
     }
 
     @Override
-    public boolean podeComprar(br.ufjf.dcc.Ativos.Ativos ativo) {
+    public boolean podeComprar(Ativos ativo) {
         return true;
     }
 
