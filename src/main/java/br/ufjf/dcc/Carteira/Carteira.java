@@ -3,7 +3,6 @@ import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.Ativos.Interfaces.Internacional;
 import br.ufjf.dcc.Ativos.Interfaces.RendaVariavel;
 import br.ufjf.dcc.Erros.DadosInvalidosException;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -121,5 +120,4 @@ public class Carteira {
     public List<ItemCarteira> getAtivos(){
         return Collections.unmodifiableList(this.ativos);
     }
-
 }

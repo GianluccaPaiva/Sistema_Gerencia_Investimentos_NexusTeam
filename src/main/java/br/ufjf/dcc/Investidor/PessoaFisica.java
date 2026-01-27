@@ -1,5 +1,4 @@
 package br.ufjf.dcc.Investidor;
-
 import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.Ativos.Criptomoedas;
 import br.ufjf.dcc.Ativos.Interfaces.Internacional;

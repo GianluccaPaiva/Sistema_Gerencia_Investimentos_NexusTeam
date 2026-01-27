@@ -1,5 +1,4 @@
 package br.ufjf.dcc.LeitorLotes;
-
 import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.*;
@@ -7,7 +6,6 @@ import br.ufjf.dcc.Investidor.*;
 import br.ufjf.dcc.Mercado.Mercado;
 import br.ufjf.dcc.Movimentacao.Movimentacao;
 import br.ufjf.dcc.Registrar.Registrar;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -22,8 +20,8 @@ public class LeitorLotes {
     public static List<Investidor> carregarInvestidores(String nomeArquivo) throws ErrosLeituraArq {
         List<Investidor> novosInvestidores = new ArrayList<>();
         File arquivo = new File(INVESTIDORES_DIR_PATH, nomeArquivo);
-        if (!arquivo.exists()) {
 
+        if (!arquivo.exists()) {
             throw new ErrosLeituraArq("Arquivo não encontrado no diretório: " + arquivo.getAbsolutePath());
         }
 
@@ -50,7 +48,6 @@ public class LeitorLotes {
                     String id = dados[2].trim();
                     String tel = dados[3].trim();
                     String nasc = dados[4].trim();
-                    String rua = dados[5].trim();
 
                     int numero;
                     try {
@@ -59,6 +56,7 @@ public class LeitorLotes {
                         throw new ErrosNumbersFormato("Número do endereço inválido na linha " + linhaAtual);
                     }
 
+                    String rua = dados[5].trim();
                     String bairro = dados[7].trim();
                     String cidade = dados[8].trim();
                     String estado = dados[9].trim();

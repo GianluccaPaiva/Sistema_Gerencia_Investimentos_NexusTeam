@@ -1,5 +1,4 @@
 package br.ufjf.dcc.Investidor;
-
 import br.ufjf.dcc.Erros.DadosInvalidosException;
 
 public class Endereco {

@@ -1,5 +1,4 @@
 package br.ufjf.dcc.Menu;
-
 import br.ufjf.dcc.Ativos.Ativos;
 import br.ufjf.dcc.CoresMensagens.CoresMensagens;
 import br.ufjf.dcc.Erros.*;
@@ -178,7 +177,6 @@ public class Menu implements CoresMensagens {
         }catch (NumberFormatException e){
                 System.out.println(AMARELO + "Erro: insira um número." + RESET);
                 addAtivoIndividuo();
-
             }
     }
 
@@ -190,7 +188,6 @@ public class Menu implements CoresMensagens {
         String entrada = entradaScanner.nextLine();
         System.out.println(RESET);
         mercado.buscaAtivo(entrada);
-
     }
 
     private static void menuRemoverAtivo() {
