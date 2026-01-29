@@ -475,7 +475,7 @@ public class Mercado implements CoresMensagens {
 
                 try {
                     switch (opcao) {
-                        case 1: { // Ações
+                        case 1: {
                             String ticker = Tools.obterCampo(dados, hdr, "ticker", "codigo", "symbol", "Ticker");
                             String nome = Tools.obterCampo(dados, hdr, "nome", "name", "descricao", "Nome");
                             String precoStr = Tools.obterCampo(dados, hdr, "preco", "valor", "price", "preço", "Preço", "preço (r$)", "Preço (R$)");
