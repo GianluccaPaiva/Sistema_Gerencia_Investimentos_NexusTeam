@@ -5,10 +5,7 @@ import java.util.Locale;
 import java.util.UUID;
 
 public class Movimentacao {
-    private String id;
-    private String tipoMovimentacao;
-    private String instituicao;
-    private String tickerAtivo;
+    private String id, tipoMovimentacao, instituicao, tickerAtivo;
     private float quantidade;
     private double precoExecucao;
     private LocalDateTime dataNegociacao;
