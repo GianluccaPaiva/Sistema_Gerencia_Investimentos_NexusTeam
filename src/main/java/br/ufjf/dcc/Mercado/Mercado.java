@@ -121,31 +121,31 @@ public class Mercado implements CoresMensagens {
 
     private void carregarBaseDeDados() {
         try {
-            carregarAtivosLote("src/main/dados/acao.csv", 1);
+            carregarAtivosLote("dadosBase/acao.csv", 1);
         } catch (ErrosNumbersFormato e) {
             System.err.println("Erro de formato numérico ao carregar Ações: " + e.getMessage());
         }
 
         try {
-            carregarAtivosLote( "src/main/dados/fii.csv", 2);
+            carregarAtivosLote( "dadosBase/fii.csv", 2);
         } catch (ErrosNumbersFormato e) {
             System.err.println("Erro de formato numérico ao carregar FIIs: " + e.getMessage());
         }
 
         try {
-            carregarAtivosLote( "src/main/dados/tesouro.csv", 5);
+            carregarAtivosLote( "dadosBase/tesouro.csv", 5);
         } catch (ErrosNumbersFormato e) {
             System.err.println("Erro de formato numérico ao carregar Tesouros: " + e.getMessage());
         }
 
         try {
-            carregarAtivosLote( "src/main/dados/criptoativo.csv", 4);
+            carregarAtivosLote( "dadosBase/criptoativo.csv", 4);
         } catch (ErrosNumbersFormato e) {
             System.err.println("Erro de formato numérico ao carregar Criptoativos: " + e.getMessage());
         }
 
         try {
-            carregarAtivosLote( "src/main/dados/stock.csv", 3);
+            carregarAtivosLote( "dadosBase/stock.csv", 3);
         } catch (ErrosNumbersFormato e) {
             System.err.println("Erro de formato numérico ao carregar Stocks: " + e.getMessage());
         }
