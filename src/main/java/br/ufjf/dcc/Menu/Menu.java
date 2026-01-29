@@ -395,7 +395,7 @@ public class Menu implements CoresMensagens {
                 System.out.print("Perfil (Conservador, Moderado, Arrojado): ");
                 String perfil = scanner.nextLine();
 
-                PessoaFisica pf = new PessoaFisica(nome, cpf, telefone, nascimento, endereco, patrimonio, perfil);
+                Investidor pf = new PessoaFisica(nome, cpf, telefone, nascimento, endereco, patrimonio, perfil);
                 investidores.add(pf);
                 System.out.println(VERDE + "Pessoa Física cadastrada com sucesso!" + RESET);
 
@@ -405,7 +405,7 @@ public class Menu implements CoresMensagens {
                 System.out.print("Razão Social: ");
                 String razao = scanner.nextLine();
 
-                PessoaJuridica pj = new PessoaJuridica(nome, cnpj, telefone, nascimento, endereco, patrimonio, razao);
+                Investidor pj = new PessoaJuridica(nome, cnpj, telefone, nascimento, endereco, patrimonio, razao);
                 investidores.add(pj);
                 System.out.println(VERDE + "Investidor Institucional cadastrado com sucesso!" + RESET);
             } else {
