@@ -7,6 +7,7 @@ public class PessoaJuridica extends Investidor{
 
     public PessoaJuridica(String nome, String cnpj, String telefone, String dataNascimento, Endereco endereco, double patrimonio, String razaoSocial) throws DadosInvalidosException {
         super(nome, cnpj, telefone, dataNascimento, endereco, patrimonio);
+
         if(razaoSocial == null || razaoSocial.trim().isEmpty()){
             throw new DadosInvalidosException("Erro: Razão Social é obrigatória para Pessoa Jurídica.");
         }
@@ -30,5 +31,4 @@ public class PessoaJuridica extends Investidor{
         }
         this.razaoSocial = razaoSocial;
     }
-
 }
