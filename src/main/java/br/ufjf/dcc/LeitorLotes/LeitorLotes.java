@@ -71,13 +71,13 @@ public class LeitorLotes {
                         throw new ErrosNumbersFormato("Valor de patrimônio inválido na linha " + linhaAtual);
                     }
 
-                    String perfil = dados[12].trim();
+                    String extra = dados[12].trim();
 
                     Investidor inv;
                     if (tipo.equalsIgnoreCase("PF")) {
-                        inv = new PessoaFisica(nome, id, tel, nasc, endereco, patrimonio, perfil);
+                        inv = new PessoaFisica(nome, id, tel, nasc, endereco, patrimonio, extra);
                     } else if (tipo.equalsIgnoreCase("PJ")) {
-                        inv = new PessoaJuridica(nome, id, tel, nasc, endereco, patrimonio, perfil);
+                        inv = new PessoaJuridica(nome, id, tel, nasc, endereco, patrimonio, extra);
                     } else {
                         throw new ErroTipoNaoPresente("Tipo '" + tipo + "' desconhecido. Use PF ou PJ.");
                     }
