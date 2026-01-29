@@ -609,14 +609,15 @@ public class Menu implements CoresMensagens {
         while (opcaoEdit != 0) {
             System.out.println(CIANO + "\n--- Editar Dados de " + inv.getNome() + " ---" + RESET);
             System.out.println("1. Alterar Nome");
-            System.out.println("2. Alterar Telefone");
-            System.out.println("3. Alterar Endereço Completo");
-            System.out.println("4. Alterar Patrimônio (Ajuste manual de saldo)");
+            System.out.println("2. Alterar Data de Nascimento");
+            System.out.println("3. Alterar Telefone");
+            System.out.println("4. Alterar Endereço Completo");
+            System.out.println("5. Alterar Patrimônio (Ajuste manual de saldo)");
 
             if (inv instanceof PessoaFisica) {
-                System.out.println("5. Alterar Perfil (Conservador/Moderado/Arrojado)");
+                System.out.println("6. Alterar Perfil (Conservador/Moderado/Arrojado)");
             } else if (inv instanceof PessoaJuridica) {
-                System.out.println("5. Alterar Razão Social");
+                System.out.println("6. Alterar Razão Social");
             }
 
             System.out.println("0. Voltar");
@@ -632,11 +633,16 @@ public class Menu implements CoresMensagens {
                         System.out.println(VERDE + "Nome atualizado!" + RESET);
                         break;
                     case 2:
+                        System.out.print("Nova Data de Nascimento: ");
+                        inv.setDataNascimento(scanner.nextLine());
+                        System.out.println(VERDE + "Data de Nascimento atualizada!" + RESET);
+                        break;
+                    case 3:
                         System.out.print("Novo Telefone: ");
                         inv.setTelefone(scanner.nextLine());
                         System.out.println(VERDE + "Telefone atualizado!" + RESET);
                         break;
-                    case 3:
+                    case 4:
                         System.out.println("--- Novo Endereço ---");
                         System.out.print("Rua: "); String rua = scanner.nextLine();
                         System.out.print("Número: "); int num = lerNumeroInteiro(scanner.nextLine());
@@ -649,13 +655,13 @@ public class Menu implements CoresMensagens {
                         inv.setEndereco(novoEnd);
                         System.out.println(VERDE + "Endereço atualizado!" + RESET);
                         break;
-                    case 4:
+                    case 5:
                         System.out.print("Novo valor de Patrimônio: ");
                         double novoPatrimonio = lerNumeroDecimal(scanner.nextLine());
                         inv.setPatrimonio(novoPatrimonio);
                         System.out.println(VERDE + "Patrimônio atualizado!" + RESET);
                         break;
-                    case 5:
+                    case 6:
                         if (inv instanceof PessoaFisica) {
                             System.out.print("Novo Perfil (Conservador/Moderado/Arrojado): ");
                             String perfil = scanner.nextLine();
@@ -668,8 +674,10 @@ public class Menu implements CoresMensagens {
                             System.out.println(VERDE + "Razão Social atualizada!" + RESET);
                         }
                         break;
+
                     case 0:
                         break;
+
                     default:
                         System.out.println(AMARELO + "Opção inválida." + RESET);
                 }

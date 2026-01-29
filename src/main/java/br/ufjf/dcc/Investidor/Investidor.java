@@ -19,6 +19,14 @@ public abstract class Investidor {
             throw new DadosInvalidosException("Erro: O documento (CPF/CNPJ) é obrigatório.");
         }
 
+        if(telefone == null || telefone.trim().isEmpty()){
+            throw new DadosInvalidosException("Erro: Telefone é obrigatório.");
+        }
+
+        if(dataNascimento == null || dataNascimento.trim().isEmpty()){
+            throw new DadosInvalidosException("Erro: Data de nascimento é obrigatória.");
+        }
+
         if (patrimonio < 0) {
             throw new DadosInvalidosException("Erro: O patrimônio não pode ser negativo.");
         }
@@ -31,6 +39,7 @@ public abstract class Investidor {
         this.patrimonio = patrimonio;
         this.carteira = new Carteira();
     }
+
     public void comprar(Ativos ativo, float qtd, double preco) throws DadosInvalidosException {
         if(podeComprar(ativo)){
             carteira.addAtivo(ativo, qtd, preco);
@@ -39,6 +48,7 @@ public abstract class Investidor {
             throw new DadosInvalidosException("Erro: Tipo de ativo não permitido para este investidor.");
         }
     }
+
     public void vender(Ativos ativo, float qtd) throws DadosInvalidosException {
         carteira.removerAtivo(ativo.getTicker(), qtd);
     }
@@ -55,27 +65,47 @@ public abstract class Investidor {
     }
 
     public String getNome() {return nome;}
-    public void setNome(String nome) {this.nome = nome;}
-
     public String getId() {return id;}
-    public void setId(String id) {this.id = id;}
-
     public String getTelefone() {return telefone;}
-    public void setTelefone(String telefone) {this.telefone = telefone;}
-
     public String getDataNascimento() {return dataNascimento;}
-    public void setDataNascimento(String dataNascimento) {this.dataNascimento = dataNascimento;}
-
     public Endereco getEndereco() {return endereco;}
+    public double getPatrimonio() {return patrimonio;}
+    public Carteira getCarteira() {return this.carteira;}
+
+    public void setNome(String nome) {
+        if(nome == null || nome.trim().isEmpty()){
+            throw new IllegalArgumentException("Nome do investidor não pode ser vazio.");
+        }
+        this.nome = nome;
+    }
+
+    public void setId(String id) {
+        if(id == null || id.trim().isEmpty()){
+            throw new IllegalArgumentException("Documento (CPF/CNPJ) é obrigatório.");
+        }
+        this.id = id;
+    }
+
+    public void setTelefone(String telefone) {
+        if(telefone == null || telefone.trim().isEmpty()){
+            throw new IllegalArgumentException("Telefone é obrigatório.");
+        }
+        this.telefone = telefone;
+    }
+
+    public void setDataNascimento(String dataNascimento) {
+        if(dataNascimento == null || dataNascimento.trim().isEmpty()){
+            throw new IllegalArgumentException("Data de nascimento é obrigatória.");
+        }
+        this.dataNascimento = dataNascimento;
+    }
+
     public void setEndereco(Endereco endereco) {this.endereco = endereco;}
 
-    public double getPatrimonio() {return patrimonio;}
     public void setPatrimonio(double patrimonio) {
         if(patrimonio < 0){
             throw new IllegalArgumentException("Patrimônio não pode ser negativo.");
         }
         this.patrimonio = patrimonio;
     }
-
-    public Carteira getCarteira() {return this.carteira;}
 }
