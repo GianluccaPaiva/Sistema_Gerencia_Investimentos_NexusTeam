@@ -71,13 +71,13 @@ public class LeitorLotes {
                         throw new ErrosNumbersFormato("Valor de patrimônio inválido na linha " + linhaAtual);
                     }
 
-                    String extra = dados[12].trim();
+                    String perfil = dados[12].trim();
 
                     Investidor inv;
                     if (tipo.equalsIgnoreCase("PF")) {
-                        inv = new PessoaFisica(nome, id, tel, nasc, endereco, patrimonio, extra);
+                        inv = new PessoaFisica(nome, id, tel, nasc, endereco, patrimonio, perfil);
                     } else if (tipo.equalsIgnoreCase("PJ")) {
-                        inv = new PessoaJuridica(nome, id, tel, nasc, endereco, patrimonio, extra);
+                        inv = new PessoaJuridica(nome, id, tel, nasc, endereco, patrimonio, perfil);
                     } else {
                         throw new ErroTipoNaoPresente("Tipo '" + tipo + "' desconhecido. Use PF ou PJ.");
                     }
@@ -139,13 +139,13 @@ public class LeitorLotes {
                     if (tipoOperacao.equals("COMPRA")) {
                         investidor.comprar(ativo, qtd, ativo.getPreco());
 
-                        Movimentacao mov = new Movimentacao("COMPRA", "LoteArq", ticker, qtd, ativo.getPreco());
+                        Movimentacao mov = new Movimentacao("COMPRA", "NexusBank", ticker, qtd, ativo.getPreco());
                         Registrar.registrar(investidor.getId(), mov.toCSV());
 
                     } else if (tipoOperacao.equals("VENDA")) {
                         investidor.vender(ativo, qtd);
 
-                        Movimentacao mov = new Movimentacao("VENDA", "LoteArq", ticker, qtd, ativo.getPreco());
+                        Movimentacao mov = new Movimentacao("VENDA", "NexusBank", ticker, qtd, ativo.getPreco());
                         Registrar.registrar(investidor.getId(), mov.toCSV());
 
                     } else {
